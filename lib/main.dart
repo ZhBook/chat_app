@@ -4,6 +4,8 @@ import 'package:chat_app/page/PersonScreen.dart';
 import 'package:chat_app/page/ToolsScreen.dart';
 import 'package:flutter/material.dart';
 
+import 'page/MyDrawer.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -33,9 +35,17 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
 
   List<Widget> list = [];
 
-  int _selectedIndex = 1;
+  Text _title = Text("微信");
 
-  late TabController _tabController; //需要定义一个Controller
+  int _selectedIndex = 0;
+
+  late TabController _tabController;
+
+  //用于控制右上角图标
+  var _rightIcon = Icon(Icons.add_circle_outlined);
+
+  //用于控制右上角图标的显示
+  bool _rightCtrl = true;
 
 /*   @override
   void dispose() {
@@ -85,9 +95,30 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
     });
   }
 
+  //点击按钮执行的事件
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index; //
+      switch (index) {
+        case 0:
+          _rightIcon = Icon(Icons.add_circle_outlined);
+          _rightCtrl = true;
+          _title = Text("微信");
+          break;
+        case 1:
+          _rightIcon = Icon(Icons.person_add_alt_1);
+          _rightCtrl = true;
+          _title = Text("通讯录");
+          break;
+        case 2:
+          _rightCtrl = false;
+          _title = Text("发现");
+          break;
+        case 3:
+          _rightCtrl = false;
+          _title = Text("");
+          break;
+      }
     });
     print(index);
   }
@@ -100,9 +131,20 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("AppChat"),
+        centerTitle: true,
+        title: _title,
         actions: <Widget>[
-          IconButton(onPressed: () {}, icon: Icon(Icons.share))
+          Visibility(
+            child: IconButton(
+                onPressed: () async {
+                  await _rightEvent();
+                },
+                icon: _rightIcon),
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            visible: _rightCtrl,
+          ),
         ], //右上角分享图标
         /* bottom: TabBar(
           //生成顶部Tab菜单
@@ -134,13 +176,11 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: "微信"),
           BottomNavigationBarItem(icon: Icon(Icons.mail), label: "通信录"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.find_in_page_outlined),
-            label: "发现",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.adjust_sharp), label: "发现"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "我"),
         ],
-        currentIndex: _selectedIndex, //items的index
+        currentIndex: _selectedIndex,
+        //items的index
         fixedColor: Colors.blue,
         onTap: _onItemTapped, //底部菜单点击事件
       ),
@@ -152,54 +192,32 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
       body: list[_selectedIndex],
     );
   }
-}
 
-class MyDrawer extends StatelessWidget {
-  const MyDrawer({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Drawer(
-        child: MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 38.0),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: ClipOval(
-                          child: Text("图片"),
-                        ),
-                      ),
-                      Text(
-                        "Wendux",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                    child: ListView(
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.add),
-                      title: const Text("Add account"),
-                    ),
-                    ListTile(
-                      leading: const Icon(Icons.settings),
-                      title: const Text("Manage Accounts"),
-                    )
-                  ],
-                ))
+  Future<void> _rightEvent() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('AlertDialog Title'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('This is a demo alert dialog.'),
+                Text('Would you like to approve of this message?'),
               ],
-            )),
-      ),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

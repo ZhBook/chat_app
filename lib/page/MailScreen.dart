@@ -7,7 +7,7 @@ class MailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text("通讯录"),
+        child: Container(child: Text("通讯录")),
       ),
     );
   }
