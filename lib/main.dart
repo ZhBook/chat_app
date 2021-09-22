@@ -187,30 +187,30 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
       floatingActionButton: FloatingActionButton(
         //悬浮按钮
         child: Icon(Icons.add),
-        onPressed: _onAdd,
+        onPressed: _rightEvent,
       ),
       body: list[_selectedIndex],
     );
   }
 
+//右上角点击事件
   Future<void> _rightEvent() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('AlertDialog Title'),
+          title: _title,
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                Text('This is a demo alert dialog.'),
-                Text('Would you like to approve of this message?'),
+                Text('该功能正在开发中...'),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Approve'),
+              child: const Text('确定'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

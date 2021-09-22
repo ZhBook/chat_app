@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:chat_app/Utils/Utils.dart';
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -25,8 +24,9 @@ class HomeScreen extends StatelessWidget {
                   height: 40.0,
                   margin: EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
-                      border: Border.all(width: 0.5, color: Color.fromRGBO(
-                          157, 153, 153, 1.0))),
+                      border: Border.all(
+                          width: 0.5,
+                          color: Color.fromRGBO(157, 153, 153, 1.0))),
                   // padding: EdgeInsets.all(5.0),
                   child: TextField(
                       autofocus: false,
@@ -60,7 +60,12 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             Container(
                               alignment: Alignment.centerLeft,
-                              child: Text("用户$index",
+                              child: Text(
+                                  "联系人" +
+                                      generateWordPairs()
+                                          .take(1)
+                                          .first
+                                          .toString(),
                                   style: TextStyle(
                                     fontSize: 20,
                                     color: Utils.getRandomColor(),
@@ -69,7 +74,11 @@ class HomeScreen extends StatelessWidget {
                             Container(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "聊天信息预览$index",
+                                  "聊天信息预览:" +
+                                      generateWordPairs()
+                                          .take(1)
+                                          .first
+                                          .toString(),
                                   style:
                                       TextStyle(color: Utils.getRandomColor()),
                                 )),
@@ -81,7 +90,9 @@ class HomeScreen extends StatelessWidget {
                     Expanded(
                         child: Container(
                       alignment: Alignment.centerRight,
-                      child: Text("14.30"),
+                      child: Text(Utils.getRandomNum(24) +
+                          ":" +
+                          Utils.getRandomNum(60)),
                     ))
                   ],
                 ),
