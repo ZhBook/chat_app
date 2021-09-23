@@ -32,30 +32,37 @@ class MailScreen extends StatelessWidget {
                       textAlign: TextAlign.center),
                 );
               }
-              return Container(
-                padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                height: 45,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        child: Icon(
-                          Icons.person_pin,
-                          size: 40,
-                          color: Utils.getRandomColor(),
+              String name = generateWordPairs().take(1).first.toString();
+              return GestureDetector(
+                onTap: () async {
+                  print("点击了$name");
+                  await Navigator.of(context)
+                      .pushNamed("chating_page", arguments: name);
+                },
+                child: Container(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                  height: 45,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          child: Icon(
+                            Icons.person_pin,
+                            size: 40,
+                            color: Utils.getRandomColor(),
+                          ),
+                        ),
+                        flex: 1,
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(name),
                         ),
                       ),
-                      flex: 1,
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child:
-                            Text(generateWordPairs().take(1).first.toString()),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
