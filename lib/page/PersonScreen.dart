@@ -28,6 +28,8 @@ class PersonScreen extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: Container(
+                      height: 60,
+                      width: 60,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: Image.asset("assests/images/1.jpeg"),
@@ -37,10 +39,10 @@ class PersonScreen extends StatelessWidget {
                   Expanded(
                     flex: 4,
                     child: Container(
-                      padding: EdgeInsets.only(left: 10),
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        verticalDirection: VerticalDirection.up,
+                      padding: EdgeInsets.only(left: 15),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
                             child: Text(
@@ -51,12 +53,30 @@ class PersonScreen extends StatelessWidget {
                           Container(
                             child: Text(
                               "微信号：zhd0704",
+                              style: TextStyle(color: Colors.black38),
                             ),
                           ),
                         ],
                       ),
                     ),
-                  )
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: Icon(Icons.qr_code),
+                          ),
+                          Container(
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 15,
+                            ),
+                          )
+                        ],
+                      ))
                 ],
               ),
             ),

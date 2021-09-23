@@ -1,4 +1,5 @@
 import 'package:chat_app/Utils/Utils.dart';
+import 'package:chat_app/route/Chating.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
@@ -38,63 +39,71 @@ class HomeScreen extends StatelessWidget {
                       textAlign: TextAlign.center),
                 );
               }
-              return Container(
-                padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                height: 60,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        child: Icon(
-                          Icons.person_pin,
-                          size: 50,
-                          color: Utils.getRandomColor(),
+              return GestureDetector(
+                // behavior: HitTestBehavior.opaque,
+                onTap: () async {
+                  print("点击了$index");
+                  await Navigator.of(context)
+                      .pushNamed("chating_page", arguments: index);
+                },
+                child: Container(
+                  padding: EdgeInsets.only(left: 10.0, right: 10.0),
+                  height: 60,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          child: Icon(
+                            Icons.person_pin,
+                            size: 50,
+                            color: Utils.getRandomColor(),
+                          ),
                         ),
+                        flex: 1,
                       ),
-                      flex: 1,
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.only(left: 10.0),
-                        child: Column(
-                          children: [
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                  "联系人" +
-                                      generateWordPairs()
-                                          .take(1)
-                                          .first
-                                          .toString(),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Utils.getRandomColor(),
-                                  )),
-                            ),
-                            Container(
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(left: 10.0),
+                          child: Column(
+                            children: [
+                              Container(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "聊天信息预览:" +
-                                      generateWordPairs()
-                                          .take(1)
-                                          .first
-                                          .toString(),
-                                  style:
-                                      TextStyle(color: Utils.getRandomColor()),
-                                )),
-                          ],
+                                    "联系人" +
+                                        generateWordPairs()
+                                            .take(1)
+                                            .first
+                                            .toString(),
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Utils.getRandomColor(),
+                                    )),
+                              ),
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "聊天信息预览:" +
+                                        generateWordPairs()
+                                            .take(1)
+                                            .first
+                                            .toString(),
+                                    style: TextStyle(
+                                        color: Utils.getRandomColor()),
+                                  )),
+                            ],
+                          ),
                         ),
+                        flex: 7,
                       ),
-                      flex: 7,
-                    ),
-                    Expanded(
-                        child: Container(
-                      alignment: Alignment.centerRight,
-                      child: Text(Utils.getRandomNum(24) +
-                          ":" +
-                          Utils.getRandomNum(60)),
-                    ))
-                  ],
+                      Expanded(
+                          child: Container(
+                        alignment: Alignment.centerRight,
+                        child: Text(Utils.getRandomNum(24) +
+                            ":" +
+                            Utils.getRandomNum(60)),
+                      ))
+                    ],
+                  ),
                 ),
               );
             },
