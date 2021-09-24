@@ -2,7 +2,7 @@ import 'package:chat_app/page/HomeScreen.dart';
 import 'package:chat_app/page/MailScreen.dart';
 import 'package:chat_app/page/PersonScreen.dart';
 import 'package:chat_app/page/ToolsScreen.dart';
-import 'package:chat_app/route/chating.dart';
+import 'package:chat_app/route/Chatting.dart';
 import 'package:flutter/material.dart';
 
 import 'page/MyDrawer.dart';
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       ),
       home: ScaffoldRoute(),
       routes: {
-        "chating_page": (context) => Chating(),
+        "chat_page": (context) => ChatPage(),
       },
     );
   }
@@ -134,7 +134,7 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        "chating_page": (context) => Chating(),
+        "chat_page": (context) => ChatPage(),
       },
       home: Scaffold(
         appBar: AppBar(

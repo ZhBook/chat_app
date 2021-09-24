@@ -37,7 +37,7 @@ class MailScreen extends StatelessWidget {
                 onTap: () async {
                   print("点击了$name");
                   await Navigator.of(context)
-                      .pushNamed("chating_page", arguments: name);
+                      .pushNamed("chat_page", arguments: name);
                 },
                 child: Container(
                   padding: EdgeInsets.only(left: 10.0, right: 10.0),

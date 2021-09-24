@@ -1,5 +1,5 @@
 import 'package:chat_app/Utils/Utils.dart';
-import 'package:chat_app/route/Chating.dart';
+import 'package:chat_app/route/Chatting.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +8,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String _friendName = generateWordPairs().take(1).first.toString();
     Widget divider1 = Divider(
       color: Colors.red,
       height: 0.5,
@@ -44,7 +45,7 @@ class HomeScreen extends StatelessWidget {
                 onTap: () async {
                   print("点击了$index");
                   await Navigator.of(context)
-                      .pushNamed("chating_page", arguments: index);
+                      .pushNamed("chat_page", arguments: index);
                 },
                 child: Container(
                   padding: EdgeInsets.only(left: 10.0, right: 10.0),
@@ -68,12 +69,7 @@ class HomeScreen extends StatelessWidget {
                             children: [
                               Container(
                                 alignment: Alignment.centerLeft,
-                                child: Text(
-                                    "联系人" +
-                                        generateWordPairs()
-                                            .take(1)
-                                            .first
-                                            .toString(),
+                                child: Text("联系人" + _friendName,
                                     style: TextStyle(
                                       fontSize: 20,
                                       color: Utils.getRandomColor(),
