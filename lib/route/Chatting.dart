@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -294,17 +296,23 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                //语音按钮
                 Flexible(
                     flex: 1,
                     child: GestureDetector(
                       child: Container(
                           padding: EdgeInsets.only(left: 5, right: 10),
-                          child: Icon(Icons.record_voice_over)),
+                          child: Icon(
+                            Icons.record_voice_over,
+                            color: Colors.black,
+                          )),
                     )),
+                //聊天输入框
                 Flexible(
                   flex: 7,
                   child: Container(
                     alignment: Alignment.center,
+                    padding: EdgeInsets.only(left: 3),
                     height: 35,
                     color: Colors.white,
                     child: TextField(
@@ -327,7 +335,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                       // margin: const EdgeInsets.symmetric(horizontal: 4.0),
                       // Theme.of(context).platform == TargetPlatform.iOS
                       child: IconButton(
-                    icon: const Icon(Icons.send),
+                    icon: const Icon(
+                      Icons.send,
+                      color: Colors.black,
+                    ),
                     onPressed: _isComposing
                         ? () => _handleSubmitted(_textController.text)
                         : null,
@@ -337,7 +348,10 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                     flex: 1,
                     child: GestureDetector(
                       onTap: extendFunction,
-                      child: Icon(Icons.add_circle_outline),
+                      child: Icon(
+                        Icons.add_circle_outline,
+                        color: Colors.black,
+                      ),
                     )),
               ],
             ),
@@ -374,9 +388,14 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  //展开加号按钮
   void extendFunction() {
     setState(() {
+      /*Timer(Duration(microseconds: 800), () {
+
+      });*/
       _buttonShow = !_buttonShow;
+      _focusNode.unfocus();
     });
   }
 }

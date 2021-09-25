@@ -18,39 +18,45 @@ class ToolsScreen extends StatelessWidget {
         color: Color.fromRGBO(223, 224, 225, 1.0),
         child: new ListView(
           children: [
-            Container(
-              padding: _padding,
-              color: Colors.white,
-              height: 50,
-              margin: EdgeInsets.only(top: 10.0),
-              child: Row(children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    child: Icon(
-                      Icons.camera_rounded,
-                      size: 30,
-                      color: Colors.red,
+            GestureDetector(
+              onTap:() async {
+                print("点击了朋友圈");
+                await Navigator.of(context).pushNamed("friends_page");
+              },
+              child: Container(
+                padding: _padding,
+                color: Colors.white,
+                height: 50,
+                margin: EdgeInsets.only(top: 10.0),
+                child: Row(children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Icon(
+                        Icons.camera_rounded,
+                        size: 30,
+                        color: Colors.red,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: Container(
-                    child: Text("朋友圈"),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 15,
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      child: Text("朋友圈"),
                     ),
                   ),
-                ),
-              ]),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 15,
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
             ),
             Container(
               padding: _padding,

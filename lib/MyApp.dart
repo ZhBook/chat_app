@@ -1,11 +1,12 @@
-import 'package:chat_app/page/HomeScreen.dart';
-import 'package:chat_app/page/MailScreen.dart';
-import 'package:chat_app/page/PersonScreen.dart';
-import 'package:chat_app/page/ToolsScreen.dart';
-import 'package:chat_app/route/Chatting.dart';
 import 'package:flutter/material.dart';
 
+import 'page/HomeScreen.dart';
+import 'page/MailScreen.dart';
+import 'page/PersonScreen.dart';
+import 'page/ToolsScreen.dart';
+import 'route/Chatting.dart';
 import 'page/MyDrawer.dart';
+import 'route/Friends.dart';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       home: ScaffoldRoute(),
       routes: {
         "chat_page": (context) => ChatPage(),
+        "friends_page": (context) => Friends(),
       },
     );
   }
@@ -132,11 +134,7 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        "chat_page": (context) => ChatPage(),
-      },
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           // backgroundColor: _backgroundColor,
@@ -200,8 +198,7 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
           onPressed: _rightEvent,
         ),
         body: list[_selectedIndex],
-      ),
-    );
+      );
   }
 
 //右上角点击事件
