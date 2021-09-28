@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 final ThemeData kIOSTheme = ThemeData(
   primarySwatch: Colors.blue,
@@ -88,7 +89,8 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
+class _ChatScreenState extends State<ChatScreen>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final List<ChatMessage> _messages = [];
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
@@ -100,6 +102,22 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   double _cardWidth = 60;
   Color _cardColor = Colors.white60;
   double _cardBorderRadius = 10;
+  Color _extendButtonColor = Colors.black;
+
+  @protected
+  void initState() {
+    super.initState();
+    //通过获取键盘的显示，来控制加号的显示
+    KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        print(visible);
+        if (visible) {
+          _buttonShow = false;
+          _extendButtonColor = Colors.black;
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +139,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 onTap: () {
                   setState(() {
                     this._buttonShow = false;
+                    this._focusNode.unfocus();
                   });
                 },
                 child: ListView.builder(
@@ -140,6 +159,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               child: _buildTextComposer(),
             ),
             Visibility(
+              maintainAnimation: true,
               child: Container(
                 height: size.height / 4,
                 width: double.maxFinite,
@@ -316,6 +336,8 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                     height: 35,
                     color: Colors.white,
                     child: TextField(
+                      textAlign: TextAlign.start,
+                      maxLines: 10,
                       controller: _textController,
                       onChanged: (text) {
                         setState(() {
@@ -323,8 +345,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                         });
                       },
                       onSubmitted: _isComposing ? _handleSubmitted : null,
-                      decoration: const InputDecoration.collapsed(
-                          hintText: 'Send a message'),
+                      decoration: const InputDecoration.collapsed(hintText: ''),
                       focusNode: _focusNode,
                     ),
                   ),
@@ -350,7 +371,7 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                       onTap: extendFunction,
                       child: Icon(
                         Icons.add_circle_outline,
-                        color: Colors.black,
+                        color: this._extendButtonColor,
                       ),
                     )),
               ],
@@ -391,11 +412,12 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   //展开加号按钮
   void extendFunction() {
     setState(() {
-      /*Timer(Duration(microseconds: 800), () {
+      _focusNode.unfocus();
+      /*  Timer(Duration(milliseconds: 20), () {
 
       });*/
-      _buttonShow = !_buttonShow;
-      _focusNode.unfocus();
+      _buttonShow = true;
+      _extendButtonColor = Colors.blue;
     });
   }
 }
