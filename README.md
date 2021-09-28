@@ -1,5 +1,8 @@
 # chat_app
 
+### 这是一款模仿微信APP的软件，通过Flutter实现。
+### 目前仅有展示界面，后端计划通过JAVA编写。
+
 A new Flutter project.
 
 ## Getting Started

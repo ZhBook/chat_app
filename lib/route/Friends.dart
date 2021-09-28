@@ -44,7 +44,7 @@ class _FriendsStateState extends State<_Friends> {
                         Container(
                           width: double.maxFinite,
                           height: size.height * 1 / 3,
-                          child: Image.asset("assests/images/background.jpg",
+                          child: Image.asset("assets/images/background.jpg",
                               fit: BoxFit.fill),
                         ),
                         Positioned(
@@ -63,7 +63,7 @@ class _FriendsStateState extends State<_Friends> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.asset(
-                                    "assests/images/1.jpeg",
+                                    "assets/images/1.jpeg",
                                     height: 60,
                                     width: 60,
                                   ),
@@ -107,7 +107,7 @@ class _FriendsStateState extends State<_Friends> {
                           children: [
                             Container(child: Text("朋友")),
                             index % 2 == 0
-                                ? Image.asset("assests/images/background.jpg",
+                                ? Image.asset("assets/images/background.jpg",
                                     width: 200, height: 200, fit: BoxFit.fill)
                                 : Container(
                                     child: Text(

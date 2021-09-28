@@ -32,7 +32,7 @@ class PersonScreen extends StatelessWidget {
                       width: 60,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.asset("assests/images/1.jpeg"),
+                        child: Image.asset("assets/images/1.jpeg"),
                       ),
                     ),
                   ),
