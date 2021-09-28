@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 final ThemeData kIOSTheme = ThemeData(
@@ -168,135 +169,142 @@ class _ChatScreenState extends State<ChatScreen>
                     color: Color.fromRGBO(223, 224, 225, 1.0)),
                 child: Container(
                   margin: EdgeInsets.only(left: 10, top: 20, right: 10),
-                  child: Column(
-                    children: [
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius:
+                  child: new Swiper(
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius:
                                     BorderRadius.circular(_cardBorderRadius),
-                                color: _cardColor,
-                              ),
-                              height: _cardHeight,
-                              width: _cardWidth,
-                              // color: _cardColor,
-                              child: Container(
-                                  child: IconButton(
-                                icon: Icon(Icons.photo_library),
-                                onPressed: () {},
-                              )),
+                                    color: _cardColor,
+                                  ),
+                                  height: _cardHeight,
+                                  width: _cardWidth,
+                                  // color: _cardColor,
+                                  child: Container(
+                                      child: IconButton(
+                                        icon: Icon(Icons.photo_library),
+                                        onPressed: () {},
+                                      )),
+                                ),
+                                Container(
+                                  height: _cardHeight,
+                                  width: _cardWidth,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(_cardBorderRadius),
+                                    color: _cardColor,
+                                  ),
+                                  child: Icon(
+                                    Icons.photo_camera,
+                                    size: _cardSize,
+                                  ),
+                                ),
+                                Container(
+                                  height: _cardHeight,
+                                  width: _cardWidth,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(_cardBorderRadius),
+                                    color: _cardColor,
+                                  ),
+                                  child: Icon(
+                                    Icons.settings_phone,
+                                    size: _cardSize,
+                                  ),
+                                ),
+                                Container(
+                                  height: _cardHeight,
+                                  width: _cardWidth,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(_cardBorderRadius),
+                                    color: _cardColor,
+                                  ),
+                                  child: Icon(
+                                    Icons.pin_drop,
+                                    size: _cardSize,
+                                  ),
+                                )
+                              ],
                             ),
-                            Container(
-                              height: _cardHeight,
-                              width: _cardWidth,
-                              decoration: BoxDecoration(
-                                borderRadius:
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Container(
+                                  height: _cardHeight,
+                                  width: _cardWidth,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
                                     BorderRadius.circular(_cardBorderRadius),
-                                color: _cardColor,
-                              ),
-                              child: Icon(
-                                Icons.photo_camera,
-                                size: _cardSize,
-                              ),
+                                    color: _cardColor,
+                                  ),
+                                  child: Icon(
+                                    Icons.payments,
+                                    size: _cardSize,
+                                  ),
+                                ),
+                                Container(
+                                  height: _cardHeight,
+                                  width: _cardWidth,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(_cardBorderRadius),
+                                    color: _cardColor,
+                                  ),
+                                  child: Icon(
+                                    Icons.image,
+                                    size: _cardSize,
+                                  ),
+                                ),
+                                Container(
+                                  height: _cardHeight,
+                                  width: _cardWidth,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(_cardBorderRadius),
+                                    color: _cardColor,
+                                  ),
+                                  child: Icon(
+                                    Icons.image,
+                                    size: _cardSize,
+                                  ),
+                                ),
+                                Container(
+                                  height: _cardHeight,
+                                  width: _cardWidth,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(_cardBorderRadius),
+                                    color: _cardColor,
+                                  ),
+                                  child: Icon(
+                                    Icons.image,
+                                    size: _cardSize,
+                                  ),
+                                )
+                              ],
                             ),
-                            Container(
-                              height: _cardHeight,
-                              width: _cardWidth,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
-                                color: _cardColor,
-                              ),
-                              child: Icon(
-                                Icons.settings_phone,
-                                size: _cardSize,
-                              ),
-                            ),
-                            Container(
-                              height: _cardHeight,
-                              width: _cardWidth,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
-                                color: _cardColor,
-                              ),
-                              child: Icon(
-                                Icons.pin_drop,
-                                size: _cardSize,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Container(
-                              height: _cardHeight,
-                              width: _cardWidth,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
-                                color: _cardColor,
-                              ),
-                              child: Icon(
-                                Icons.payments,
-                                size: _cardSize,
-                              ),
-                            ),
-                            Container(
-                              height: _cardHeight,
-                              width: _cardWidth,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
-                                color: _cardColor,
-                              ),
-                              child: Icon(
-                                Icons.image,
-                                size: _cardSize,
-                              ),
-                            ),
-                            Container(
-                              height: _cardHeight,
-                              width: _cardWidth,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
-                                color: _cardColor,
-                              ),
-                              child: Icon(
-                                Icons.image,
-                                size: _cardSize,
-                              ),
-                            ),
-                            Container(
-                              height: _cardHeight,
-                              width: _cardWidth,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
-                                color: _cardColor,
-                              ),
-                              child: Icon(
-                                Icons.image,
-                                size: _cardSize,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
+                          ),
+                        ],
+                      );
+                    },
+                    itemCount:2,//轮播页数
+                    pagination: SwiperPagination(),//底部小圆点
+                    // control: SwiperControl(),//左右按钮
+                    viewportFraction: 1,//小于1时可以预览下一页和上一页
+                    scale: 0.9,
                   ),
                 ),
               ),
-              // maintainSize: true,
-              // maintainAnimation: true,
               maintainState: true,
               visible: _buttonShow,
             ),

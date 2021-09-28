@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'page/HomeScreen.dart';
+import 'page/LoginScreen.dart';
 import 'page/MailScreen.dart';
 import 'page/PersonScreen.dart';
 import 'page/ToolsScreen.dart';
@@ -17,10 +18,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         splashColor: Colors.transparent, //去掉水波纹效果
       ),
-      home: ScaffoldRoute(),
+      home: LoginPage(),
       routes: {
         "chat_page": (context) => ChatPage(),
         "friends_page": (context) => Friends(),
+        "home": (context) => ScaffoldRoute(),
       },
     );
   }
@@ -135,25 +137,25 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          // backgroundColor: _backgroundColor,
-          title: _title,
-          actions: <Widget>[
-            //控制右上角按钮的显示
-            Visibility(
-              child: IconButton(
-                  onPressed: () async {
-                    await _rightEvent();
-                  },
-                  icon: _rightIcon),
-              maintainSize: true,
-              maintainAnimation: true,
-              maintainState: true,
-              visible: _rightCtrl,
-            ),
-          ], //右上角分享图标
-          /* bottom: TabBar(
+      appBar: AppBar(
+        centerTitle: true,
+        // backgroundColor: _backgroundColor,
+        title: _title,
+        actions: <Widget>[
+          //控制右上角按钮的显示
+          Visibility(
+            child: IconButton(
+                onPressed: () async {
+                  await _rightEvent();
+                },
+                icon: _rightIcon),
+            maintainSize: true,
+            maintainAnimation: true,
+            maintainState: true,
+            visible: _rightCtrl,
+          ),
+        ], //右上角分享图标
+        /* bottom: TabBar(
           //生成顶部Tab菜单
           controller: _tabController,
           tabs: tabs
@@ -162,43 +164,42 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
                   ))
               .toList(),
         ), */
-          leading: Builder(builder: (context) {
-            return IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: Icon(
-                Icons.dashboard,
-                color: Colors.white,
-              ),
-            );
-          }),
-        ),
-        drawer: new MyDrawer(),
-        bottomNavigationBar: BottomNavigationBar(
-          // showSelectedLabels: true, //选中才显示文字
-          showUnselectedLabels: true,
-          unselectedItemColor: Color.fromRGBO(100, 102, 102, 1.0),
-          backgroundColor: Colors.blue,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.chat), label: "微信"),
-            BottomNavigationBarItem(icon: Icon(Icons.mail), label: "通信录"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.adjust_sharp), label: "发现"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "我"),
-          ],
-          currentIndex: _selectedIndex,
-          //items的index
-          fixedColor: Colors.blue,
-          onTap: _onItemTapped, //底部菜单点击事件
-        ),
-        floatingActionButton: FloatingActionButton(
-          //悬浮按钮
-          child: Icon(Icons.add),
-          onPressed: _rightEvent,
-        ),
-        body: list[_selectedIndex],
-      );
+        leading: Builder(builder: (context) {
+          return IconButton(
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+            icon: Icon(
+              Icons.dashboard,
+              color: Colors.white,
+            ),
+          );
+        }),
+      ),
+      drawer: new MyDrawer(),
+      bottomNavigationBar: BottomNavigationBar(
+        // showSelectedLabels: true, //选中才显示文字
+        showUnselectedLabels: true,
+        unselectedItemColor: Color.fromRGBO(100, 102, 102, 1.0),
+        backgroundColor: Colors.blue,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "微信"),
+          BottomNavigationBarItem(icon: Icon(Icons.mail), label: "通信录"),
+          BottomNavigationBarItem(icon: Icon(Icons.adjust_sharp), label: "发现"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "我"),
+        ],
+        currentIndex: _selectedIndex,
+        //items的index
+        fixedColor: Colors.blue,
+        onTap: _onItemTapped, //底部菜单点击事件
+      ),
+      floatingActionButton: FloatingActionButton(
+        //悬浮按钮
+        child: Icon(Icons.add),
+        onPressed: _rightEvent,
+      ),
+      body: list[_selectedIndex],
+    );
   }
 
 //右上角点击事件
