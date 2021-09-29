@@ -4,6 +4,7 @@ import 'page/HomeScreen.dart';
 import 'page/LoginScreen.dart';
 import 'page/MailScreen.dart';
 import 'page/PersonScreen.dart';
+import 'page/ScanPage.dart';
 import 'page/ToolsScreen.dart';
 import 'route/Chatting.dart';
 import 'page/MyDrawer.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         "chat_page": (context) => ChatPage(),
         "friends_page": (context) => Friends(),
         "home": (context) => ScaffoldRoute(),
+        "scan_page":(context)=>ScanPage(),
       },
     );
   }

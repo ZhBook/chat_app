@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import 'ScanPage.dart';
 
 class ToolsScreen extends StatelessWidget {
   const ToolsScreen({Key? key}) : super(key: key);
@@ -58,39 +61,44 @@ class ToolsScreen extends StatelessWidget {
                 ]),
               ),
             ),
-            Container(
-              padding: _padding,
-              color: Colors.white,
-              height: 50,
-              margin: EdgeInsets.only(top: 10.0),
-              child: Row(children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    child: Icon(
-                      Icons.search,
-                      size: 30,
-                      color: Colors.blue,
+            GestureDetector(
+              onTap: (){
+                Navigator.of(context).pushNamed("scan_page");
+              },
+              child: Container(
+                padding: _padding,
+                color: Colors.white,
+                height: 50,
+                margin: EdgeInsets.only(top: 10.0),
+                child: Row(children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Icon(
+                        Icons.search,
+                        size: 30,
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: Container(
-                    child: Text("扫一扫"),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 15,
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      child: Text("扫一扫"),
                     ),
                   ),
-                ),
-              ]),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 15,
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
             ),
 //摇一摇
             Container(

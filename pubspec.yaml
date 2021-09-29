@@ -32,6 +32,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   keyboard_visibility: any
   flutter_swiper: ^1.1.6
+  scan: ^1.4.3
+  images_picker: ^1.2.4
+  permission_handler: ^8.1.6
 
 dev_dependencies:
   flutter_test:
