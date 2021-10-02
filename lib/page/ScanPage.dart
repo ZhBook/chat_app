@@ -1,14 +1,11 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:scan/scan.dart';
 import 'package:images_picker/images_picker.dart';
+import 'package:scan/scan.dart';
 
 class ScanPage extends StatefulWidget {
-
   @override
   _ScanPageState createState() => _ScanPageState();
 }
@@ -44,12 +41,43 @@ class _ScanPageState extends State<ScanPage> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('扫一扫'),
         ),
-        body: Column(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: FloatingActionButton(
+            child: Icon(
+              Icons.image_outlined,
+              color: Colors.white70,
+              size: 40,
+            ),
+            onPressed: () async {
+              List<Media>? res = await ImagesPicker.pick();
+              if (res != null) {
+                String? str = await Scan.parse(res[0].path);
+                if (str != null) {
+                  setState(() {
+                    qrcode = str;
+                  });
+                }
+              }
+            },
+            backgroundColor: Colors.white70),
+        body: Container(
+          child: ScanView(
+            controller: controller,
+            scanAreaScale: .7,
+            scanLineColor: Colors.green.shade400,
+            onCapture: (data) {
+              setState(() {
+                qrcode = data;
+              });
+            },
+          ),
+        ),
+        /*Column(
           children: [
-            Text('Running on: $_platformVersion\n'),
-            Wrap(
+            // Text('Running on: $_platformVersion\n'),
+          */ /*  Wrap(
               children: [
                 ElevatedButton(
                   child: Text("toggleTorchMode"),
@@ -74,7 +102,7 @@ class _ScanPageState extends State<ScanPage> {
                   onPressed: () async {
                     List<Media>? res = await ImagesPicker.pick();
                     if (res != null) {
-                      String? str = await Scan.parse(res[0].path!);
+                      String? str = await Scan.parse(res[0].path);
                       if (str != null) {
                         setState(() {
                           qrcode = str;
@@ -84,10 +112,10 @@ class _ScanPageState extends State<ScanPage> {
                   },
                 ),
               ],
-            ),
+            ),*/ /*
             Container(
-              width: 220,
-              height: 400,
+              // width: 220,
+              // height: 400,
               child: ScanView(
                 controller: controller,
                 scanAreaScale: .7,
@@ -101,7 +129,7 @@ class _ScanPageState extends State<ScanPage> {
             ),
             Text('scan result is $qrcode'),
           ],
-        ),
+        ),*/
       ),
     );
   }

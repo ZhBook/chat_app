@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,8 +12,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = new GlobalKey<FormState>();
 
-  String _userID = "";
-  String _password = "";
+  String _userID = "admin";
+  String _password = "123456";
   bool _isChecked = true;
   bool _isLoading = true;
   IconData _checkIcon = Icons.check_box;
@@ -70,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15.0, 10.0, 0.0, 0.0),
       child: new TextFormField(
+        initialValue: "admin",
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
@@ -90,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: EdgeInsets.fromLTRB(15.0, 10.0, 0.0, 0.0),
       child: TextFormField(
+        initialValue: "123456",
         maxLines: 1,
         obscureText: true,
         autofocus: false,

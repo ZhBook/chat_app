@@ -255,39 +255,45 @@ class PersonScreen extends StatelessWidget {
               ]),
             ),
 //设置
-            Container(
-              padding: _padding,
-              color: Colors.white,
-              height: 50,
-              margin: EdgeInsets.only(top: 10.0),
-              child: Row(children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    child: Icon(
-                      Icons.settings,
-                      size: 30,
-                      color: Colors.blue,
+            GestureDetector(
+              onTap: () {
+                print("设置按钮被点击了");
+                Navigator.of(context).pushNamed("setting_page");
+              },
+              child: Container(
+                padding: _padding,
+                color: Colors.white,
+                height: 50,
+                margin: EdgeInsets.only(top: 10.0),
+                child: Row(children: [
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      child: Icon(
+                        Icons.settings,
+                        size: 30,
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: Container(
-                    child: Text("设置"),
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 15,
+                  Expanded(
+                    flex: 4,
+                    child: Container(
+                      child: Text("设置"),
                     ),
                   ),
-                ),
-              ]),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      child: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 15,
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
             ),
           ],
         ),

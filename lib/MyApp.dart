@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'page/HomeScreen.dart';
 import 'page/LoginScreen.dart';
 import 'page/MailScreen.dart';
+import 'page/MyDrawer.dart';
 import 'page/PersonScreen.dart';
 import 'page/ScanPage.dart';
 import 'page/ToolsScreen.dart';
 import 'route/Chatting.dart';
-import 'page/MyDrawer.dart';
 import 'route/Friends.dart';
+import 'route/Setting.dart';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -21,10 +22,12 @@ class MyApp extends StatelessWidget {
       ),
       home: LoginPage(),
       routes: {
+        "login_page": (context) => LoginPage(),
         "chat_page": (context) => ChatPage(),
         "friends_page": (context) => Friends(),
         "home": (context) => ScaffoldRoute(),
-        "scan_page":(context)=>ScanPage(),
+        "scan_page": (context) => ScanPage(),
+        "setting_page": (context) => Setting(),
       },
     );
   }
@@ -195,11 +198,11 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
         fixedColor: Colors.blue,
         onTap: _onItemTapped, //底部菜单点击事件
       ),
-      floatingActionButton: FloatingActionButton(
+      /* floatingActionButton: FloatingActionButton(
         //悬浮按钮
         child: Icon(Icons.add),
         onPressed: _rightEvent,
-      ),
+      ),*/
       body: list[_selectedIndex],
     );
   }
