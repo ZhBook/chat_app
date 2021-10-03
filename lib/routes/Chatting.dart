@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -179,8 +177,8 @@ class _ChatScreenState extends State<ChatScreen>
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
+                                    borderRadius: BorderRadius.circular(
+                                        _cardBorderRadius),
                                     color: _cardColor,
                                   ),
                                   height: _cardHeight,
@@ -188,16 +186,16 @@ class _ChatScreenState extends State<ChatScreen>
                                   // color: _cardColor,
                                   child: Container(
                                       child: IconButton(
-                                        icon: Icon(Icons.photo_library),
-                                        onPressed: () {},
-                                      )),
+                                    icon: Icon(Icons.photo_library),
+                                    onPressed: () {},
+                                  )),
                                 ),
                                 Container(
                                   height: _cardHeight,
                                   width: _cardWidth,
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
+                                    borderRadius: BorderRadius.circular(
+                                        _cardBorderRadius),
                                     color: _cardColor,
                                   ),
                                   child: Icon(
@@ -209,8 +207,8 @@ class _ChatScreenState extends State<ChatScreen>
                                   height: _cardHeight,
                                   width: _cardWidth,
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
+                                    borderRadius: BorderRadius.circular(
+                                        _cardBorderRadius),
                                     color: _cardColor,
                                   ),
                                   child: Icon(
@@ -222,8 +220,8 @@ class _ChatScreenState extends State<ChatScreen>
                                   height: _cardHeight,
                                   width: _cardWidth,
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
+                                    borderRadius: BorderRadius.circular(
+                                        _cardBorderRadius),
                                     color: _cardColor,
                                   ),
                                   child: Icon(
@@ -243,8 +241,8 @@ class _ChatScreenState extends State<ChatScreen>
                                   height: _cardHeight,
                                   width: _cardWidth,
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
+                                    borderRadius: BorderRadius.circular(
+                                        _cardBorderRadius),
                                     color: _cardColor,
                                   ),
                                   child: Icon(
@@ -256,8 +254,8 @@ class _ChatScreenState extends State<ChatScreen>
                                   height: _cardHeight,
                                   width: _cardWidth,
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
+                                    borderRadius: BorderRadius.circular(
+                                        _cardBorderRadius),
                                     color: _cardColor,
                                   ),
                                   child: Icon(
@@ -269,8 +267,8 @@ class _ChatScreenState extends State<ChatScreen>
                                   height: _cardHeight,
                                   width: _cardWidth,
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
+                                    borderRadius: BorderRadius.circular(
+                                        _cardBorderRadius),
                                     color: _cardColor,
                                   ),
                                   child: Icon(
@@ -282,8 +280,8 @@ class _ChatScreenState extends State<ChatScreen>
                                   height: _cardHeight,
                                   width: _cardWidth,
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                    BorderRadius.circular(_cardBorderRadius),
+                                    borderRadius: BorderRadius.circular(
+                                        _cardBorderRadius),
                                     color: _cardColor,
                                   ),
                                   child: Icon(
@@ -297,10 +295,10 @@ class _ChatScreenState extends State<ChatScreen>
                         ],
                       );
                     },
-                    itemCount:2,//轮播页数
-                    pagination: SwiperPagination(),//底部小圆点
+                    itemCount: 2, //轮播页数
+                    pagination: SwiperPagination(), //底部小圆点
                     // control: SwiperControl(),//左右按钮
-                    viewportFraction: 1,//小于1时可以预览下一页和上一页
+                    viewportFraction: 1, //小于1时可以预览下一页和上一页
                     scale: 0.9,
                   ),
                 ),

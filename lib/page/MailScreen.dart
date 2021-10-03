@@ -56,7 +56,9 @@ class MailScreen extends StatelessWidget {
                               flex: 5,
                               child: Container(
                                 alignment: Alignment.centerLeft,
-                                child: Text("新的朋友",),
+                                child: Text(
+                                  "新的朋友",
+                                ),
                               ),
                             ),
                           ],
@@ -159,7 +161,12 @@ class MailScreen extends StatelessWidget {
                       ),
                       Container(
                         padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                        decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 0.5,color: Color.fromRGBO(157, 153, 153, 1.0)))),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    width: 0.5,
+                                    color:
+                                        Color.fromRGBO(157, 153, 153, 1.0)))),
                         height: 45,
                         child: Row(
                           children: [

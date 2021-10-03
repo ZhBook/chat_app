@@ -1,4 +1,6 @@
+import 'package:chat_app/common/Global.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'page/HomeScreen.dart';
 import 'page/LoginScreen.dart';
@@ -7,20 +9,29 @@ import 'page/MyDrawer.dart';
 import 'page/PersonScreen.dart';
 import 'page/ScanPage.dart';
 import 'page/ToolsScreen.dart';
-import 'route/Chatting.dart';
-import 'route/Friends.dart';
-import 'route/Setting.dart';
+import 'routes/Chatting.dart';
+import 'routes/Friends.dart';
+import 'routes/Setting.dart';
+import 'routes/UnknownRoute.dart';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    Global.init();
+
+    return GetMaterialApp(
       title: 'ChatApp',
       theme: ThemeData(
         splashColor: Colors.transparent, //去掉水波纹效果
       ),
       home: LoginPage(),
+      unknownRoute: GetPage(
+          page: () {
+            return UnknownRoute();
+          },
+          name: '/notfound'),
       routes: {
         "login_page": (context) => LoginPage(),
         "chat_page": (context) => ChatPage(),

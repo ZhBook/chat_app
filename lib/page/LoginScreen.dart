@@ -1,6 +1,11 @@
+import 'package:chat_app/common/Global.dart';
+import 'package:chat_app/common/Requests.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+
+import '../MyApp.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -22,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
     _formKey.currentState!.reset();
   }
 
-  void _onLogin() {
+  Future<void> _onLogin() async {
     final form = _formKey.currentState;
     form!.save();
     if (_userID == '') {
@@ -33,14 +38,18 @@ class _LoginPageState extends State<LoginPage> {
       _showMessageDialog("账户不能为空");
       return;
     }
-    if (_userID == "admin" && _password == "123456") {
-      _showMessageDialog("登陆成功");
-      Navigator.of(context).pushNamed("home");
-      return;
-    } else {
-      _showMessageDialog("密码错误");
-      return;
-    }
+    // Requests(context).getHttp();
+    Requests(context).login(_userID, _password).then((value) {
+      if (Global.profile.access_token != "") {
+        _showMessageDialog("登陆成功");
+        // Navigator.of(context).pushNamed("home");
+        Get.to(ScaffoldRoute());
+        return;
+      } else {
+        _showMessageDialog("登录失败");
+        return;
+      }
+    });
   }
 
   void _showMessageDialog(String message) {
@@ -89,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: EdgeInsets.fromLTRB(15.0, 10.0, 0.0, 0.0),
       child: TextFormField(
-        initialValue: "123456",
+        initialValue: "admin",
         maxLines: 1,
         obscureText: true,
         autofocus: false,

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-import 'ScanPage.dart';
 
 class ToolsScreen extends StatelessWidget {
   const ToolsScreen({Key? key}) : super(key: key);
@@ -22,7 +19,7 @@ class ToolsScreen extends StatelessWidget {
         child: new ListView(
           children: [
             GestureDetector(
-              onTap:() async {
+              onTap: () async {
                 print("点击了朋友圈");
                 await Navigator.of(context).pushNamed("friends_page");
               },
@@ -62,7 +59,7 @@ class ToolsScreen extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 Navigator.of(context).pushNamed("scan_page");
               },
               child: Container(

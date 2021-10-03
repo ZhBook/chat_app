@@ -33,17 +33,17 @@ class MyDrawer extends StatelessWidget {
                 ),
                 Expanded(
                     child: ListView(
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.add),
-                          title: const Text("Add account"),
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.settings),
-                          title: const Text("Manage Accounts"),
-                        )
-                      ],
-                    ))
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.add),
+                      title: const Text("Add account"),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.settings),
+                      title: const Text("Manage Accounts"),
+                    )
+                  ],
+                ))
               ],
             )),
       ),

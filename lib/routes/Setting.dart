@@ -1,5 +1,7 @@
+import 'package:chat_app/page/LoginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 class Setting extends StatelessWidget {
   const Setting({Key? key}) : super(key: key);
@@ -268,8 +270,9 @@ class _SettingPageState extends State<SettingPage> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    "login_page", (Route route) => false);
+                /* Navigator.of(context).pushNamedAndRemoveUntil(
+                    "login_page", (Route route) => false);*/
+                Get.offAll(LoginPage());
               },
               child: Center(
                 child: Container(

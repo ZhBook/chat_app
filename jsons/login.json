@@ -1,0 +1,11 @@
+{
+  "datas": {
+    "access_token": "68a40dc8-84c7-457e-a52d-3daf8250a451",
+    "token_type": "bearer",
+    "refresh_token": "e29afbcc-81a9-4a4f-9bad-181e098c1248",
+    "expires_in": 3599,
+    "scope": "app"
+  },
+  "resp_code": 0,
+  "resp_msg": ""
+}
