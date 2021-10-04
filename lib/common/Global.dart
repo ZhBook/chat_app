@@ -1,7 +1,7 @@
 // 提供五套可选主题色
 import 'dart:convert';
 
-import 'package:chat_app/common/Requests.dart';
+import 'package:chat_app/common/Request.dart';
 import 'package:chat_app/models/cacheConfig.dart';
 import 'package:chat_app/models/profile.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +33,7 @@ class Global {
   //初始化全局信息，会在APP启动时执行
   static Future init() async {
     //初始化网络请求相关配置
-    Requests.init();
+    Request.init();
 
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 

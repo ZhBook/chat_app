@@ -8,12 +8,12 @@ import 'package:flutter/widgets.dart';
 
 import 'Global.dart';
 
-class Requests {
+class Request {
   String basic = 'Basic d2ViQXBwOndlYkFwcA==';
 
   // 在网络请求过程中可能会需要使用当前的context信息，比如在请求失败时
   // 打开一个新路由，而打开新路由需要context信息。
-  Requests(this.context) {
+  Request(this.context) {
     _options =
         Options(extra: {"context": context}, headers: {"Authorization": basic});
   }

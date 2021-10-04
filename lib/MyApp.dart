@@ -1,7 +1,7 @@
-import 'package:chat_app/common/Global.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'common/Global.dart';
 import 'page/HomeScreen.dart';
 import 'page/LoginScreen.dart';
 import 'page/MailScreen.dart';

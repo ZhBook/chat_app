@@ -1,5 +1,5 @@
 import 'package:chat_app/common/Global.dart';
-import 'package:chat_app/common/Requests.dart';
+import 'package:chat_app/common/Request.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -35,18 +35,16 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     if (_password == '') {
-      _showMessageDialog("账户不能为空");
+      _showMessageDialog("密码不能为空");
       return;
     }
-    // Requests(context).getHttp();
-    Requests(context).login(_userID, _password).then((value) {
+    Request(context).login(_userID, _password).then((value) {
       if (Global.profile.access_token != "") {
-        _showMessageDialog("登陆成功");
         // Navigator.of(context).pushNamed("home");
         Get.to(ScaffoldRoute());
         return;
       } else {
-        _showMessageDialog("登录失败");
+        _showMessageDialog(value.resp_msg);
         return;
       }
     });
