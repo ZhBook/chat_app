@@ -1,5 +1,6 @@
 import 'package:chat_app/common/Global.dart';
 import 'package:chat_app/common/Request.dart';
+import 'package:chat_app/routes/Register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -202,6 +203,41 @@ class _LoginPageState extends State<LoginPage> {
                                 decoration: TextDecoration.underline))
                       ]),
                 ))
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(right: 35),
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: OutlinedButton(
+                    onPressed: () {},
+                    child: Text(
+                      "找回密码",
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
+                  ),
+                ),
+                OutlinedButton(
+                    onPressed: () {
+                      Get.to(Register());
+                    },
+                    child: Text(
+                      "注册账号",
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    )),
               ],
             ),
           )

@@ -46,7 +46,7 @@ class Request {
       };
     };
     // 在调试模式下需要抓包调试，所以我们使用代理，并禁用HTTPS证书校验
-    if (!Global.isRelease) {
+    /*if (!Global.isRelease) {
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (client) {
         client.findProxy = (uri) {
@@ -56,12 +56,13 @@ class Request {
         client.badCertificateCallback =
             (X509Certificate cert, String host, int port) => true;
       };
-    }
+    }*/
     // 添加缓存插件
-    // dio.interceptors.add(Global.netCache);
+    dio.interceptors.add(Global.netCache);
     // 设置用户token（可能为null，代表未登录）
-    dio.options.headers[HttpHeaders.authorizationHeader] =
-        Global.profile.access_token;
+    dio.options.headers.addAll({
+      "access_token": Global.profile.access_token,
+    });
   }
 
   // 登录接口，登录成功后返回用户信息
@@ -99,15 +100,6 @@ class Request {
     return login;
   }
 
-  void getHttp() async {
-    try {
-      var response = await Dio().get('http://www.baidu.com');
-      print(response);
-      return response.data;
-    } catch (e) {
-      print(e);
-    }
-  }
 /*  //获取用户项目列表
   Future<List<Repo>> getRepos(
       {Map<String, dynamic> queryParameters, //query参数，用于接收分页信息
