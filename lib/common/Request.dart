@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:chat_app/models/login.dart';
@@ -22,15 +21,13 @@ class Request {
   Options _options = new Options();
 
   static var dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.1.104:9900/api-auth/',
+    baseUrl: 'http://192.168.1.104:8008/',
     connectTimeout: 5000,
     receiveTimeout: 100000,
     // 5s
     headers: {
       HttpHeaders.userAgentHeader: 'dio',
       HttpHeaders.authorizationHeader: 'Basic d2ViQXBwOndlYkFwcA==',
-      'api': '1.0.0',
-      'access_token': '',
     },
     contentType: Headers.jsonContentType,
     // Transform the response data to a String encoded with UTF8.
@@ -68,35 +65,40 @@ class Request {
   // 登录接口，登录成功后返回用户信息
   Future<Login> login(String username, String pwd) async {
     Login login = new Login();
-    var response = await dio.post("oauth/token", queryParameters: {
-      'grant_type': 'password',
-      'username': username,
-      'password': pwd,
-    });
-    print(response.data);
-    //登录成功后更新公共头（authorization），此后的所有请求都会带上用户身份信息
-    Map<String, dynamic> responseData = jsonDecode(response.data);
-    login = Login.fromJson(responseData);
-
-    print(login.resp_code);
-    // response.data.options.headers[HttpHeaders.authorizationHeader] = basic;
-    if (login.resp_code == 0) {
-      //清空所有缓存
-      Global.netCache.cache.clear();
-      //更新profile中的token信息
-      Global.profile.token_type = login.datas["token_type"];
-      Global.profile.access_token = login.datas["access_token"];
-      Global.profile.expires_in = login.datas["expires_in"];
-      Global.profile.refresh_token = login.datas["refresh_token"];
-      Global.profile.scope = login.datas["scope"];
-      dio.options.headers.addAll({
-        "access_token": login.datas["token_type"],
+    try {
+      var response = await dio.post("oauth/token", queryParameters: {
+        'grant_type': 'password',
+        'username': username,
+        'password': pwd,
       });
+      print(response.data);
+      //登录成功后更新公共头（authorization），此后的所有请求都会带上用户身份信息
+      // Map<String, dynamic> responseData = jsonDecode(response.);
+      // login = Login.fromJson(responseData);
+      print(login.resp_code);
+      // response.data.options.headers[HttpHeaders.authorizationHeader] = basic;
+      if (login.resp_code == 0) {
+        //清空所有缓存
+        Global.netCache.cache.clear();
+        //更新profile中的token信息
+        Global.profile.token_type = login.datas["token_type"];
+        Global.profile.access_token = login.datas["access_token"];
+        Global.profile.expires_in = login.datas["expires_in"];
+        Global.profile.refresh_token = login.datas["refresh_token"];
+        Global.profile.scope = login.datas["scope"];
+        dio.options.headers.addAll({
+          HttpHeaders.authorizationHeader:
+              "Bearer " + login.datas["access_token"],
+        });
 
-      // return User.fromJson(response.data);
-      print("这是输出的内容：" + Global.profile.toString());
-      return login;
+        // return User.fromJson(response.data);
+        print("这是输出的内容：" + Global.profile.toString());
+        return login;
+      }
+    } on DioError catch (e) {
+      print(e.response);
     }
+
     return login;
   }
 

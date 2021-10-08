@@ -18,8 +18,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = new GlobalKey<FormState>();
 
-  String _userID = "admin";
-  String _password = "123456";
+  String _userID = "123";
+  String _password = "123";
   bool _isChecked = true;
   bool _isLoading = true;
   IconData _checkIcon = Icons.check_box;
@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
         Get.to(ScaffoldRoute());
         return;
       } else {
-        _showMessageDialog(value.resp_msg);
+        _showMessageDialog("35156456");
         return;
       }
     });
