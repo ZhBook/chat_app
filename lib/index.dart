@@ -14,7 +14,7 @@ import 'routes/Friends.dart';
 import 'routes/Setting.dart';
 import 'routes/UnknownRoute.dart';
 
-class MyApp extends StatelessWidget {
+class Index extends StatelessWidget {
   // This widget is the root of your application.
 
   @override

@@ -7,24 +7,28 @@ part of 'user.dart';
 // **************************************************************************
 
 User _$UserFromJson(Map<String, dynamic> json) => User()
-  ..login = json['login'] as String
-  ..avatar_url = json['avatar_url'] as String
-  ..type = json['type'] as String
-  ..name = json['name'] as String
-  ..location = json['location'] as String
+  ..id = json['id'] as num
+  ..username = json['username'] as String
+  ..password = json['password'] as String
+  ..headImgUrl = json['headImgUrl'] as String
+  ..phone = json['phone'] as String
+  ..sex = json['sex'] as num
+  ..address = json['address'] as String
+  ..createTime = json['createTime'] as String
+  ..isDelete = json['isDelete'] as num
   ..email = json['email'] as String
-  ..bio = json['bio'] as String
-  ..created_at = json['created_at'] as String
-  ..updated_at = json['updated_at'] as String;
+  ..login = json['login'] as String;
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
-      'login': instance.login,
-      'avatar_url': instance.avatar_url,
-      'type': instance.type,
-      'name': instance.name,
-      'location': instance.location,
+      'id': instance.id,
+      'username': instance.username,
+      'password': instance.password,
+      'headImgUrl': instance.headImgUrl,
+      'phone': instance.phone,
+      'sex': instance.sex,
+      'address': instance.address,
+      'createTime': instance.createTime,
+      'isDelete': instance.isDelete,
       'email': instance.email,
-      'bio': instance.bio,
-      'created_at': instance.created_at,
-      'updated_at': instance.updated_at,
+      'login': instance.login,
     };

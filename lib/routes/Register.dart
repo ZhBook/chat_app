@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:chat_app/common/Request.dart';
+import 'package:chat_app/models/index.dart';
+import 'package:chat_app/models/user.dart';
+import 'package:chat_app/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -20,11 +24,30 @@ class _RegisterState extends State<Register> {
   final ImagePicker _picker = ImagePicker();
   bool _isChecked = true;
   IconData _checkIcon = Icons.check_box;
+  User user = new User();
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+
+  void _formSubmitted() {
+    var _form = _formKey.currentState;
+    if (_form!.validate()) {
+      _form.save();
+      user.id = 0;
+      Request(context).register(user).then((value) {
+        if (value.code == 200) {
+          Get.back();
+          return Utils.showMessageDialog(value.msg, context);
+        }
+        return Utils.showMessageDialog(value.msg, context);
+      }).catchError((onError) {
+        print(onError.response.data);
+        Utils.showMessageDialog(onError.response.data["msg"], context);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.miniStartTop,
       floatingActionButton: IconButton(
@@ -83,6 +106,7 @@ class _RegisterState extends State<Register> {
                 Expanded(
                   flex: 4,
                   child: Form(
+                    key: _formKey,
                     autovalidateMode: AutovalidateMode.always,
                     child: SizedBox(
                       width: double.maxFinite,
@@ -105,7 +129,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 label: Text("昵称"),
                               ),
-                              onSaved: (value) => {},
+                              onSaved: (value) => {user.username = value!},
                             ),
                           ),
                           Padding(
@@ -144,7 +168,7 @@ class _RegisterState extends State<Register> {
                                 prefixText: "+86 ",
                                 label: Text("手机号"),
                               ),
-                              onSaved: (value) => {},
+                              onSaved: (value) => {user.phone = value!},
                             ),
                           ),
                           Padding(
@@ -163,7 +187,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 label: Text("密码"),
                               ),
-                              onSaved: (value) => {},
+                              onSaved: (value) => {user.password = value!},
                             ),
                           )
                         ],
@@ -219,7 +243,9 @@ class _RegisterState extends State<Register> {
                   alignment: Alignment.bottomCenter,
                   padding: EdgeInsets.only(bottom: 40),
                   child: OutlinedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _formSubmitted();
+                    },
                     child: Text(
                       "注册",
                       style: TextStyle(color: Colors.black54),

@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:chat_app/models/login.dart';
-import 'package:dio/adapter.dart';
+import 'package:chat_app/models/result.dart';
+import 'package:chat_app/models/user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 
@@ -21,13 +22,14 @@ class Request {
   Options _options = new Options();
 
   static var dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.1.104:8008/',
+    baseUrl: 'http://192.168.3.135:8008/',
     connectTimeout: 5000,
     receiveTimeout: 100000,
     // 5s
     headers: {
       HttpHeaders.userAgentHeader: 'dio',
       HttpHeaders.authorizationHeader: 'Basic d2ViQXBwOndlYkFwcA==',
+      'api': '1.0.0',
     },
     contentType: Headers.jsonContentType,
     // Transform the response data to a String encoded with UTF8.
@@ -36,12 +38,12 @@ class Request {
   ));
 
   static void init() {
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    /*(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.findProxy = (uri) {
-        return "PROXY 192.168.1.104:8888";
+        return "PROXY 192.168.3.135:8888";
       };
-    };
+    };*/
     // 在调试模式下需要抓包调试，所以我们使用代理，并禁用HTTPS证书校验
     /*if (!Global.isRelease) {
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -55,40 +57,44 @@ class Request {
       };
     }*/
     // 添加缓存插件
-    dio.interceptors.add(Global.netCache);
+    // dio.interceptors.add(Global.netCache);
     // 设置用户token（可能为null，代表未登录）
-    dio.options.headers.addAll({
+    /*dio.options.headers.addAll({
       "access_token": Global.profile.access_token,
-    });
+    });*/
   }
 
   // 登录接口，登录成功后返回用户信息
   Future<Login> login(String username, String pwd) async {
     Login login = new Login();
     try {
-      var response = await dio.post("oauth/token", queryParameters: {
-        'grant_type': 'password',
-        'username': username,
-        'password': pwd,
-      });
+      var response = await dio.post(
+        "oauth/token",
+        queryParameters: {
+          'grant_type': 'password',
+          'username': username,
+          'password': pwd,
+        },
+        options: Options(responseType: ResponseType.json),
+      );
       print(response.data);
       //登录成功后更新公共头（authorization），此后的所有请求都会带上用户身份信息
       // Map<String, dynamic> responseData = jsonDecode(response.);
-      // login = Login.fromJson(responseData);
-      print(login.resp_code);
+      login = Login.fromJson(response.data);
+      print(login.code);
       // response.data.options.headers[HttpHeaders.authorizationHeader] = basic;
-      if (login.resp_code == 0) {
+      if (login.code == 200) {
         //清空所有缓存
         Global.netCache.cache.clear();
         //更新profile中的token信息
-        Global.profile.token_type = login.datas["token_type"];
-        Global.profile.access_token = login.datas["access_token"];
-        Global.profile.expires_in = login.datas["expires_in"];
-        Global.profile.refresh_token = login.datas["refresh_token"];
-        Global.profile.scope = login.datas["scope"];
+        // Global.profile.token_type = login.data["token_type"];
+        Global.profile.access_token = login.data["access_token"];
+        Global.profile.expires_in = login.data["expires_in"];
+        Global.profile.refresh_token = login.data["refresh_token"];
+        Global.profile.scope = login.data["scope"];
         dio.options.headers.addAll({
           HttpHeaders.authorizationHeader:
-              "Bearer " + login.datas["access_token"],
+              "Bearer " + login.data["access_token"],
         });
 
         // return User.fromJson(response.data);
@@ -102,6 +108,20 @@ class Request {
     return login;
   }
 
+  Future<Result> register(User user) async {
+    var response = await dio.post(
+      "api-business/api/v1/users/register",
+      data: {
+        "username": user.username,
+        "password": user.password,
+        "phone": user.phone,
+      },
+      options: Options(responseType: ResponseType.json),
+    );
+    print(response.data);
+    Result result = Result.fromJson(response.data);
+    return result;
+  }
 /*  //获取用户项目列表
   Future<List<Repo>> getRepos(
       {Map<String, dynamic> queryParameters, //query参数，用于接收分页信息

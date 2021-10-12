@@ -25,3 +25,8 @@ samples, guidance on mobile development, and a full API reference.
 sudo arch -x86_64 gem install ffi
 arch -x86_64 pod install
 ``
+
+json文件生成
+``
+flutter packages pub run json_model
+``

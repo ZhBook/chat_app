@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - image_picker (0.0.1):
+    - Flutter
   - images_picker (0.0.1):
     - Flutter
     - ZLPhotoBrowser (= 4.1.5)
@@ -11,16 +13,20 @@ PODS:
   - Reachability (3.2)
   - scan (0.0.1):
     - Flutter
+  - shared_preferences (0.0.1):
+    - Flutter
   - ZLPhotoBrowser (4.1.5):
     - ZLPhotoBrowser/Core (= 4.1.5)
   - ZLPhotoBrowser/Core (4.1.5)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - images_picker (from `.symlinks/plugins/images_picker/ios`)
   - keyboard_visibility (from `.symlinks/plugins/keyboard_visibility/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - scan (from `.symlinks/plugins/scan/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
 
 SPEC REPOS:
   trunk:
@@ -30,6 +36,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   images_picker:
     :path: ".symlinks/plugins/images_picker/ios"
   keyboard_visibility:
@@ -38,14 +46,18 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler/ios"
   scan:
     :path: ".symlinks/plugins/scan/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   images_picker: 634f7663456c00364e7d1a16116c2cc2562ff50f
   keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   scan: aea35bb4aa59ccc8839c576a18cd57c7d492cc86
+  shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
   ZLPhotoBrowser: 809878607ea92e9411c580797ce1be23896b8d7f
 
 PODFILE CHECKSUM: 30517025a2fecca2d72dac25f08abb5b9a8f1a56

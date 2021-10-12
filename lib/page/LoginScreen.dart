@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-import '../MyApp.dart';
+import '../index.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -18,8 +18,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = new GlobalKey<FormState>();
 
-  String _userID = "123";
-  String _password = "123";
+  String username = "123";
+  String password = "123";
   bool _isChecked = true;
   bool _isLoading = true;
   IconData _checkIcon = Icons.check_box;
@@ -31,15 +31,15 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _onLogin() async {
     final form = _formKey.currentState;
     form!.save();
-    if (_userID == '') {
+    if (username == '') {
       _showMessageDialog("账户不能为空");
       return;
     }
-    if (_password == '') {
+    if (password == '') {
       _showMessageDialog("密码不能为空");
       return;
     }
-    Request(context).login(_userID, _password).then((value) {
+    Request(context).login(username, password).then((value) {
       if (Global.profile.access_token != "") {
         // Navigator.of(context).pushNamed("home");
         Get.to(ScaffoldRoute());
@@ -76,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15.0, 10.0, 0.0, 0.0),
       child: new TextFormField(
-        initialValue: "admin",
+        initialValue: "123",
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
               Icons.email,
               color: Colors.grey,
             )),
-        onSaved: (value) => _userID = value!.trim(),
+        onSaved: (value) => username = value!,
       ),
     );
   }
@@ -97,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: EdgeInsets.fromLTRB(15.0, 10.0, 0.0, 0.0),
       child: TextFormField(
-        initialValue: "admin",
+        initialValue: "123",
         maxLines: 1,
         obscureText: true,
         autofocus: false,
@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
               Icons.lock,
               color: Colors.grey,
             )),
-        onSaved: (value) => _password = value!.trim(),
+        onSaved: (value) => password = value!,
       ),
     );
   }
