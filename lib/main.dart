@@ -19,7 +19,6 @@ void main() {
       rootWidget: MyApp(),
       debugConfig: debugOptions,
       releaseConfig: releaseOptions);
-
   // runApp(MyApp());
 }
 
@@ -39,11 +38,14 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       /// STEP 3. Add navigator key from Catcher. It will be used to navigate user to report page or to show dialog.
       navigatorKey: Catcher.navigatorKey,
-      /*
-      supportedLocales: [
-        const Locale('zh', 'CN'),
-      ],
-      */
+/*      builder: (BuildContext context, Widget? widget) {
+        Catcher.addDefaultErrorWidget(
+            showStacktrace: true,
+            title: "Custom error title",
+            description: "Custom error description",
+            maxWidthForSmallMode: 150);
+        return widget;
+      },*/
       home: Scaffold(body: Index()),
     );
   }

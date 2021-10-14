@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
         Get.to(ScaffoldRoute());
         return;
       } else {
-        _showMessageDialog("35156456");
+        _showMessageDialog(value.msg);
         return;
       }
     });

@@ -1,7 +1,9 @@
+import 'package:chat_app/common/ProgressDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'common/Global.dart';
+import 'exception/UnknownRoute.dart';
 import 'page/HomeScreen.dart';
 import 'page/LoginScreen.dart';
 import 'page/MailScreen.dart';
@@ -12,7 +14,6 @@ import 'page/ToolsScreen.dart';
 import 'routes/Chatting.dart';
 import 'routes/Friends.dart';
 import 'routes/Setting.dart';
-import 'routes/UnknownRoute.dart';
 
 class Index extends StatelessWidget {
   // This widget is the root of your application.
@@ -66,6 +67,8 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
 
   //用于控制右上角图标的显示
   bool _rightCtrl = true;
+
+  bool _loading = false;
 
   //标题栏主题颜色
   // Color _backgroundColor = Color.fromRGBO(223, 224, 225, 1.0);
@@ -172,14 +175,14 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
           ),
         ], //右上角分享图标
         /* bottom: TabBar(
-          //生成顶部Tab菜单
-          controller: _tabController,
-          tabs: tabs
-              .map((e) => Tab(
-                    text: e,
-                  ))
-              .toList(),
-        ), */
+            //生成顶部Tab菜单
+            controller: _tabController,
+            tabs: tabs
+                .map((e) => Tab(
+                      text: e,
+                    ))
+                .toList(),
+          ), */
         leading: Builder(builder: (context) {
           return IconButton(
             onPressed: () {
@@ -210,11 +213,12 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
         onTap: _onItemTapped, //底部菜单点击事件
       ),
       /* floatingActionButton: FloatingActionButton(
-        //悬浮按钮
-        child: Icon(Icons.add),
-        onPressed: _rightEvent,
-      ),*/
-      body: list[_selectedIndex],
+          //悬浮按钮
+          child: Icon(Icons.add),
+          onPressed: _rightEvent,
+        ),*/
+      body: ProgressDialog(
+          loading: _loading, msg: '加载中', child: list[_selectedIndex]),
     );
   }
 
