@@ -1,5 +1,4 @@
-import 'package:chat_app/routes/Chatting.dart';
-import 'package:chat_app/utils/Utils.dart';
+import 'package:chat_app/common/utils/Utils.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 

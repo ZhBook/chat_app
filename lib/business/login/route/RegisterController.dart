@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:chat_app/common/Request.dart';
+import 'package:chat_app/common/network/impl/LoginRequest.dart';
+import 'package:chat_app/common/utils/Utils.dart';
 import 'package:chat_app/models/index.dart';
 import 'package:chat_app/models/user.dart';
-import 'package:chat_app/utils/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -20,6 +20,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   var _headPath;
+  final LoginRequest request = new LoginRequest();
 
   final ImagePicker _picker = ImagePicker();
   bool _isChecked = true;
@@ -32,7 +33,7 @@ class _RegisterState extends State<Register> {
     if (_form!.validate()) {
       _form.save();
       user.id = 0;
-      Request(context).register(user).then((value) {
+      request.register(user).then((value) {
         if (value.code == 200) {
           Get.back();
           return Utils.showMessageDialog(value.msg, context);

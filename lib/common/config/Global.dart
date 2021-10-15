@@ -1,13 +1,13 @@
 // 提供五套可选主题色
 import 'dart:convert';
 
-import 'package:chat_app/common/Request.dart';
+import 'package:chat_app/common/network/Request.dart';
 import 'package:chat_app/models/cacheConfig.dart';
 import 'package:chat_app/models/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'CacheObject.dart';
+import '../cache/CacheObject.dart';
 
 const _themes = <MaterialColor>[
   Colors.blue,

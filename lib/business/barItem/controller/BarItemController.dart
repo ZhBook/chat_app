@@ -1,19 +1,19 @@
-import 'package:chat_app/common/ProgressDialog.dart';
+import 'package:chat_app/common/utils/ProgressDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'common/Global.dart';
-import 'exception/UnknownRoute.dart';
-import 'page/HomeScreen.dart';
-import 'page/LoginScreen.dart';
-import 'page/MailScreen.dart';
-import 'page/MyDrawer.dart';
-import 'page/PersonScreen.dart';
-import 'page/ScanPage.dart';
-import 'page/ToolsScreen.dart';
-import 'routes/Chatting.dart';
-import 'routes/Friends.dart';
-import 'routes/Setting.dart';
+import '../../../common/config/Global.dart';
+import '../../../exception/UnknownRoute.dart';
+import '../../login/controller/LoginController.dart';
+import '../../login/route/DrawerController.dart';
+import '../../moments/controller/MomentController.dart';
+import '../route/ChattingController.dart';
+import '../route/ScanController.dart';
+import '../route/SettingController.dart';
+import 'HomeController.dart';
+import 'MailController.dart';
+import 'PersonController.dart';
+import 'ToolsController.dart';
 
 class Index extends StatelessWidget {
   // This widget is the root of your application.

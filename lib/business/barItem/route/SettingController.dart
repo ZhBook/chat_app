@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:chat_app/common/Global.dart';
-import 'package:chat_app/common/Request.dart';
-import 'package:chat_app/page/LoginScreen.dart';
+import 'package:chat_app/business/login/controller/LoginController.dart';
+import 'package:chat_app/common/config/Global.dart';
+import 'package:chat_app/common/network/Request.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -279,7 +279,7 @@ class _SettingPageState extends State<SettingPage> {
                 //清除数据
                 Global.netCache.cache.clear();
                 Request.dio.options.headers.addAll({
-                  HttpHeaders.authorizationHeader: "",
+                  HttpHeaders.authorizationHeader: Request.basic,
                 });
                 print("header: " + Request.dio.options.headers.toString());
                 Get.offAll(LoginPage());

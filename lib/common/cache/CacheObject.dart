@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:chat_app/common/Global.dart';
+import 'package:chat_app/common/config/Global.dart';
 import 'package:dio/dio.dart';
 
 class CacheObject {

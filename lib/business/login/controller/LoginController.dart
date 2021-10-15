@@ -1,12 +1,12 @@
-import 'package:chat_app/common/Global.dart';
-import 'package:chat_app/common/Request.dart';
-import 'package:chat_app/routes/Register.dart';
+import 'package:chat_app/business/login/route/RegisterController.dart';
+import 'package:chat_app/common/network/impl/LoginRequest.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
-import '../index.dart';
+import '../../barItem/controller/BarItemController.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -17,60 +17,13 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = new GlobalKey<FormState>();
+  final LoginRequest request = new LoginRequest();
 
   String username = "123";
   String password = "123";
   bool _isChecked = true;
   bool _isLoading = true;
   IconData _checkIcon = Icons.check_box;
-
-  void _changeFormToLogin() {
-    _formKey.currentState!.reset();
-  }
-
-  Future<void> _onLogin() async {
-    final form = _formKey.currentState;
-    form!.save();
-    if (username == '') {
-      _showMessageDialog("账户不能为空");
-      return;
-    }
-    if (password == '') {
-      _showMessageDialog("密码不能为空");
-      return;
-    }
-    Request(context).login(username, password).then((value) {
-      if (Global.profile.access_token != "") {
-        // Navigator.of(context).pushNamed("home");
-        Get.to(ScaffoldRoute());
-        return;
-      } else {
-        _showMessageDialog(value.msg);
-        return;
-      }
-    });
-  }
-
-  void _showMessageDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text('提示'),
-          content: new Text(message),
-          actions: <Widget>[
-            new ElevatedButton(
-              child: new Text("ok"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   Widget _showEmailInput() {
     return Padding(
@@ -243,6 +196,59 @@ class _LoginPageState extends State<LoginPage> {
           )
         ],
       ),
+    );
+  }
+
+  void _changeFormToLogin() {
+    _formKey.currentState!.reset();
+  }
+
+  /// 点击登陆按钮进行逻辑处理
+  Future<void> _onLogin() async {
+    final form = _formKey.currentState;
+    form!.save();
+    if (username == '') {
+      _showMessageDialog("账户不能为空");
+      return;
+    }
+    if (password == '') {
+      _showMessageDialog("密码不能为空");
+      return;
+    }
+    request.login(username, password).then((value) {
+      print(value.toJson());
+      if (value.code == 200) {
+        // Navigator.of(context).pushNamed("home");
+        Fluttertoast.showToast(msg: "登陆成功");
+        Get.to(ScaffoldRoute());
+        return;
+      } else {
+        _showMessageDialog("用户名或密码错误");
+        return;
+      }
+    }).catchError((onError) {
+      _showMessageDialog("服务器异常");
+    });
+  }
+
+  void _showMessageDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text('提示'),
+          content: new Text(message),
+          actions: <Widget>[
+            new ElevatedButton(
+              child: new Text("ok"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:catcher/catcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'index.dart';
+import 'business/barItem/controller/BarItemController.dart';
 
 void main() {
   CatcherOptions debugOptions = CatcherOptions(
@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       /// STEP 3. Add navigator key from Catcher. It will be used to navigate user to report page or to show dialog.
       navigatorKey: Catcher.navigatorKey,
-/*      builder: (BuildContext context, Widget? widget) {
+      /* builder: (BuildContext context, Widget? widget) {
         Catcher.addDefaultErrorWidget(
             showStacktrace: true,
             title: "Custom error title",
