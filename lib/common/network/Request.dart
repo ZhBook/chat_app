@@ -27,8 +27,6 @@ class Request {
       'api': '1.0.0',
     },
     contentType: Headers.jsonContentType,
-    // Transform the response data to a String encoded with UTF8.
-    // The default value is [ResponseType.JSON].
     responseType: ResponseType.plain,
   ));
 

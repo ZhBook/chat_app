@@ -8,6 +8,7 @@ class User {
 
   late num id;
   late String username;
+  late String nickname;
   late String password;
   late String headImgUrl;
   late String phone;

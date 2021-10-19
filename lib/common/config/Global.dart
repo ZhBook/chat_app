@@ -1,6 +1,7 @@
 // 提供五套可选主题色
 import 'dart:convert';
 
+import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/network/Request.dart';
 import 'package:chat_app/models/cacheConfig.dart';
 import 'package:chat_app/models/profile.dart';
@@ -34,6 +35,8 @@ class Global {
   static Future init() async {
     //初始化网络请求相关配置
     Request.init();
+
+    DBManage.initDB();
 
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 

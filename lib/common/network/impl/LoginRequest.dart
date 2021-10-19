@@ -61,7 +61,7 @@ class LoginRequest implements RequestAbstract {
     var response = await dio.post(
       "api-business/api/v1/users/register",
       data: {
-        "username": user.username,
+        "nickname": user.nickname,
         "password": user.password,
         "phone": user.phone,
       },

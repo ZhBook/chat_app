@@ -130,7 +130,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 label: Text("昵称"),
                               ),
-                              onSaved: (value) => {user.username = value!},
+                              onSaved: (value) => {user.nickname = value!},
                             ),
                           ),
                           Padding(

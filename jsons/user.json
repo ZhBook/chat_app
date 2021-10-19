@@ -1,6 +1,7 @@
 {
   "id": 5,
   "username": "123",
+  "nickname": "昵称",
   "password": "123",
   "headImgUrl": "http",
   "phone": "123123",
