@@ -27,11 +27,11 @@ class Request {
       'api': '1.0.0',
     },
     contentType: Headers.jsonContentType,
-    responseType: ResponseType.plain,
+    // responseType: ResponseType.plain,
   ));
 
   static void init() {
-    /*(dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    /* (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.findProxy = (uri) {
         return "PROXY 192.168.3.135:8888";

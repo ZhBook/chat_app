@@ -1,12 +1,11 @@
 // 提供五套可选主题色
 import 'dart:convert';
 
-import 'package:chat_app/common/database/DBManage.dart';
-import 'package:chat_app/common/network/Request.dart';
 import 'package:chat_app/models/cacheConfig.dart';
 import 'package:chat_app/models/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_logger/simple_logger.dart';
 
 import '../cache/CacheObject.dart';
 
@@ -25,6 +24,8 @@ class Global {
   // 网络缓存对象
   static NetCache netCache = NetCache();
 
+  static final log = SimpleLogger();
+
   // 可选的主题列表
   static List<MaterialColor> get themes => _themes;
 
@@ -33,11 +34,6 @@ class Global {
 
   //初始化全局信息，会在APP启动时执行
   static Future init() async {
-    //初始化网络请求相关配置
-    Request.init();
-
-    DBManage.initDB();
-
     Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
     final SharedPreferences prefs = await _prefs;

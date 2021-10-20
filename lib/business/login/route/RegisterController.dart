@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:chat_app/common/network/impl/LoginRequest.dart';
+import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/common/utils/Utils.dart';
 import 'package:chat_app/models/index.dart';
 import 'package:chat_app/models/user.dart';
@@ -20,7 +20,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   var _headPath;
-  final LoginRequest request = new LoginRequest();
+  final ApiImpl request = new ApiImpl();
 
   final ImagePicker _picker = ImagePicker();
   bool _isChecked = true;

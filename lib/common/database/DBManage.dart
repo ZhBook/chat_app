@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:chat_app/models/friend.dart';
+import 'package:simple_logger/simple_logger.dart';
 import 'package:sqflite/sqflite.dart';
 
 ///数据库管理类
@@ -7,19 +9,22 @@ class DBManage {
   static late Database db;
   static String databasesPath = "";
   static String database = "DB/chatApp.db";
+  static final log = SimpleLogger();
 
-  static Future<void> initDB() async {
-    databasesPath = await getDatabasesPath();
-    print(databasesPath);
-    db = await openDatabase(database, onCreate: _onCreate, version: 1);
+  static void initDB() {
+    getDatabasesPath().then((value) => databasesPath = value);
+    log.info(databasesPath);
+    openDatabase(database, onCreate: _onCreate, version: 1)
+        .then((value) => db = value);
   }
 
   //建表
   static Future<void> _onCreate(Database db, int version) async {
+    bool isTure = false;
     Future<bool> isExists = databaseExists(database);
-    bool isTure = isExists.asStream().isBroadcast;
-    print("结果是：" + isTure.toString());
-    if (isExists.asStream().isBroadcast) {
+    isExists.then((value) => isTure = value);
+    log.info("用户表user_info是否存在：" + isTure.toString());
+    if (isTure) {
       return;
     }
     String createSQL = '''
@@ -30,11 +35,12 @@ class DBManage {
     );
       ''';
     db.execute(createSQL);
-    print("创建成功");
+    log.info("用户表user_info创建成功");
   }
 
   //通过好友的username创建与其相关的聊天表
-  Future createFriendsMessageTable(String friendUsername) async {
+  static Future createFriendsMessageTable(String friendUsername) async {
+    log.info("开始创建好友聊天表，好友username:" + friendUsername);
     String createSQL = '''
     CREATE TABLE "chat_$friendUsername" ( 
       "id" TEXT(255) NOT NULL, "send_id" TEXT(255) NOT NULL,
@@ -43,22 +49,12 @@ class DBManage {
     PRIMARY KEY ("id", "send_id", "receive_id"));
       ''';
     db.execute(createSQL);
-  }
-
-  //创建用户信息表
-  Future createUserInfoTable() async {
-    String createSQL = '''
-    CREATE TABLE "user_info" (
-      "id" TEXT(255) NOT NULL, "username" TEXT(255), "nickname" TEXT(255),
-      "head_img_url" TEXT(255), "e_mail" TEXT(255), "mobile" TEXT(255),
-      "sex" TEXT(255), "address" TEXT(255), PRIMARY KEY ("id") 
-    );
-      ''';
-    db.execute(createSQL);
+    log.info("好友列表创建成功");
   }
 
   //创建好友信息表
-  Future createFriendsTable() async {
+  static Future createFriendsTable() async {
+    log.info("创建好友关系表");
     String createSQL = '''
     CREATE TABLE "user_relation" (
       "id" TEXT(255) NOT NULL, "user_id" TEXT(255) NOT NULL, "friend_id" TEXT(255) NOT NULL,
@@ -66,6 +62,14 @@ class DBManage {
     );
       ''';
     db.execute(createSQL);
+    log.info("好友关系表成功");
+  }
+
+  static Future<int> addFriends(List<Friend> list) async {
+    String sql = '''
+    INSERT INTO user_relation( id , user_id, friend_id, friend_name, friend_head_url) VALUES(?,?,?,?,?)
+    ''';
+    return db.rawInsert(sql, list);
   }
 
   Future query(Database db) async {
@@ -75,8 +79,8 @@ class DBManage {
       {'name': 'updated name', 'id': 1, 'value': 9876, 'num': 456.789},
       {'name': 'another name', 'id': 2, 'value': 12345678, 'num': 3.1416}
     ];
-    print(list);
-    print(expectedList);
+    log.info(list);
+    log.info(expectedList);
   }
 
   Future update(Database db) async {

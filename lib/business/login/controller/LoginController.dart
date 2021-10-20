@@ -1,5 +1,5 @@
 import 'package:chat_app/business/login/route/RegisterController.dart';
-import 'package:chat_app/common/network/impl/LoginRequest.dart';
+import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -17,7 +17,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = new GlobalKey<FormState>();
-  final LoginRequest request = new LoginRequest();
+  final ApiImpl request = new ApiImpl();
 
   String username = "123";
   String password = "123";
@@ -219,7 +219,9 @@ class _LoginPageState extends State<LoginPage> {
       print(value.toJson());
       if (value.code == 200) {
         // Navigator.of(context).pushNamed("home");
+
         Fluttertoast.showToast(msg: "登陆成功");
+
         Get.to(ScaffoldRoute());
         return;
       } else {

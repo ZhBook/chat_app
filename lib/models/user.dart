@@ -18,7 +18,7 @@ class User {
   late num isDelete;
   late String email;
   late String login;
-
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  
+  factory User.fromJson(Map<String,dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }

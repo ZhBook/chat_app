@@ -18,6 +18,7 @@ void main() {
   Catcher(
       rootWidget: MyApp(),
       debugConfig: debugOptions,
+      // enableLogger: true,
       releaseConfig: releaseOptions);
   // runApp(MyApp());
 }

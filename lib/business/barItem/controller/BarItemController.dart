@@ -1,8 +1,9 @@
+import 'package:chat_app/common/InitClass.dart';
+import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/common/utils/ProgressDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../common/config/Global.dart';
 import '../../../exception/UnknownRoute.dart';
 import '../../login/controller/LoginController.dart';
 import '../../login/route/DrawerController.dart';
@@ -20,7 +21,8 @@ class Index extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Global.init();
+    //初始化
+    InitClass.init();
 
     return GetMaterialApp(
       title: 'ChatApp',
@@ -82,9 +84,16 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
 
   @override
   void initState() {
+    final ApiImpl request = new ApiImpl();
+    var friends;
+    request.getFriends().then((value) {
+      friends = value;
+      print('friends:' + friends);
+    });
+
     list
       ..add(HomeScreen())
-      ..add(MailScreen())
+      ..add(MailScreen(list: friends))
       ..add(ToolsScreen())
       ..add(PersonScreen());
 
