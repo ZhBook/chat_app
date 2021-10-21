@@ -1,3 +1,4 @@
+import 'package:chat_app/business/barItem/route/ChattingController.dart';
 import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:flutter/material.dart';
@@ -210,8 +211,9 @@ class MailScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         print("点击了$friend");
-        await Navigator.of(context)
-            .pushNamed("chat_page", arguments: friend.friendName);
+        Get.to(ChatPage(), arguments: friend.id);
+        /*await Navigator.of(context)
+            .pushNamed("chat_page", arguments: friend.friendName);*/
       },
       child: Container(
         decoration: BoxDecoration(

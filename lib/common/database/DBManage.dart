@@ -51,21 +51,33 @@ class DBManage {
   //通过好友的username创建与其相关的聊天表
   static Future createFriendsMessageTable(String friendUsername) async {
     log.info("开始创建好友聊天表，好友username:" + friendUsername);
+    List<Map<String, dynamic>> result = await db.query("chat_$friendUsername");
+    if (result.isNotEmpty) {
+      return true;
+    }
     String createSQL = '''
-    CREATE TABLE "chat_$friendUsername" ( 
-      "id" TEXT(255) NOT NULL, "sendId" TEXT(255) NOT NULL,
-      "receiveId" TEXT(255) NOT NULL, "context" TEXT(255), "resourceUrl" TEXT(255),
-      "voice" TEXT(255), "isRevoke" TEXT(255), "createTime" TEXT(255),
-    PRIMARY KEY ("id", "sendId", "receiveIFd"));
+     CREATE TABLE "chat_$friendUsername" (
+        "id" INTEGER(100) NOT NULL,
+        "friendId" INTEGER(100) NOT NULL,
+        "receiveId" INTEGER(100) NOT NULL,
+        "context" TEXT(1000),
+        "url" TEXT(1000),
+        "type" integer(4),
+        "createTime" TEXT(255) NOT NULL,
+        "have_read" integer(4),
+        "state" TEXT(255),
+        PRIMARY KEY ("id", "friendId", "receiveId")
+      );
       ''';
     db.execute(createSQL);
-    log.info("好友列表创建成功");
+    log.info("$friendUsername聊天表创建成功");
   }
 
   ///添加好友列表
   static Future<bool> addFriends(List<Friend> list) async {
     Batch batch = db.batch();
     list.forEach((element) {
+      createFriendsMessageTable(element.friendId.toString());
       batch.insert("user_relation", element.toJson());
     });
     batch.commit();

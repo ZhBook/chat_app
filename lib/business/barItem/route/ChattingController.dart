@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:get/get.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 final ThemeData kIOSTheme = ThemeData(
@@ -23,6 +24,8 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //路由接收到的好友id
+    var friendId = Get.arguments;
     //获取路由参数
     var args = ModalRoute.of(context)!.settings.arguments;
     _friendName = args.toString();
@@ -62,13 +65,20 @@ class ChatMessage extends StatelessWidget {
           children: [
             Container(
               margin: const EdgeInsets.only(right: 16.0),
-              child: CircleAvatar(child: Text(_name[0])),
+              child: CircleAvatar(
+                  child: Center(
+                child: Text(
+                  _name[0],
+                  style: TextStyle(fontSize: 12),
+                ),
+              )),
             ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_name, style: Theme.of(context).textTheme.headline4),
+                  //好友昵称
+                  Text(_name, style: TextStyle(fontSize: 18)),
                   Container(
                     margin: const EdgeInsets.only(top: 5.0),
                     child: Text(text),
@@ -103,6 +113,9 @@ class _ChatScreenState extends State<ChatScreen>
   double _cardBorderRadius = 10;
   Color _extendButtonColor = Colors.black;
 
+  ScrollController _customController =
+      ScrollController(initialScrollOffset: 100);
+
   @protected
   void initState() {
     super.initState();
@@ -116,6 +129,9 @@ class _ChatScreenState extends State<ChatScreen>
         }
       },
     );
+    /*_customController.addListener(() {
+      print('当前位置：${_customController.position}');
+    });*/
   }
 
   @override
@@ -141,11 +157,18 @@ class _ChatScreenState extends State<ChatScreen>
                     this._focusNode.unfocus();
                   });
                 },
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(8.0),
-                  reverse: true,
-                  itemBuilder: (_, index) => _messages[index],
-                  itemCount: _messages.length,
+
+                ///聊天列表
+                child: CustomScrollView(
+                  reverse: false,
+                  controller: _customController,
+                  slivers: <Widget>[
+                    SliverFixedExtentList(
+                      delegate: SliverChildBuilderDelegate(_cellForRow,
+                          childCount: _messages.length),
+                      itemExtent: 80,
+                    )
+                  ],
                 ),
               ),
             ),
@@ -157,6 +180,7 @@ class _ChatScreenState extends State<ChatScreen>
               // decoration: BoxDecoration(color: Theme.of(context).cardColor),
               child: _buildTextComposer(),
             ),
+            //扩展功能
             Visibility(
               maintainAnimation: true,
               child: Container(
@@ -312,6 +336,7 @@ class _ChatScreenState extends State<ChatScreen>
     );
   }
 
+//默认功能：表情、输入框、发送、扩展
   Widget _buildTextComposer() {
     return IconTheme(
       data: IconThemeData(color: Theme.of(context).colorScheme.secondary),
@@ -324,15 +349,17 @@ class _ChatScreenState extends State<ChatScreen>
               children: [
                 //语音按钮
                 Flexible(
-                    flex: 1,
-                    child: GestureDetector(
-                      child: Container(
-                          padding: EdgeInsets.only(left: 5, right: 10),
-                          child: Icon(
-                            Icons.record_voice_over,
-                            color: Colors.black,
-                          )),
-                    )),
+                  flex: 1,
+                  child: GestureDetector(
+                    child: Container(
+                      padding: EdgeInsets.only(left: 5, right: 10),
+                      child: Icon(
+                        Icons.record_voice_over,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
                 //聊天输入框
                 Flexible(
                   flex: 7,
@@ -359,27 +386,29 @@ class _ChatScreenState extends State<ChatScreen>
                 Flexible(
                   flex: 1,
                   child: Container(
-                      // margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                      // Theme.of(context).platform == TargetPlatform.iOS
-                      child: IconButton(
-                    icon: const Icon(
-                      Icons.send,
-                      color: Colors.black,
+                    // margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                    // Theme.of(context).platform == TargetPlatform.iOS
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.send,
+                        color: Colors.black,
+                      ),
+                      onPressed: _isComposing
+                          ? () => _handleSubmitted(_textController.text)
+                          : null,
                     ),
-                    onPressed: _isComposing
-                        ? () => _handleSubmitted(_textController.text)
-                        : null,
-                  )),
+                  ),
                 ),
                 Flexible(
-                    flex: 1,
-                    child: GestureDetector(
-                      onTap: extendFunction,
-                      child: Icon(
-                        Icons.add_circle_outline,
-                        color: this._extendButtonColor,
-                      ),
-                    )),
+                  flex: 1,
+                  child: GestureDetector(
+                    onTap: extendFunction,
+                    child: Icon(
+                      Icons.add_circle_outline,
+                      color: this._extendButtonColor,
+                    ),
+                  ),
+                ),
               ],
             ),
           ],
@@ -400,8 +429,10 @@ class _ChatScreenState extends State<ChatScreen>
         vsync: this,
       ),
     );
+
+    ///TODO 处理发送的消息
     setState(() {
-      _messages.insert(0, message);
+      _messages.add(message);
     });
     _focusNode.requestFocus();
     message.animationController.forward();
@@ -425,5 +456,20 @@ class _ChatScreenState extends State<ChatScreen>
       _buttonShow = true;
       _extendButtonColor = Colors.blue;
     });
+  }
+
+  Widget _cellForRow(BuildContext context, int index) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.grey.shade300,
+            width: 1,
+          ),
+        ),
+      ),
+      padding: const EdgeInsets.all(8.0),
+      child: _messages[index],
+    );
   }
 }
