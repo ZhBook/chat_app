@@ -14,7 +14,7 @@ class DBManage {
   static void initDB() {
     getDatabasesPath().then((value) => databasesPath = value);
     log.info(databasesPath);
-    openDatabase(database, onCreate: _onCreate, version: 1)
+    openDatabase(database, onCreate: _onCreate, version: 5)
         .then((value) => db = value);
   }
 
@@ -27,15 +27,25 @@ class DBManage {
     if (isTure) {
       return;
     }
-    String createSQL = '''
+    String createUserInfoSQL = '''
     CREATE TABLE "user_info" (
       "id" TEXT(255) NOT NULL, "username" TEXT(255), "nickname" TEXT(255),
-      "head_img_url" TEXT(255), "e_mail" TEXT(255), "mobile" TEXT(255),
+      "headImgUrl" TEXT(1000), "EMail" TEXT(255), "mobile" TEXT(255),
       "sex" TEXT(255), "address" TEXT(255), PRIMARY KEY ("id") 
     );
       ''';
-    db.execute(createSQL);
-    log.info("用户表user_info创建成功");
+
+    String createRelationSQL = '''
+    CREATE TABLE "user_relation" (
+      "id" TEXT(255) NOT NULL, "userId" TEXT(255) NOT NULL, "friendId" TEXT(255) NOT NULL,
+      "friendName" TEXT(255), "friendHeadUrl" TEXT(1000), PRIMARY KEY ("id","userId","friendId")
+    );
+      ''';
+    Batch batch = db.batch();
+    batch.execute(createUserInfoSQL);
+    batch.execute(createRelationSQL);
+    batch.commit();
+    log.info("数据库表创建成功");
   }
 
   //通过好友的username创建与其相关的聊天表
@@ -43,33 +53,23 @@ class DBManage {
     log.info("开始创建好友聊天表，好友username:" + friendUsername);
     String createSQL = '''
     CREATE TABLE "chat_$friendUsername" ( 
-      "id" TEXT(255) NOT NULL, "send_id" TEXT(255) NOT NULL,
-      "receive_id" TEXT(255) NOT NULL, "context" TEXT(255), "resource_url" TEXT(255),
-      "voice" TEXT(255), "is_revoke" TEXT(255), "create_time" TEXT(255),
-    PRIMARY KEY ("id", "send_id", "receive_id"));
+      "id" TEXT(255) NOT NULL, "sendId" TEXT(255) NOT NULL,
+      "receiveId" TEXT(255) NOT NULL, "context" TEXT(255), "resourceUrl" TEXT(255),
+      "voice" TEXT(255), "isRevoke" TEXT(255), "createTime" TEXT(255),
+    PRIMARY KEY ("id", "sendId", "receiveIFd"));
       ''';
     db.execute(createSQL);
     log.info("好友列表创建成功");
   }
 
-  //创建好友信息表
-  static Future createFriendsTable() async {
-    log.info("创建好友关系表");
-    String createSQL = '''
-    CREATE TABLE "user_relation" (
-      "id" TEXT(255) NOT NULL, "user_id" TEXT(255) NOT NULL, "friend_id" TEXT(255) NOT NULL,
-      "friend_name" TEXT(255), "friend_head_url" TEXT(255), PRIMARY KEY ("id","user_id","friend_id")
-    );
-      ''';
-    db.execute(createSQL);
-    log.info("好友关系表成功");
-  }
-
-  static Future<int> addFriends(List<Friend> list) async {
-    String sql = '''
-    INSERT INTO user_relation( id , user_id, friend_id, friend_name, friend_head_url) VALUES(?,?,?,?,?)
-    ''';
-    return db.rawInsert(sql, list);
+  ///添加好友列表
+  static Future<bool> addFriends(List<Friend> list) async {
+    Batch batch = db.batch();
+    list.forEach((element) {
+      batch.insert("user_relation", element.toJson());
+    });
+    batch.commit();
+    return true;
   }
 
   Future query(Database db) async {

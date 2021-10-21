@@ -1,4 +1,5 @@
 import 'package:chat_app/business/login/route/RegisterController.dart';
+import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -219,9 +220,9 @@ class _LoginPageState extends State<LoginPage> {
       print(value.toJson());
       if (value.code == 200) {
         // Navigator.of(context).pushNamed("home");
-
+        Get.put(Controller());
+        Controller.to.getFriendList();
         Fluttertoast.showToast(msg: "登陆成功");
-
         Get.to(ScaffoldRoute());
         return;
       } else {

@@ -1,14 +1,14 @@
-import 'package:chat_app/common/utils/Utils.dart';
+import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MailScreen extends StatelessWidget {
-  const MailScreen({Key? key, required this.list}) : super(key: key);
-
-  final List<Friend> list;
+  const MailScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Get.put(Controller());
     return Scaffold(
       body: Container(
           child: CustomScrollView(
@@ -197,27 +197,16 @@ class MailScreen extends StatelessWidget {
           ),
           SliverFixedExtentList(
             delegate: SliverChildBuilderDelegate(_cellForRow,
-                childCount: list == null ? 0 : list.length),
+                childCount: Controller.to.friendList.length),
             itemExtent: 48.0,
           )
         ],
-      )
-
-          //   //控制每个container的边框
-          //   /* separatorBuilder: (BuildContext context, int index) {
-          //     return Divider(
-          //       height: 0.5,
-          //       indent: 16.0,
-          //       color: Colors.grey[300],
-          //     );
-          //   },*/
-
-          ),
+      )),
     );
   }
 
   Widget _cellForRow(BuildContext context, int index) {
-    Friend friend = list[index];
+    Friend friend = Controller.to.friendList[index];
     return GestureDetector(
       onTap: () async {
         print("点击了$friend");
@@ -225,18 +214,25 @@ class MailScreen extends StatelessWidget {
             .pushNamed("chat_page", arguments: friend.friendName);
       },
       child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Colors.grey.shade300,
+              width: 1,
+            ),
+          ),
+        ),
         padding: EdgeInsets.only(left: 10.0, right: 10.0),
         height: 45,
         child: Row(
           children: [
             Expanded(
               child: Container(
-                child: Icon(
-                  Icons.person_pin,
-                  size: 40,
-                  color: Utils.getRandomColor(),
-                ),
-              ),
+                  child: Image.network(
+                friend.friendHeadUrl,
+                height: 40,
+                width: 40,
+              )),
               flex: 1,
             ),
             Expanded(

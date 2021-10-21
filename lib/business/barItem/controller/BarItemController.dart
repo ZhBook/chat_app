@@ -1,5 +1,4 @@
 import 'package:chat_app/common/InitClass.dart';
-import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/common/utils/ProgressDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -84,16 +83,9 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
 
   @override
   void initState() {
-    final ApiImpl request = new ApiImpl();
-    var friends;
-    request.getFriends().then((value) {
-      friends = value;
-      print('friends:' + friends);
-    });
-
     list
       ..add(HomeScreen())
-      ..add(MailScreen(list: friends))
+      ..add(MailScreen())
       ..add(ToolsScreen())
       ..add(PersonScreen());
 
