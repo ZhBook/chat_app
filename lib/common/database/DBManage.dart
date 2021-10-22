@@ -82,8 +82,21 @@ class DBManage {
   ///添加好友列表
   static Future<bool> addFriends(List<Friend> list) async {
     Batch batch = db.batch();
-    list.forEach((element) {
+    list.forEach((element) async {
       createFriendsMessageTable(element.friendId.toString());
+      try {
+        var check = await db
+            .query("user_relation", where: "id", whereArgs: [element.id]);
+
+        ///todo 需要处理好友信息修改后的问题
+        if (check.isNotEmpty) {
+          return;
+        }
+      } catch (e) {
+        log.info("好友记录已存在：" + element.id.toString());
+      }
+
+      ///todo 好友关系已存在
       batch.insert("user_relation", element.toJson());
     });
     batch.commit();
