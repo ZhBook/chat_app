@@ -71,7 +71,7 @@ class ApiImpl implements Api {
       data: {
         "nickname": user.nickname,
         "password": user.password,
-        "phone": user.phone,
+        "phone": user.mobile,
       },
       options: Options(responseType: ResponseType.json),
     );
@@ -106,7 +106,10 @@ class ApiImpl implements Api {
       // var dataList = jsonDecode(jsonArray);
       List<Map<String, dynamic>> listMap =
           new List<Map<String, dynamic>>.from(data);
-      listMap.forEach((element) => list.add(Friend.fromJson(element)));
+      listMap.forEach((element) {
+        DBManage.createFriendsMessageTable(element["friendId"].toString());
+        list.add(Friend.fromJson(element));
+      });
       /*list = (jsonArray as List<dynamic>)
           .map((e) => Friend.fromJson((e as Map<String, dynamic>)))
           .toList();*/

@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "friendId": 1,
+  "receiveId":1,
+  "context": "",
+  "url": "",
+  "headImgUrl": "",
+  "type" : 0,
+  "createTime" : "2021-08-08",
+  "haveRead": 0,
+  "state": ""
+}

@@ -1,5 +1,6 @@
 import 'package:chat_app/business/barItem/route/ChattingController.dart';
 import 'package:chat_app/common/Controller.dart';
+import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -165,10 +166,13 @@ class MailScreen extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.only(left: 10.0, right: 10.0),
                     decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                                width: 0.5,
-                                color: Color.fromRGBO(157, 153, 153, 1.0)))),
+                      border: Border(
+                        bottom: BorderSide(
+                          width: 0.5,
+                          color: Color.fromRGBO(157, 153, 153, 1.0),
+                        ),
+                      ),
+                    ),
                     height: 45,
                     child: Row(
                       children: [
@@ -198,7 +202,9 @@ class MailScreen extends StatelessWidget {
           ),
           SliverFixedExtentList(
             delegate: SliverChildBuilderDelegate(_cellForRow,
-                childCount: Controller.to.friendList.length),
+                childCount: null == Controller.to.friendList
+                    ? 0
+                    : Controller.to.friendList.length),
             itemExtent: 48.0,
           )
         ],
@@ -211,7 +217,12 @@ class MailScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         print("点击了$friend");
-        Get.to(ChatPage(), arguments: friend.id);
+
+        ///调用本地数据查询聊天信息
+
+        var megs =
+            await DBManage.getMessages(friend.friendId.toString(), 0, 20);
+        Get.to(ChatPage(), arguments: [megs, friend]);
         /*await Navigator.of(context)
             .pushNamed("chat_page", arguments: friend.friendName);*/
       },

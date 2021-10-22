@@ -1,9 +1,21 @@
+import 'dart:async';
+
+import 'package:chat_app/common/database/DBManage.dart';
+import 'package:chat_app/common/utils/UserInfoUtils.dart';
+import 'package:chat_app/common/utils/Utils.dart';
+import 'package:chat_app/models/friend.dart';
+import 'package:chat_app/models/message.dart';
+import 'package:chat_app/models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
+
+import '../other/ReceivedMessageScreen.dart';
+import '../other/SendMessageScreen.dart';
 
 final ThemeData kIOSTheme = ThemeData(
   primarySwatch: Colors.blue,
@@ -16,79 +28,25 @@ final ThemeData kDefaultTheme = ThemeData(
       .copyWith(secondary: Colors.blue[400]),
 );
 
-String _name = 'Your Name';
+Friend _friend = new Friend();
+final List<Message> _messages = [];
 String _friendName = "Friend Name";
+
+///接收传递的参数
+///0：聊天记录
+///1：朋友信息
+final List arguments = [];
 
 class ChatPage extends StatelessWidget {
   const ChatPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //路由接收到的好友id
-    var friendId = Get.arguments;
-    //获取路由参数
-    var args = ModalRoute.of(context)!.settings.arguments;
-    _friendName = args.toString();
-
-    /* return MaterialApp(
-      title: _friendName,
-       theme: defaultTargetPlatform == TargetPlatform.iOS
-          ? kIOSTheme
-          : kDefaultTheme,
-      home: ChatScreen(),
-    );*/
     return Scaffold(
       appBar: AppBar(
         title: Text(_friendName),
       ),
       body: ChatScreen(),
-    );
-  }
-}
-
-class ChatMessage extends StatelessWidget {
-  const ChatMessage({required this.text, required this.animationController});
-
-  final String text;
-  final AnimationController animationController;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizeTransition(
-      sizeFactor:
-          CurvedAnimation(parent: animationController, curve: Curves.easeOut),
-      axisAlignment: 0.0,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(right: 16.0),
-              child: CircleAvatar(
-                  child: Center(
-                child: Text(
-                  _name[0],
-                  style: TextStyle(fontSize: 12),
-                ),
-              )),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //好友昵称
-                  Text(_name, style: TextStyle(fontSize: 18)),
-                  Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    child: Text(text),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -100,7 +58,6 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  final List<ChatMessage> _messages = [];
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _isComposing = false;
@@ -129,22 +86,27 @@ class _ChatScreenState extends State<ChatScreen>
         }
       },
     );
-    /*_customController.addListener(() {
-      print('当前位置：${_customController.position}');
-    });*/
+    scrollMsgBottom();
+    arguments.addAll(Get.arguments);
+    //初始化聊天信息
+    _messages.addAll(arguments[0]);
+    //初始化朋友信息
+    _friend = arguments[1];
   }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
+      // appBar: AppBar(
+      //   title: Text(_friend.friendName),
+      // ),
       body: Container(
         decoration: Theme.of(context).platform == TargetPlatform.iOS //new
             ? BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.grey[200]!),
-                ),
-              )
+                top: BorderSide(color: Colors.grey[200]!),
+              ))
             : null,
         child: Column(
           children: [
@@ -172,7 +134,7 @@ class _ChatScreenState extends State<ChatScreen>
                 ),
               ),
             ),
-            const Divider(height: 1.0),
+            const Divider(height: 0),
             Container(
               // height: 70.0,
               width: double.maxFinite,
@@ -417,33 +379,35 @@ class _ChatScreenState extends State<ChatScreen>
     );
   }
 
-  void _handleSubmitted(String text) {
+  void _handleSubmitted(String text) async {
+    //每次发送跳到最下面
+    scrollMsgBottom();
     _textController.clear();
     setState(() {
       _isComposing = false;
     });
-    var message = ChatMessage(
-      text: text,
-      animationController: AnimationController(
-        duration: const Duration(milliseconds: 700),
-        vsync: this,
-      ),
-    );
+    Message newMessage = new Message();
+    User userInfo = await UserInfoUtils.getUserInfo();
+    newMessage.friendId = _friend.friendId;
+    newMessage.context = text;
+    newMessage.type = 0;
+    newMessage.createTime = DateTime.now().toString();
+    newMessage.id = int.parse(Utils.getUUid());
+    newMessage.receiveId = userInfo.id;
+    newMessage.headImgUrl = userInfo.headImgUrl;
+    newMessage.url = "";
+    newMessage.haveRead = 0;
+    newMessage.state = "0";
+
+    ///todo 添加本地入库操作，发送到服务器的操作
+    DBManage.insertMessage(newMessage);
 
     ///TODO 处理发送的消息
     setState(() {
-      _messages.add(message);
+      _messages.add(newMessage);
     });
     _focusNode.requestFocus();
-    message.animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    for (var message in _messages) {
-      message.animationController.dispose();
-    }
-    super.dispose();
+    // message.animationController.forward();
   }
 
   //展开加号按钮
@@ -459,17 +423,30 @@ class _ChatScreenState extends State<ChatScreen>
   }
 
   Widget _cellForRow(BuildContext context, int index) {
+    Message message = _messages[index];
+    var msg;
+    if (message.type == 0) {
+      msg = SentMessageScreen(
+        message: message,
+      );
+    } else {
+      msg = ReceivedMessageScreen(
+        message: message,
+      );
+    }
     return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey.shade300,
-            width: 1,
-          ),
-        ),
-      ),
       padding: const EdgeInsets.all(8.0),
-      child: _messages[index],
+      child: msg,
     );
   }
+
+  //聊天列表跳的最下面
+  void scrollMsgBottom() {
+    Timer(
+        Duration(milliseconds: 100),
+        () => _customController
+            .jumpTo(_customController.position.maxScrollExtent));
+  }
+
+  ///todo 全局添加接收消息监听
 }

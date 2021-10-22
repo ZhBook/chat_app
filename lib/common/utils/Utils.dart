@@ -33,4 +33,18 @@ class Utils {
       },
     );
   }
+
+  //返回6位随机数字+时间戳
+  static String getUUid() {
+    String randomStr = Random().nextInt(10).toString();
+    for (var i = 0; i < 5; i++) {
+      var str = Random().nextInt(10);
+      randomStr = "$randomStr" + "$str";
+    }
+    var timeNumber = DateTime.now().millisecondsSinceEpoch; //时间
+    var uuid = "$randomStr" + "$timeNumber";
+
+    print(uuid);
+    return uuid;
+  }
 }

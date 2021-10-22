@@ -4,11 +4,9 @@
   "nickname": "昵称",
   "password": "123",
   "headImgUrl": "http",
-  "phone": "123123",
+  "mobile": "15352058954",
   "sex": 1,
   "address": "杭州",
-  "createTime": "2021-10-07T02:30:16.000+00:00",
-  "isDelete": 0,
   "email": "709688530@qq.com",
   "login": "true"
 }

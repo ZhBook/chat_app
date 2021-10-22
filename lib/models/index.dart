@@ -5,3 +5,4 @@ export 'login.dart' ;
 export 'friend.dart' ; 
 export 'user.dart' ; 
 export 'profile.dart' ; 
+export 'message.dart' ; 

@@ -169,7 +169,7 @@ class _RegisterState extends State<Register> {
                                 prefixText: "+86 ",
                                 label: Text("手机号"),
                               ),
-                              onSaved: (value) => {user.phone = value!},
+                              onSaved: (value) => {user.mobile = value!},
                             ),
                           ),
                           Padding(

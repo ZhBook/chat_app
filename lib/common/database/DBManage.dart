@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chat_app/models/friend.dart';
+import 'package:chat_app/models/message.dart';
 import 'package:simple_logger/simple_logger.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -49,28 +50,33 @@ class DBManage {
   }
 
   //通过好友的username创建与其相关的聊天表
-  static Future createFriendsMessageTable(String friendUsername) async {
-    log.info("开始创建好友聊天表，好友username:" + friendUsername);
-    List<Map<String, dynamic>> result = await db.query("chat_$friendUsername");
-    if (result.isNotEmpty) {
-      return true;
+  static Future createFriendsMessageTable(String friendId) async {
+    log.info("开始创建好友聊天表，好友username:" + friendId);
+    try {
+      List<Map<String, dynamic>> result = await db.query("chat_$friendId");
+      if (result.isNotEmpty) {
+        return true;
+      }
+    } catch (e) {
+      log.warning(e);
     }
     String createSQL = '''
-     CREATE TABLE "chat_$friendUsername" (
+     CREATE TABLE "chat_$friendId" (
         "id" INTEGER(100) NOT NULL,
         "friendId" INTEGER(100) NOT NULL,
         "receiveId" INTEGER(100) NOT NULL,
         "context" TEXT(1000),
         "url" TEXT(1000),
+        "headImgUrl" TEXT(1000),
         "type" integer(4),
         "createTime" TEXT(255) NOT NULL,
-        "have_read" integer(4),
+        "haveRead" integer(4),
         "state" TEXT(255),
         PRIMARY KEY ("id", "friendId", "receiveId")
       );
       ''';
     db.execute(createSQL);
-    log.info("$friendUsername聊天表创建成功");
+    log.info("$friendId聊天表创建成功");
   }
 
   ///添加好友列表
@@ -82,6 +88,25 @@ class DBManage {
     });
     batch.commit();
     return true;
+  }
+
+  ///分页获取与好友的聊天信息
+  static Future<List<Message>> getMessages(
+      String friendId, int start, int limit) async {
+    // createFriendsMessageTable(friendId);
+    List<Map<String, dynamic>> result = await db.query("chat_$friendId",
+        distinct: true,
+        orderBy: 'createTime desc',
+        limit: limit,
+        offset: start);
+    List<Message> message = result.map((e) => Message.fromJson(e)).toList();
+    return message;
+  }
+
+  static Future insertMessage(Message message) async {
+    var friendId = message.friendId.toString();
+    // createFriendsMessageTable(friendId);
+    db.insert("chat_$friendId", message.toJson());
   }
 
   Future query(Database db) async {

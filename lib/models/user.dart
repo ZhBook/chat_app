@@ -11,11 +11,9 @@ class User {
   late String nickname;
   late String password;
   late String headImgUrl;
-  late String phone;
+  late String mobile;
   late num sex;
   late String address;
-  late String createTime;
-  late num isDelete;
   late String email;
   late String login;
   

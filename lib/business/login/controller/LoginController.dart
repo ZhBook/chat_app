@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chat_app/business/login/route/RegisterController.dart';
 import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../barItem/controller/BarItemController.dart';
 
@@ -20,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = new GlobalKey<FormState>();
   final ApiImpl request = new ApiImpl();
 
-  String username = "123";
+  String username = "15352058954";
   String password = "123";
   bool _isChecked = true;
   bool _isLoading = true;
@@ -30,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15.0, 10.0, 0.0, 0.0),
       child: new TextFormField(
-        initialValue: "123",
+        initialValue: "15352058954",
         maxLines: 1,
         keyboardType: TextInputType.emailAddress,
         autofocus: false,
@@ -216,9 +219,15 @@ class _LoginPageState extends State<LoginPage> {
       _showMessageDialog("密码不能为空");
       return;
     }
-    request.login(username, password).then((value) {
+    request.login(username, password).then((value) async {
       print(value.toJson());
       if (value.code == 200) {
+        //登陆成功后的初始化
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        //存储用户信息
+
+        prefs.setString(
+            "loginUserInfo", json.encode(value.data["userInfoResponse"]));
         // Navigator.of(context).pushNamed("home");
         Get.put(Controller());
         Controller.to.getFriendList();

@@ -43,6 +43,8 @@ class HomeScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         print("点击了$index");
+
+        ///todo 添加当前聊天信息表
         await Navigator.of(context).pushNamed("chat_page", arguments: index);
       },
       child: Container(
