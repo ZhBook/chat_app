@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chat_app/business/login/route/RegisterController.dart';
 import 'package:chat_app/common/Controller.dart';
+import 'package:chat_app/common/network/MessageUtils.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -225,7 +226,9 @@ class _LoginPageState extends State<LoginPage> {
         //登陆成功后的初始化
         SharedPreferences prefs = await SharedPreferences.getInstance();
         //存储用户信息
-
+        MessageUtils messageUtils = MessageUtils.instance;
+        messageUtils.connect(context);
+        messageUtils.sendMessage("msg");
         prefs.setString(
             "loginUserInfo", json.encode(value.data["userInfoResponse"]));
         // Navigator.of(context).pushNamed("home");
