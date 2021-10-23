@@ -20,8 +20,7 @@ class MessageUtils {
     return _instance;
   }
 
-  static IOWebSocketChannel channel =
-      IOWebSocketChannel.connect("ws://192.168.1.104:58080/webSocket");
+  late IOWebSocketChannel channel;
 
   // 开始进行链接
   void connect(BuildContext context) {

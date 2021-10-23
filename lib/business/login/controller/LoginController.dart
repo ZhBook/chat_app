@@ -10,6 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:web_socket_channel/io.dart';
 
 import '../../barItem/controller/BarItemController.dart';
 
@@ -74,6 +75,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    IOWebSocketChannel channel =
+        new IOWebSocketChannel.connect("ws://192.168.1.104:58080/webSocket");
+    channel.sink.add("{\"uid\":\"100\"}");
     return Scaffold(
       appBar: CupertinoNavigationBar(
         backgroundColor: Colors.white,
@@ -228,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
         //存储用户信息
         MessageUtils messageUtils = MessageUtils.instance;
         messageUtils.connect(context);
-        messageUtils.sendMessage("msg");
+        messageUtils.sendMessage("{\"uid\":\"100\"}");
         prefs.setString(
             "loginUserInfo", json.encode(value.data["userInfoResponse"]));
         // Navigator.of(context).pushNamed("home");
