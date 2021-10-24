@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:chat_app/common/database/DBManage.dart';
+import 'package:chat_app/common/event/EventBusUtil.dart';
+import 'package:chat_app/common/network/MessageUtils.dart';
+import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/common/utils/UserInfoUtils.dart';
 import 'package:chat_app/common/utils/Utils.dart';
 import 'package:chat_app/models/friend.dart';
@@ -31,6 +34,7 @@ final ThemeData kDefaultTheme = ThemeData(
 Friend _friend = new Friend();
 final List<Message> _messages = [];
 String _friendName = "Friend Name";
+final ApiImpl request = new ApiImpl();
 
 ///接收传递的参数
 ///0：聊天记录
@@ -75,6 +79,13 @@ class _ChatScreenState extends State<ChatScreen>
 
   @protected
   void initState() {
+    //注册监听
+    eventBus.on<MessageUtils>((event) {
+      setState(() {
+        _messages.add(event.message);
+      });
+    });
+
     super.initState();
     //通过获取键盘的显示，来控制加号的显示
     KeyboardVisibilityNotification().addNewListener(
@@ -393,11 +404,17 @@ class _ChatScreenState extends State<ChatScreen>
     newMessage.type = 0;
     newMessage.createTime = DateTime.now().toString();
     newMessage.id = int.parse(Utils.getUUid());
-    newMessage.receiveId = userInfo.id;
+    newMessage.userId = userInfo.id;
     newMessage.headImgUrl = userInfo.headImgUrl;
     newMessage.url = "";
     newMessage.haveRead = 0;
     newMessage.state = "0";
+
+    request
+        .sendMessage(_friend.friendId.toString(), newMessage)
+        .catchError((onError) {
+      print('当前错误：' + onError.toString());
+    });
 
     ///todo 添加本地入库操作，发送到服务器的操作
     DBManage.insertMessage(newMessage);

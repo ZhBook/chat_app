@@ -6,4 +6,6 @@ class Urls {
   static final String login = "oauth/token";
 
   static final String loginInfo = "";
+
+  static final String sendMessage = "api-chatting/api/v1/send/friend";
 }

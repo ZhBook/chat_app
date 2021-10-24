@@ -11,19 +11,19 @@ buildscript {
     }
 }
 
-//allprojects {
-//    repositories {
-//        google()
-//        jcenter()
-//    }
-//}
 allprojects {
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-        }
+    repositories {
+        google()
+        jcenter()
     }
 }
+//allprojects {
+//    gradle.projectsEvaluated {
+//        tasks.withType(JavaCompile) {
+//            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+//        }
+//    }
+//}
 
 
 rootProject.buildDir = '../build'

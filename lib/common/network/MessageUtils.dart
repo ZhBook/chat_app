@@ -1,60 +1,72 @@
 import 'dart:convert';
 
+import 'package:chat_app/common/event/EventBusUtil.dart';
+import 'package:chat_app/models/message.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:simple_logger/simple_logger.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class MessageUtils {
-  // 工厂模式
-  factory MessageUtils() => _getInstance();
-  static MessageUtils get instance => _getInstance();
-  static late MessageUtils _instance;
-  MessageUtils._internal() {
-    // 初始化
-    print("1234");
-  }
-  static MessageUtils _getInstance() {
-    if (_instance == null) {
-      _instance = new MessageUtils._internal();
-    }
-    return _instance;
+  // static _instance，_instance //会在编译期被初始化，保证了只被创建一次
+  // static final MessageUtils _instance = MessageUtils._internal();
+  static final log = SimpleLogger();
+  // // //提供了一个工厂方法来获取该类的实例
+  // factory MessageUtils() {
+  //   return _instance;
+  // }
+  // MessageUtils();
+  static Message message = new Message();
+  // 通过私有方法_internal()隐藏了构造方法，防止被误创建
+  // MessageUtils._internal() {
+  //   // 初始化
+  //   init();
+  // }
+
+  void init() {
+    print("这里初始化");
   }
 
-  late IOWebSocketChannel channel;
+  static late IOWebSocketChannel channel;
 
   // 开始进行链接
-  void connect(BuildContext context) {
+  static void connect() {
     channel = IOWebSocketChannel.connect("ws://192.168.1.104:58080/webSocket");
-    channel.stream.listen(this.onData, onError: onError, onDone: onDone);
-    sendMessage("初始化");
+    // channel.stream.listen(onData, onError: onError, onDone: onDone);
+    sendMessage(message);
   }
 
   // 发送消息
-  void sendMessage(dynamic msg) {
+  static void sendMessage(dynamic msg) {
     channel.sink.add(msg);
   }
 
   // 断连，然后执行重连
-  onDone() {
+  static onDone() {
+    log.warning("重连中....");
     debugPrint("Socket is closed");
-    channel = IOWebSocketChannel.connect("ws://192.168.1.104:58080/webSocket");
-    channel.stream.listen(this.onData, onError: onError, onDone: onDone);
+    // channel = IOWebSocketChannel.connect("ws://192.168.1.104:58080/webSocket");
+    // channel.stream.listen(this.onData, onError: onError, onDone: onDone);
+    // sendMessage(message);
   }
 
   // 错误日志
-  onError(err) {
+  static onError(err) {
+    log.warning("websocket连接失败");
     debugPrint(err.runtimeType.toString());
     WebSocketChannelException ex = err;
     debugPrint(ex.message);
   }
 
   // 接受数据，数据json字符串，然后转成Map
-  onData(event) {
+  static onData(event) {
     print('收到消息:' + event);
     Map<String, dynamic> map = json.decode(event);
+    message = Message.fromJson(map);
+    eventBus.emit(MessageUtils.message);
   }
 
-  void dispose() {
+  static void dispose() {
     channel.sink.close();
   }
 

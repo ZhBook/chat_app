@@ -46,6 +46,7 @@ dependencies:
   provider: ^6.0.1
   simple_logger: ^1.8.1
   web_socket_channel: ^2.1.0
+  event_bus: ^2.0.0
 
 
 dev_dependencies:

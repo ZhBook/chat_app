@@ -9,7 +9,7 @@ part of 'message.dart';
 Message _$MessageFromJson(Map<String, dynamic> json) => Message()
   ..id = json['id'] as num
   ..friendId = json['friendId'] as num
-  ..receiveId = json['receiveId'] as num
+  ..userId = json['userId'] as num
   ..context = json['context'] as String
   ..url = json['url'] as String
   ..headImgUrl = json['headImgUrl'] as String
@@ -21,7 +21,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message()
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'id': instance.id,
       'friendId': instance.friendId,
-      'receiveId': instance.receiveId,
+      'userId': instance.userId,
       'context': instance.context,
       'url': instance.url,
       'headImgUrl': instance.headImgUrl,

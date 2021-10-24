@@ -1,4 +1,5 @@
 import 'package:chat_app/models/friend.dart';
+import 'package:chat_app/models/index.dart';
 import 'package:chat_app/models/login.dart';
 import 'package:chat_app/models/result.dart';
 import 'package:chat_app/models/user.dart';
@@ -11,4 +12,6 @@ abstract class Api {
   Future<User> getLoginUserInfo();
 
   Future<List<Friend>> getFriends();
+
+  Future<void> sendMessage(String friendId, Message message);
 }

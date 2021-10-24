@@ -17,7 +17,7 @@ class Request {
   Options _options = new Options();
 
   static var dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.3.135:8008/',
+    baseUrl: 'http://192.168.1.104:8008/',
     connectTimeout: 5000,
     receiveTimeout: 100000,
     // 5s
@@ -31,12 +31,13 @@ class Request {
   ));
 
   static void init() {
-    /* (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (HttpClient client) {
-      client.findProxy = (uri) {
-        return "PROXY 192.168.3.135:8888";
-      };
-    };*/
+    // (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    //     (HttpClient client) {
+    //   client.findProxy = (uri) {
+    //     // return "PROXY 192.168.3.135:8888";
+    //     return "PROXY 192.168.1.104:8888";
+    //   };
+    // };
     // 在调试模式下需要抓包调试，所以我们使用代理，并禁用HTTPS证书校验
     /*if (!Global.isRelease) {
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

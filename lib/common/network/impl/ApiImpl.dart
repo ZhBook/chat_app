@@ -119,4 +119,22 @@ class ApiImpl implements Api {
     }
     return Future.error("没有好友");
   }
+
+  @override
+  Future<void> sendMessage(String friendId, Message message) async {
+    var response = await dio.post(
+      Urls.sendMessage,
+      data: {
+        "context": message.context,
+        "userId": message.userId,
+        "type": message.type,
+        "friendId": message.friendId
+      },
+      queryParameters: {"receiveId": friendId},
+    );
+    PageResult result = PageResult.fromJson(response.data);
+    if (result.code == 200) {
+      log.info("发送成功");
+    }
+  }
 }

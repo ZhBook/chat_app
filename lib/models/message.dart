@@ -8,7 +8,7 @@ class Message {
 
   late num id;
   late num friendId;
-  late num receiveId;
+  late num userId;
   late String context;
   late String url;
   late String headImgUrl;

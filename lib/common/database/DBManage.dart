@@ -14,7 +14,7 @@ class DBManage {
 
   static void initDB() {
     getDatabasesPath().then((value) => databasesPath = value);
-    log.info(databasesPath);
+    log.info("数据库地址：" + databasesPath);
     openDatabase(database, onCreate: _onCreate, version: 5)
         .then((value) => db = value);
   }
@@ -64,7 +64,7 @@ class DBManage {
      CREATE TABLE "chat_$friendId" (
         "id" INTEGER(100) NOT NULL,
         "friendId" INTEGER(100) NOT NULL,
-        "receiveId" INTEGER(100) NOT NULL,
+        "userId" INTEGER(100) NOT NULL,
         "context" TEXT(1000),
         "url" TEXT(1000),
         "headImgUrl" TEXT(1000),
