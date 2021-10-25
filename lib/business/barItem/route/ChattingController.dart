@@ -1,10 +1,7 @@
 import 'dart:async';
 
 import 'package:chat_app/common/database/DBManage.dart';
-import 'package:chat_app/common/event/EventBusUtil.dart';
-import 'package:chat_app/common/network/MessageUtils.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
-import 'package:chat_app/common/utils/UserInfoUtils.dart';
 import 'package:chat_app/common/utils/Utils.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:chat_app/models/message.dart';
@@ -35,6 +32,7 @@ Friend _friend = new Friend();
 final List<Message> _messages = [];
 String _friendName = "Friend Name";
 final ApiImpl request = new ApiImpl();
+late User userInfo;
 
 ///接收传递的参数
 ///0：聊天记录
@@ -80,11 +78,11 @@ class _ChatScreenState extends State<ChatScreen>
   @protected
   void initState() {
     //注册监听
-    eventBus.on<MessageUtils>((event) {
-      setState(() {
-        _messages.add(event.message);
-      });
-    });
+    // eventBus.on<MessageUtils>((event) {
+    //   setState(() {
+    //     _messages.add(event.message);
+    //   });
+    // });
 
     super.initState();
     //通过获取键盘的显示，来控制加号的显示
@@ -398,7 +396,6 @@ class _ChatScreenState extends State<ChatScreen>
       _isComposing = false;
     });
     Message newMessage = new Message();
-    User userInfo = await UserInfoUtils.getUserInfo();
     newMessage.friendId = _friend.friendId;
     newMessage.context = text;
     newMessage.type = 0;

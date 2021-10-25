@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:chat_app/common/event/EventBusUtil.dart';
+import 'package:chat_app/common/network/Urls.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:simple_logger/simple_logger.dart';
@@ -27,12 +29,12 @@ class MessageUtils {
     print("这里初始化");
   }
 
-  static late IOWebSocketChannel channel;
+  static late final IOWebSocketChannel channel;
 
   // 开始进行链接
   static void connect() {
-    channel = IOWebSocketChannel.connect("ws://192.168.1.104:58080/webSocket");
-    // channel.stream.listen(onData, onError: onError, onDone: onDone);
+    channel = IOWebSocketChannel.connect(Urls.webSocketUrl);
+    channel.stream.listen(onData, onError: onError, onDone: onDone);
     sendMessage(message);
   }
 
@@ -45,6 +47,12 @@ class MessageUtils {
   static onDone() {
     log.warning("重连中....");
     debugPrint("Socket is closed");
+    channel.sink.close();
+    new Timer.periodic(Duration(milliseconds: 5000), (timer) {
+      channel = IOWebSocketChannel.connect(Urls.webSocketUrl);
+      channel.stream.listen(onData, onError: onError, onDone: onDone);
+      sendMessage(message);
+    });
     // channel = IOWebSocketChannel.connect("ws://192.168.1.104:58080/webSocket");
     // channel.stream.listen(this.onData, onError: onError, onDone: onDone);
     // sendMessage(message);
@@ -56,6 +64,7 @@ class MessageUtils {
     debugPrint(err.runtimeType.toString());
     WebSocketChannelException ex = err;
     debugPrint(ex.message);
+    channel.sink.close();
   }
 
   // 接受数据，数据json字符串，然后转成Map

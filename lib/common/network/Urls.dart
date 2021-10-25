@@ -8,4 +8,6 @@ class Urls {
   static final String loginInfo = "";
 
   static final String sendMessage = "api-chatting/api/v1/send/friend";
+
+  static final String webSocketUrl = "ws://192.168.3.135:58080/webSocket";
 }

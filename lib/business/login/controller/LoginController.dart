@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:chat_app/business/login/route/RegisterController.dart';
 import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/common/config/Global.dart';
-import 'package:chat_app/common/network/MessageUtils.dart';
 import 'package:chat_app/common/network/Request.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
+import 'package:chat_app/models/message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -231,9 +231,11 @@ class _LoginPageState extends State<LoginPage> {
         //存储用户信息
         prefs.setString(
             "loginUserInfo", json.encode(value.data["userInfoResponse"]));
-        // WebsocketManager.init();
-        // WebsocketManager().connect();
-        MessageUtils.connect();
+        // MessageUtils.connect();
+        Message message = new Message();
+        // message.userId = value.data["userInfoResponse"]["id"];
+        // MessageUtils.message = message;
+        // MessageUtils.connect();
         Get.put(Controller());
         Controller.to.getFriendList();
         Fluttertoast.showToast(msg: "登陆成功");

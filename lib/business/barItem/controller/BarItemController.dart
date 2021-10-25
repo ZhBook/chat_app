@@ -83,20 +83,6 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
 
   @override
   void initState() {
-    // UserInfoUtils.getUserInfo().then((value) {
-    //   Message message = new Message();
-    //   message.userId = value.id;
-    //   // MessageUtils messageUtils = MessageUtils(message);
-    //   // messageUtils.connect(context);
-    //
-    //   final channel =
-    //       IOWebSocketChannel.connect('ws://192.168.1.104:58080/webSocket');
-    //   channel.stream.listen((message) {
-    //     channel.sink.add(message);
-    //   });
-    // });
-//初始化
-
     list
       ..add(HomeScreen())
       ..add(MailScreen())

@@ -1,75 +1,159 @@
 import 'dart:async';
 
+import 'package:chat_app/common/network/Urls.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-enum StatusEnum { connect, connecting, close, closing }
+/// WebSocket状态
+enum SocketStatus {
+  SocketStatusConnected, // 已连接
+  SocketStatusFailed, // 失败
+  SocketStatusClosed, // 连接关闭
+}
 
-class WebsocketManager {
-  static late WebsocketManager _singleton;
+class WebSocketUtility {
+  /// 单例对象
+  static WebSocketUtility _socket = new WebSocketUtility();
 
-  late WebSocketChannel channel;
-  factory WebsocketManager() {
-    return _singleton;
+  /// 内部构造方法，可避免外部暴露构造函数，进行实例化
+  WebSocketUtility._();
+
+  /// 获取单例内部方法
+  factory WebSocketUtility() {
+    // 只能有一个实例
+    if (_socket == null) {
+      _socket = new WebSocketUtility._();
+    }
+    return _socket;
   }
-  StreamController<StatusEnum> socketStatusController =
-      StreamController<StatusEnum>();
-  WebsocketManager._();
-  static void init() {
-    if (_singleton == null) {
-      _singleton = WebsocketManager._();
+
+  late IOWebSocketChannel _webSocket; // WebSocket
+  late SocketStatus _socketStatus; // socket状态
+  late Timer _heartBeat; // 心跳定时器
+  int _heartTimes = 3000; // 心跳间隔(毫秒)
+  num _reconnectCount = 60; // 重连次数，默认60次
+  num _reconnectTimes = 0; // 重连计数器
+  late Timer _reconnectTimer; // 重连定时器
+  late Function onError; // 连接错误回调
+  late Function onOpen; // 连接开启回调
+  late Function onMessage; // 接收消息回调
+
+  /// 初始化WebSocket
+  void initWebSocket(
+      {required Function onOpen,
+      required Function onMessage,
+      required Function onError}) {
+    this.onOpen = onOpen;
+    this.onMessage = onMessage;
+    this.onError = onError;
+    openSocket();
+  }
+
+  /// 开启WebSocket连接
+  void openSocket() {
+    closeSocket();
+    _webSocket = IOWebSocketChannel.connect(Urls.webSocketUrl);
+    print('WebSocket连接成功: $Urls.webSocketUrl');
+    // 连接成功，返回WebSocket实例
+    _socketStatus = SocketStatus.SocketStatusConnected;
+    // 连接成功，重置重连计数器
+    _reconnectTimes = 0;
+    if (_reconnectTimer != null) {
+      _reconnectTimer.cancel();
+      // _reconnectTimer = null;
+    }
+    onOpen();
+    // 接收消息
+    _webSocket.stream.listen((data) => webSocketOnMessage(data),
+        onError: webSocketOnError, onDone: webSocketOnDone);
+  }
+
+  /// WebSocket接收消息回调
+  webSocketOnMessage(data) {
+    onMessage(data);
+  }
+
+  /// WebSocket关闭连接回调
+  webSocketOnDone() {
+    print('closed');
+    reconnect();
+  }
+
+  /// WebSocket连接错误回调
+  webSocketOnError(e) {
+    WebSocketChannelException ex = e;
+    _socketStatus = SocketStatus.SocketStatusFailed;
+    onError(ex.message);
+    closeSocket();
+  }
+
+  /// 初始化心跳
+  void initHeartBeat() {
+    destroyHeartBeat();
+    _heartBeat =
+        new Timer.periodic(Duration(milliseconds: _heartTimes), (timer) {
+      sentHeart();
+    });
+  }
+
+  /// 心跳
+  void sentHeart() {
+    sendMessage('{"module": "HEART_CHECK", "message": "请求心跳"}');
+  }
+
+  /// 销毁心跳
+  void destroyHeartBeat() {
+    if (_heartBeat != null) {
+      _heartBeat.cancel();
+      // _heartBeat = null;
     }
   }
 
-  StatusEnum isConnect = StatusEnum.close; //默认为未连接
-  String _url = "ws://192.168.1.104:58080/webSocket";
-
-  Future connect() async {
-    if (isConnect == StatusEnum.close) {
-      isConnect = StatusEnum.connecting;
-      socketStatusController.add(StatusEnum.connecting);
-      // channel = await IOWebSocketChannel.connect(Uri.parse(_url));
-      channel = await IOWebSocketChannel.connect(Uri.parse(_url));
-
-      isConnect = StatusEnum.connect;
-      socketStatusController.add(StatusEnum.connect);
-      print("socket连接成功");
-      return true;
+  /// 关闭WebSocket
+  void closeSocket() {
+    if (_webSocket != null) {
+      print('WebSocket连接关闭');
+      _webSocket.sink.close();
+      destroyHeartBeat();
+      _socketStatus = SocketStatus.SocketStatusClosed;
     }
   }
 
-  Future disconnect() async {
-    if (isConnect == StatusEnum.connect) {
-      isConnect = StatusEnum.closing;
-      socketStatusController.add(StatusEnum.closing);
-      await channel.sink.close(3000, "主动关闭");
-      isConnect = StatusEnum.close;
-      socketStatusController.add(StatusEnum.close);
+  /// 发送WebSocket消息
+  void sendMessage(message) {
+    if (_webSocket != null) {
+      switch (_socketStatus) {
+        case SocketStatus.SocketStatusConnected:
+          print('发送中：' + message);
+          _webSocket.sink.add(message);
+          break;
+        case SocketStatus.SocketStatusClosed:
+          print('连接已关闭');
+          break;
+        case SocketStatus.SocketStatusFailed:
+          print('发送失败');
+          break;
+        default:
+          break;
+      }
     }
   }
 
-  bool send(String text) {
-    if (isConnect == StatusEnum.connect) {
-      channel.sink.add(text);
-      return true;
+  /// 重连机制
+  void reconnect() {
+    if (_reconnectTimes < _reconnectCount) {
+      _reconnectTimes++;
+      _reconnectTimer =
+          new Timer.periodic(Duration(milliseconds: _heartTimes), (timer) {
+        openSocket();
+      });
+    } else {
+      if (_reconnectTimer != null) {
+        print('重连次数超过最大次数');
+        _reconnectTimer.cancel();
+        // _reconnectTimer = null;
+      }
+      return;
     }
-    return false;
-  }
-
-  void printStatus() {
-    if (isConnect == StatusEnum.connect) {
-      print("websocket 已连接");
-    } else if (isConnect == StatusEnum.connecting) {
-      print("websocket 连接中");
-    } else if (isConnect == StatusEnum.close) {
-      print("websocket 已关闭");
-    } else if (isConnect == StatusEnum.closing) {
-      print("websocket 关闭中");
-    }
-  }
-
-  void dispose() {
-    socketStatusController.close();
-    socketStatusController = StreamController<StatusEnum>();
   }
 }
