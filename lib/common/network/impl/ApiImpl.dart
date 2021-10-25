@@ -124,12 +124,7 @@ class ApiImpl implements Api {
   Future<void> sendMessage(String friendId, Message message) async {
     var response = await dio.post(
       Urls.sendMessage,
-      data: {
-        "context": message.context,
-        "userId": message.userId,
-        "type": message.type,
-        "friendId": message.friendId
-      },
+      data: message.toJson(),
       queryParameters: {"receiveId": friendId},
     );
     PageResult result = PageResult.fromJson(response.data);

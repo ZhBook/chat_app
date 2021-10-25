@@ -1,50 +1,21 @@
-import 'dart:async';
-
 import 'package:event_bus/event_bus.dart';
 
 typedef void EventCallback(event);
 
 class EventBusUtils {
-  factory EventBusUtils() => _getInstance();
-  static EventBusUtils get instance => _getInstance();
-  static EventBusUtils _instance = new EventBusUtils._internal();
-  EventBusUtils._internal() {
-    // 初始化
-    _eventBus = new EventBus();
-  }
+  static late EventBus _eventBus;
 
-  //初始化eventBus
-  EventBus _eventBus = new EventBus();
-  // EventBus get eventBus => _eventBus;
-
-  /// 订阅stream列表
-  // List<StreamSubscription> subscriptionList;
-
-  static EventBusUtils _getInstance() {
-    if (_instance == null) {
-      _instance = new EventBusUtils._internal();
+  static EventBus getInstance() {
+    if (_eventBus == null) {
+      _eventBus = new EventBus();
     }
-    return _instance;
+    return _eventBus;
   }
 
-  /// 开启eventbus订阅 并
-  StreamSubscription on<T>(EventCallback callback) {
-    StreamSubscription stream = _eventBus.on<T>().listen((event) {
-      callback(event);
-    });
-    // subscriptionList.add(stream);
-    return stream;
-  }
-
-  /// 发送消息
-  void emit(event) {
-    _eventBus.fire(event);
-  }
-
-  /// 移除steam
-  void off(StreamSubscription stream) {
-    stream.cancel();
+  static void initEvenBus() {
+    _eventBus = new EventBus();
+    print('注册全局监听成功');
   }
 }
 
-var eventBus = EventBusUtils.instance;
+// var eventBus = EventBusUtils;

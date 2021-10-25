@@ -68,15 +68,15 @@ class DBManage {
         "context" TEXT(1000),
         "url" TEXT(1000),
         "headImgUrl" TEXT(1000),
-        "type" integer(4),
+        "type" INTEGER(4),
         "createTime" TEXT(255) NOT NULL,
-        "haveRead" integer(4),
-        "state" TEXT(255),
-        PRIMARY KEY ("id", "friendId", "receiveId")
+        "haveRead" INTEGER(4),
+        "state" INTEGER(4),
+        PRIMARY KEY ("id", "friendId", "userId")
       );
       ''';
     db.execute(createSQL);
-    log.info("$friendId聊天表创建成功");
+    log.info("chat_$friendId聊天表创建成功");
   }
 
   ///添加好友列表
@@ -106,7 +106,7 @@ class DBManage {
   ///分页获取与好友的聊天信息
   static Future<List<Message>> getMessages(
       String friendId, int start, int limit) async {
-    // createFriendsMessageTable(friendId);
+    createFriendsMessageTable(friendId);
     List<Map<String, dynamic>> result = await db.query("chat_$friendId",
         distinct: true,
         orderBy: 'createTime desc',

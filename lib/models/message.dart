@@ -16,7 +16,8 @@ class Message {
   late String createTime;
   late num haveRead;
   late String state;
-  
-  factory Message.fromJson(Map<String,dynamic> json) => _$MessageFromJson(json);
+
+  factory Message.fromJson(Map<String, dynamic> json) =>
+      _$MessageFromJson(json);
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 }

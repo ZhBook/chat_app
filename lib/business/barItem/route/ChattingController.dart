@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:chat_app/common/database/DBManage.dart';
+import 'package:chat_app/common/event/EventBusUtil.dart';
+import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
-import 'package:chat_app/common/utils/Utils.dart';
+import 'package:chat_app/common/utils/UserInfoUtils.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:chat_app/models/user.dart';
@@ -77,12 +80,19 @@ class _ChatScreenState extends State<ChatScreen>
 
   @protected
   void initState() {
-    //注册监听
-    // eventBus.on<MessageUtils>((event) {
-    //   setState(() {
-    //     _messages.add(event.message);
-    //   });
-    // });
+    // 注册监听
+    EventBusUtils.getInstance().on<WebSocketUtility>().listen((event) {
+      var obj = event.msg;
+      print('监听到的数据:' + obj);
+      Map<String, dynamic> map = json.decode(obj);
+      setState(() {
+        var receiveMes = Message.fromJson(map);
+        // receiveMes.from = 1;
+        receiveMes.type = 1;
+        _messages.add(receiveMes);
+        scrollMsgBottom();
+      });
+    });
 
     super.initState();
     //通过获取键盘的显示，来控制加号的显示
@@ -392,21 +402,19 @@ class _ChatScreenState extends State<ChatScreen>
     //每次发送跳到最下面
     scrollMsgBottom();
     _textController.clear();
-    setState(() {
-      _isComposing = false;
-    });
+    userInfo = await UserInfoUtils.getUserInfo();
     Message newMessage = new Message();
     newMessage.friendId = _friend.friendId;
     newMessage.context = text;
     newMessage.type = 0;
     newMessage.createTime = DateTime.now().toString();
-    newMessage.id = int.parse(Utils.getUUid());
+    newMessage.id = 0;
     newMessage.userId = userInfo.id;
     newMessage.headImgUrl = userInfo.headImgUrl;
     newMessage.url = "";
     newMessage.haveRead = 0;
     newMessage.state = "0";
-
+    // newMessage.from = 0;
     request
         .sendMessage(_friend.friendId.toString(), newMessage)
         .catchError((onError) {
@@ -418,6 +426,7 @@ class _ChatScreenState extends State<ChatScreen>
 
     ///TODO 处理发送的消息
     setState(() {
+      _isComposing = false;
       _messages.add(newMessage);
     });
     _focusNode.requestFocus();

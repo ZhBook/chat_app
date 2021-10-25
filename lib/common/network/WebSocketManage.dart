@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/Urls.dart';
+import 'package:simple_logger/simple_logger.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -12,97 +15,69 @@ enum SocketStatus {
 }
 
 class WebSocketUtility {
-  /// 单例对象
-  static WebSocketUtility _socket = new WebSocketUtility();
+  static final log = SimpleLogger();
 
-  /// 内部构造方法，可避免外部暴露构造函数，进行实例化
-  WebSocketUtility._();
+  static late IOWebSocketChannel _webSocket; // WebSocket
+  static late SocketStatus _socketStatus; // socket状态
+  static late Timer _heartBeat; // 心跳定时器
+  static int _heartTimes = 3000; // 心跳间隔(毫秒)
+  static num _reconnectCount = 60; // 重连次数，默认60次
+  static num _reconnectTimes = 0; // 重连计数器
+  static late Timer _reconnectTimer; // 重连定时器
+  static String message = "";
 
-  /// 获取单例内部方法
-  factory WebSocketUtility() {
-    // 只能有一个实例
-    if (_socket == null) {
-      _socket = new WebSocketUtility._();
-    }
-    return _socket;
-  }
+  String msg = "";
 
-  late IOWebSocketChannel _webSocket; // WebSocket
-  late SocketStatus _socketStatus; // socket状态
-  late Timer _heartBeat; // 心跳定时器
-  int _heartTimes = 3000; // 心跳间隔(毫秒)
-  num _reconnectCount = 60; // 重连次数，默认60次
-  num _reconnectTimes = 0; // 重连计数器
-  late Timer _reconnectTimer; // 重连定时器
-  late Function onError; // 连接错误回调
-  late Function onOpen; // 连接开启回调
-  late Function onMessage; // 接收消息回调
-
-  /// 初始化WebSocket
-  void initWebSocket(
-      {required Function onOpen,
-      required Function onMessage,
-      required Function onError}) {
-    this.onOpen = onOpen;
-    this.onMessage = onMessage;
-    this.onError = onError;
-    openSocket();
-  }
+  WebSocketUtility(this.msg);
 
   /// 开启WebSocket连接
-  void openSocket() {
-    closeSocket();
+  static void openSocket() {
     _webSocket = IOWebSocketChannel.connect(Urls.webSocketUrl);
     print('WebSocket连接成功: $Urls.webSocketUrl');
     // 连接成功，返回WebSocket实例
     _socketStatus = SocketStatus.SocketStatusConnected;
     // 连接成功，重置重连计数器
     _reconnectTimes = 0;
-    if (_reconnectTimer != null) {
-      _reconnectTimer.cancel();
-      // _reconnectTimer = null;
-    }
-    onOpen();
     // 接收消息
     _webSocket.stream.listen((data) => webSocketOnMessage(data),
         onError: webSocketOnError, onDone: webSocketOnDone);
+    initHeartBeat();
   }
 
   /// WebSocket接收消息回调
-  webSocketOnMessage(data) {
-    onMessage(data);
+  static webSocketOnMessage(data) {
+    if (data.toString().contains("PONG")) {
+      log.info("服务器返回的数据：" + data);
+      return;
+    }
+    log.info("服务器返回的消息：" + data.toString());
+    //注册监听
+    EventBusUtils.getInstance().fire(WebSocketUtility(data));
   }
 
   /// WebSocket关闭连接回调
-  webSocketOnDone() {
+  static webSocketOnDone() {
     print('closed');
     reconnect();
   }
 
   /// WebSocket连接错误回调
-  webSocketOnError(e) {
+  static webSocketOnError(e) {
     WebSocketChannelException ex = e;
     _socketStatus = SocketStatus.SocketStatusFailed;
-    onError(ex.message);
+    log.warning(ex.message);
     closeSocket();
   }
 
   /// 初始化心跳
-  void initHeartBeat() {
-    destroyHeartBeat();
+  static void initHeartBeat() {
+    // destroyHeartBeat();
     _heartBeat =
-        new Timer.periodic(Duration(milliseconds: _heartTimes), (timer) {
-      sentHeart();
-    });
-  }
-
-  /// 心跳
-  void sentHeart() {
-    sendMessage('{"module": "HEART_CHECK", "message": "请求心跳"}');
+        new Timer.periodic(Duration(milliseconds: _heartTimes), (timer) {});
   }
 
   /// 销毁心跳
-  void destroyHeartBeat() {
+  static void destroyHeartBeat() {
     if (_heartBeat != null) {
       _heartBeat.cancel();
       // _heartBeat = null;
@@ -110,8 +85,8 @@ class WebSocketUtility {
   }
 
   /// 关闭WebSocket
-  void closeSocket() {
-    if (_webSocket != null) {
+  static void closeSocket() {
+    if (null != _webSocket) {
       print('WebSocket连接关闭');
       _webSocket.sink.close();
       destroyHeartBeat();
@@ -120,7 +95,8 @@ class WebSocketUtility {
   }
 
   /// 发送WebSocket消息
-  void sendMessage(message) {
+  static void sendMessage(dynamic msg) {
+    message = json.encode(msg);
     if (_webSocket != null) {
       switch (_socketStatus) {
         case SocketStatus.SocketStatusConnected:
@@ -140,7 +116,7 @@ class WebSocketUtility {
   }
 
   /// 重连机制
-  void reconnect() {
+  static void reconnect() {
     if (_reconnectTimes < _reconnectCount) {
       _reconnectTimes++;
       _reconnectTimer =
