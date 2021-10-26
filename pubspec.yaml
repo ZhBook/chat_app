@@ -34,7 +34,7 @@ dependencies:
   keyboard_visibility: any
   flutter_swiper: ^1.1.6
   scan: ^1.4.3
-  images_picker: ^1.2.4
+  images_picker: ^1.2.5
   permission_handler: ^8.1.6
   shared_preferences: ^2.0.8
   dio: ^4.0.0
@@ -47,7 +47,7 @@ dependencies:
   simple_logger: ^1.8.1
   web_socket_channel: ^2.1.0
   event_bus: ^2.0.0
-#  flutter_local_notifications: ^9.0.1
+  flutter_local_notifications: ^9.0.1
 
 
 dev_dependencies:

@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/common/utils/UserInfoUtils.dart';
+import 'package:chat_app/common/utils/Utils.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:chat_app/models/user.dart';
@@ -36,6 +36,8 @@ final List<Message> _messages = [];
 String _friendName = "Friend Name";
 final ApiImpl request = new ApiImpl();
 late User userInfo;
+int limit = 10;
+int start = 1;
 
 ///接收传递的参数
 ///0：聊天记录
@@ -80,16 +82,12 @@ class _ChatScreenState extends State<ChatScreen>
 
   @protected
   void initState() {
-    // 注册监听
+    ///todo 只监听与该好友的消息
+    /// 全局添加接收消息监听
     EventBusUtils.getInstance().on<WebSocketUtility>().listen((event) {
-      var obj = event.msg;
-      print('监听到的数据:' + obj);
-      Map<String, dynamic> map = json.decode(obj);
+      print('监听到的数据:' + event.receiveMsg.toString());
       setState(() {
-        var receiveMes = Message.fromJson(map);
-        // receiveMes.from = 1;
-        receiveMes.type = 1;
-        _messages.add(receiveMes);
+        _messages.add(event.receiveMsg);
         scrollMsgBottom();
       });
     });
@@ -111,6 +109,8 @@ class _ChatScreenState extends State<ChatScreen>
     _messages.addAll(arguments[0]);
     //初始化朋友信息
     _friend = arguments[1];
+
+    UserInfoUtils.getUserInfo().then((value) => userInfo = value);
   }
 
   @override
@@ -140,16 +140,19 @@ class _ChatScreenState extends State<ChatScreen>
                 },
 
                 ///聊天列表
-                child: CustomScrollView(
-                  reverse: false,
-                  controller: _customController,
-                  slivers: <Widget>[
-                    SliverFixedExtentList(
-                      delegate: SliverChildBuilderDelegate(_cellForRow,
-                          childCount: _messages.length),
-                      itemExtent: 80,
-                    )
-                  ],
+                child: RefreshIndicator(
+                  onRefresh: _refresh,
+                  child: CustomScrollView(
+                    reverse: false,
+                    controller: _customController,
+                    slivers: <Widget>[
+                      SliverFixedExtentList(
+                        delegate: SliverChildBuilderDelegate(_cellForRow,
+                            childCount: _messages.length),
+                        itemExtent: 80,
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -402,29 +405,25 @@ class _ChatScreenState extends State<ChatScreen>
     //每次发送跳到最下面
     scrollMsgBottom();
     _textController.clear();
-    userInfo = await UserInfoUtils.getUserInfo();
     Message newMessage = new Message();
+
+    /// 为保证本地数据库中消息ID与服务器ID相同，在本地创建
+    newMessage.id = int.parse(Utils.getUUid());
     newMessage.friendId = _friend.friendId;
     newMessage.context = text;
-    newMessage.type = 0;
     newMessage.createTime = DateTime.now().toString();
-    newMessage.id = 0;
     newMessage.userId = userInfo.id;
     newMessage.headImgUrl = userInfo.headImgUrl;
-    newMessage.url = "";
-    newMessage.haveRead = 0;
-    newMessage.state = "0";
-    // newMessage.from = 0;
+    //发送消息
     request
         .sendMessage(_friend.friendId.toString(), newMessage)
         .catchError((onError) {
+      newMessage.state = 1;
       print('当前错误：' + onError.toString());
     });
 
-    ///todo 添加本地入库操作，发送到服务器的操作
     DBManage.insertMessage(newMessage);
 
-    ///TODO 处理发送的消息
     setState(() {
       _isComposing = false;
       _messages.add(newMessage);
@@ -448,7 +447,7 @@ class _ChatScreenState extends State<ChatScreen>
   Widget _cellForRow(BuildContext context, int index) {
     Message message = _messages[index];
     var msg;
-    if (message.type == 0) {
+    if (message.userId == userInfo.id) {
       msg = SentMessageScreen(
         message: message,
       );
@@ -471,5 +470,14 @@ class _ChatScreenState extends State<ChatScreen>
             .jumpTo(_customController.position.maxScrollExtent));
   }
 
-  ///todo 全局添加接收消息监听
+  Future _refresh() async {
+    print("上拉加载");
+    var messages =
+        await DBManage.getMessages(_friend.friendId.toString(), start, limit);
+    start++;
+    setState(() {
+      _messages.insertAll(0, messages);
+      // _messages.addAll(messages);
+    });
+  }
 }

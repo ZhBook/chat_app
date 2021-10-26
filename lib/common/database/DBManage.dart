@@ -15,7 +15,7 @@ class DBManage {
   static void initDB() {
     getDatabasesPath().then((value) => databasesPath = value);
     log.info("数据库地址：" + databasesPath);
-    openDatabase(database, onCreate: _onCreate, version: 5)
+    openDatabase(database, onCreate: _onCreate, version: 6)
         .then((value) => db = value);
   }
 
@@ -42,9 +42,23 @@ class DBManage {
       "friendName" TEXT(255), "friendHeadUrl" TEXT(1000), PRIMARY KEY ("id","userId","friendId")
     );
       ''';
+
+    String createChatting = '''
+    CREATE TABLE "chatting" (
+      "id" INTEGER NOT NULL,"userId" INTEGER(20) NOT NULL,"friendId" INTEGER(20) NOT NULL,
+      "context" TEXT(1000),"headImgUrl" TEXT(1000),"url" TEXT(1000),
+      "type" integer(4),"updateTime" DATE,"haveRead" integer(4),"state" integer(4),
+      PRIMARY KEY ("id", "userId")
+    );
+    ''';
     Batch batch = db.batch();
     batch.execute(createUserInfoSQL);
+
+    /// 创建好友关系表
     batch.execute(createRelationSQL);
+
+    /// 创建当前聊天记录表
+    batch.execute(createChatting);
     batch.commit();
     log.info("数据库表创建成功");
   }

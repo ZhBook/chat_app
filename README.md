@@ -30,3 +30,16 @@ json文件生成
 ``
 flutter packages pub run json_model
 ``
+
+## IOS POD问题
+在你的 ios 文件夹中，在终端中遵循这些命令
+
+`sudo arch -x86_64 gem install ffi`
+
+`arch -x86_64 pod install`
+如果这仍然不能解决您的问题，请运行
+
+`arch -x86_64 pod install --repo-update`
+
+### M1更新软件ZLPhotoBrowser
+arch -x86_64 pod update ZLPhotoBrowser

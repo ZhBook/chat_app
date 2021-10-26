@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "userId": 1,
+  "friendId": 1,
+  "context" :"",
+  "headImgUrl": "",
+  "url" : "",
+  "type": 1,
+  "updateTime": "",
+  "haveRead" : 1,
+  "state" : 1
+}

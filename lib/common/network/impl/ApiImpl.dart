@@ -33,11 +33,9 @@ class ApiImpl implements Api {
         },
         options: Options(responseType: ResponseType.json),
       );
-      log.info(response.data);
       //登录成功后更新公共头（authorization），此后的所有请求都会带上用户身份信息
       // Map<String, dynamic> responseData = jsonDecode(response.);
       login = Login.fromJson(response.data);
-      log.info(login.code);
       // response.data.options.headers[HttpHeaders.authorizationHeader] = basic;
       if (login.code == 200) {
         //清空所有缓存
@@ -59,7 +57,6 @@ class ApiImpl implements Api {
     } on DioError catch (e) {
       log.info(e.response);
     }
-
     return login;
   }
 

@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/Urls.dart';
+import 'package:chat_app/models/message.dart';
+import 'package:chat_app/models/messageType.dart';
 import 'package:simple_logger/simple_logger.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -12,6 +14,15 @@ enum SocketStatus {
   SocketStatusConnected, // 已连接
   SocketStatusFailed, // 失败
   SocketStatusClosed, // 连接关闭
+}
+
+/// WebSocket状态
+enum MessageTypeEnum {
+  PONG, //(0,"心跳测试"),
+  TEXT, //(1,"文本消息"),
+  VOICE, //(2,"语音"),
+  PICTURE, //(3,"图片"),
+  VIDEO, //(4,"视频");
 }
 
 class WebSocketUtility {
@@ -26,9 +37,9 @@ class WebSocketUtility {
   static late Timer _reconnectTimer; // 重连定时器
   static String message = "";
 
-  String msg = "";
+  Message receiveMsg;
 
-  WebSocketUtility(this.msg);
+  WebSocketUtility(this.receiveMsg);
 
   /// 开启WebSocket连接
   static void openSocket() {
@@ -46,6 +57,23 @@ class WebSocketUtility {
 
   /// WebSocket接收消息回调
   static webSocketOnMessage(data) {
+    MessageType messageType = MessageType.fromJson(json.decode(data));
+    num type = messageType.type;
+    switch (type) {
+      case 0:
+        log.info("服务器心跳测试：" + messageType.data.toString());
+        break;
+      case 1:
+        //处理接收的消息
+        Message receiveMsg = Message.fromJson(messageType.data);
+        EventBusUtils.getInstance().fire(WebSocketUtility(receiveMsg));
+        break;
+      case 2:
+        break;
+      default:
+        log.info("消息类型不存在");
+        break;
+    }
     if (data.toString().contains("PONG")) {
       log.info("服务器返回的数据：" + data);
       return;
@@ -73,7 +101,9 @@ class WebSocketUtility {
   static void initHeartBeat() {
     // destroyHeartBeat();
     _heartBeat =
-        new Timer.periodic(Duration(milliseconds: _heartTimes), (timer) {});
+        new Timer.periodic(Duration(milliseconds: _heartTimes), (timer) {
+      //心跳
+    });
   }
 
   /// 销毁心跳

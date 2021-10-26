@@ -8,7 +8,6 @@ import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/Request.dart';
 import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
-import 'package:chat_app/models/message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -226,17 +225,13 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     request.login(username, password).then((value) async {
-      print(value.toJson());
       if (value.code == 200) {
         //登陆成功后的初始化
         SharedPreferences prefs = await SharedPreferences.getInstance();
         //存储用户信息
         prefs.setString(
             "loginUserInfo", json.encode(value.data["userInfoResponse"]));
-        Message message = new Message();
         var userId = value.data["userInfoResponse"]["id"];
-        // MessageUtils.message = message;
-        // MessageUtils.connect();
         //初始化聊天监听
         WebSocketUtility.openSocket();
         WebSocketUtility.sendMessage({"userId": userId});

@@ -1,32 +1,32 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'message.dart';
+part of 'chatting.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Message _$MessageFromJson(Map<String, dynamic> json) => Message()
+Chatting _$ChattingFromJson(Map<String, dynamic> json) => Chatting()
   ..id = json['id'] as num
-  ..friendId = json['friendId'] as num
   ..userId = json['userId'] as num
+  ..friendId = json['friendId'] as num
   ..context = json['context'] as String
-  ..url = json['url'] as String
   ..headImgUrl = json['headImgUrl'] as String
+  ..url = json['url'] as String
   ..type = json['type'] as num
-  ..createTime = json['createTime'] as String
+  ..updateTime = json['updateTime'] as String
   ..haveRead = json['haveRead'] as num
   ..state = json['state'] as num;
 
-Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
+Map<String, dynamic> _$ChattingToJson(Chatting instance) => <String, dynamic>{
       'id': instance.id,
-      'friendId': instance.friendId,
       'userId': instance.userId,
+      'friendId': instance.friendId,
       'context': instance.context,
-      'url': instance.url,
       'headImgUrl': instance.headImgUrl,
+      'url': instance.url,
       'type': instance.type,
-      'createTime': instance.createTime,
+      'updateTime': instance.updateTime,
       'haveRead': instance.haveRead,
       'state': instance.state,
     };
