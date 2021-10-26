@@ -6,7 +6,6 @@ import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/common/utils/UserInfoUtils.dart';
 import 'package:chat_app/common/utils/Utils.dart';
-import 'package:chat_app/models/friend.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:chat_app/models/user.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,7 +30,7 @@ final ThemeData kDefaultTheme = ThemeData(
       .copyWith(secondary: Colors.blue[400]),
 );
 
-Friend _friend = new Friend();
+num friendId = 0;
 final List<Message> _messages = [];
 String _friendName = "Friend Name";
 final ApiImpl request = new ApiImpl();
@@ -108,7 +107,7 @@ class _ChatScreenState extends State<ChatScreen>
     //初始化聊天信息
     _messages.addAll(arguments[0]);
     //初始化朋友信息
-    _friend = arguments[1];
+    friendId = arguments[1];
 
     UserInfoUtils.getUserInfo().then((value) => userInfo = value);
   }
@@ -409,15 +408,13 @@ class _ChatScreenState extends State<ChatScreen>
 
     /// 为保证本地数据库中消息ID与服务器ID相同，在本地创建
     newMessage.id = int.parse(Utils.getUUid());
-    newMessage.friendId = _friend.friendId;
+    newMessage.friendId = friendId;
     newMessage.context = text;
     newMessage.createTime = DateTime.now().toString();
     newMessage.userId = userInfo.id;
     newMessage.headImgUrl = userInfo.headImgUrl;
     //发送消息
-    request
-        .sendMessage(_friend.friendId.toString(), newMessage)
-        .catchError((onError) {
+    request.sendMessage(friendId.toString(), newMessage).catchError((onError) {
       newMessage.state = 1;
       print('当前错误：' + onError.toString());
     });
@@ -473,7 +470,7 @@ class _ChatScreenState extends State<ChatScreen>
   Future _refresh() async {
     print("上拉加载");
     var messages =
-        await DBManage.getMessages(_friend.friendId.toString(), start, limit);
+        await DBManage.getMessages(friendId.toString(), start, limit);
     start++;
     setState(() {
       _messages.insertAll(0, messages);

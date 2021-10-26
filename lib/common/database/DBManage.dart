@@ -45,10 +45,18 @@ class DBManage {
 
     String createChatting = '''
     CREATE TABLE "chatting" (
-      "id" INTEGER NOT NULL,"userId" INTEGER(20) NOT NULL,"friendId" INTEGER(20) NOT NULL,
-      "context" TEXT(1000),"headImgUrl" TEXT(1000),"url" TEXT(1000),
-      "type" integer(4),"updateTime" DATE,"haveRead" integer(4),"state" integer(4),
-      PRIMARY KEY ("id", "userId")
+          "id" INTEGER(100) NOT NULL,
+        "friendId" INTEGER(100) NOT NULL,
+        "userId" INTEGER(100) NOT NULL,
+        "context" TEXT(1000),
+        "url" TEXT(1000),
+        "headImgUrl" TEXT(1000),
+        "type" INTEGER(4),
+        "createTime" TEXT(255) NOT NULL,
+        "haveRead" INTEGER(4),
+        "state" INTEGER(4),
+        PRIMARY KEY ("friendId")
+      );
     );
     ''';
     Batch batch = db.batch();
@@ -61,6 +69,27 @@ class DBManage {
     batch.execute(createChatting);
     batch.commit();
     log.info("数据库表创建成功");
+  }
+
+  //更新最新聊天记录
+  static Future updateChattingTable(Message message) async {
+    var result = await db
+        .query("chatting", where: "friendId", whereArgs: [message.friendId]);
+
+    /// 如果记录不存在，则新增一条记录
+    if (result.isEmpty) {
+      return db.insert("chatting", message.toJson());
+    } else {
+      return db.update("chatting", message.toJson());
+    }
+  }
+
+  /// 降序查出所有聊天好友
+  static Future<List<Message>> getChattingInfo() async {
+    List<Map<String, dynamic>> result =
+        await db.query("chatting", orderBy: "createTime asc");
+    List<Message> message = result.map((e) => Message.fromJson(e)).toList();
+    return message;
   }
 
   //通过好友的username创建与其相关的聊天表

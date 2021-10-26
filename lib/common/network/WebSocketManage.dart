@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/Urls.dart';
 import 'package:chat_app/models/message.dart';
@@ -66,7 +67,9 @@ class WebSocketUtility {
       case 1:
         //处理接收的消息
         Message receiveMsg = Message.fromJson(messageType.data);
+        //注册监听
         EventBusUtils.getInstance().fire(WebSocketUtility(receiveMsg));
+        DBManage.updateChattingTable(receiveMsg);
         break;
       case 2:
         break;
@@ -74,13 +77,6 @@ class WebSocketUtility {
         log.info("消息类型不存在");
         break;
     }
-    if (data.toString().contains("PONG")) {
-      log.info("服务器返回的数据：" + data);
-      return;
-    }
-    log.info("服务器返回的消息：" + data.toString());
-    //注册监听
-    EventBusUtils.getInstance().fire(WebSocketUtility(data));
   }
 
   /// WebSocket关闭连接回调

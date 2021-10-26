@@ -220,7 +220,7 @@ class MailScreen extends StatelessWidget {
 
         ///调用本地数据查询聊天信息
         var msg = await DBManage.getMessages(friend.friendId.toString(), 0, 20);
-        Get.to(ChatPage(), arguments: [msg, friend]);
+        Get.to(ChatPage(), arguments: [msg, friend.friendId]);
         /*await Navigator.of(context)
             .pushNamed("chat_page", arguments: friend.friendName);*/
       },
