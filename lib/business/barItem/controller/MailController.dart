@@ -1,6 +1,7 @@
 import 'package:chat_app/business/barItem/route/ChattingController.dart';
 import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/common/database/DBManage.dart';
+import 'package:chat_app/common/utils/UserInfoUtils.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -220,7 +221,8 @@ class MailScreen extends StatelessWidget {
 
         ///调用本地数据查询聊天信息
         var msg = await DBManage.getMessages(friend.friendId.toString(), 0, 20);
-        Get.to(ChatPage(), arguments: [msg, friend.friendId]);
+        var userInfo = await UserInfoUtils.getUserInfo();
+        Get.to(ChatPage(), arguments: [msg, friend.friendId, userInfo]);
         /*await Navigator.of(context)
             .pushNamed("chat_page", arguments: friend.friendName);*/
       },

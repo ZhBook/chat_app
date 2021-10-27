@@ -84,6 +84,22 @@ class DBManage {
     }
   }
 
+  static Future updateMessage(Message message) async {
+    Batch batch = db.batch();
+    var result = await db
+        .query("chatting", where: "friendId", whereArgs: [message.friendId]);
+
+    /// 如果记录不存在，则新增一条记录
+    if (result.isEmpty) {
+      batch.insert("chatting", message.toJson());
+    } else {
+      batch.update("chatting", message.toJson());
+    }
+    var friendId = message.friendId.toString();
+    batch.insert("chat_$friendId", message.toJson());
+    batch.commit();
+  }
+
   /// 降序查出所有聊天好友
   static Future<List<Message>> getChattingInfo() async {
     List<Map<String, dynamic>> result =
@@ -151,14 +167,12 @@ class DBManage {
       String friendId, int start, int limit) async {
     createFriendsMessageTable(friendId);
     List<Map<String, dynamic>> result = await db.query("chat_$friendId",
-        distinct: true,
-        orderBy: 'createTime desc',
-        limit: limit,
-        offset: start);
+        distinct: true, orderBy: 'createTime asc', limit: limit, offset: start);
     List<Message> message = result.map((e) => Message.fromJson(e)).toList();
     return message;
   }
 
+  //新消息接收时，写入对应的表中
   static Future insertMessage(Message message) async {
     var friendId = message.friendId.toString();
     // createFriendsMessageTable(friendId);

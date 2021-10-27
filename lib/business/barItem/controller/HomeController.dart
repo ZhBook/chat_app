@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:chat_app/business/barItem/route/ChattingController.dart';
 import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/WebSocketManage.dart';
+import 'package:chat_app/common/utils/DateUtils.dart';
+import 'package:chat_app/common/utils/UserInfoUtils.dart';
 import 'package:chat_app/common/utils/Utils.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +14,6 @@ import 'package:get/get_navigation/src/extension_navigation.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -18,29 +21,39 @@ class HomeScreen extends StatefulWidget {
 //消息列表
 List<Message> list = [];
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
+    print('HomeController初始化');
 
     /// 初始化数据
     initMsgList();
 
     /// 当有接收新消息时，更新列表
-    EventBusUtils.getInstance().on<WebSocketUtility>().listen((event) {
+    eventBus =
+        EventBusUtils.getInstance().on<WebSocketUtility>().listen((event) {
+      // if (mounted) {
+      print("接收到了新的消息，进行渲染了");
+      // initMsgList();
+      // }
+      Message newMessage = event.receiveMsg;
       setState(() {
-        initMsgList();
+        list.removeWhere((element) => element.friendId == newMessage.friendId);
+        list.add(newMessage);
       });
     });
   }
 
-  /// 初始化聊天记录
-  void initMsgList() {
-    DBManage.getChattingInfo().then((value) => list = value);
-  }
+  late StreamSubscription eventBus;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: Container(
         child: CustomScrollView(
@@ -78,8 +91,13 @@ class _HomeScreenState extends State<HomeScreen> {
     Message message = list[index];
     return GestureDetector(
       onTap: () async {
+        ///调用本地数据查询聊天信息
+        var msg =
+            await DBManage.getMessages(message.friendId.toString(), 0, 20);
+        var userInfo = await UserInfoUtils.getUserInfo();
+
         /// 跳转到聊天界面
-        Get.to(ChatPage(), arguments: [message, message.friendId]);
+        Get.to(ChatPage(), arguments: [msg, message.friendId, userInfo]);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -95,11 +113,13 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           children: [
             Expanded(
-              child: Container(
-                child: Icon(
-                  Icons.person_pin,
-                  size: 50,
-                  color: Colors.amber,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: Image.network(
+                  message.headImgUrl,
+                  fit: BoxFit.fill,
+                  width: 40,
+                  height: 40,
                 ),
               ),
               flex: 1,
@@ -132,12 +152,27 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
                 child: Container(
               alignment: Alignment.centerRight,
-              child:
-                  Text(Utils.getRandomNum(24) + ":" + Utils.getRandomNum(60)),
+              child: Text(DateUtil.getNowTime(message.createTime)),
             ))
           ],
         ),
       ),
     );
+  }
+
+  /// 初始化聊天记录
+  void initMsgList() {
+    DBManage.getChattingInfo().then((value) {
+      setState(() {
+        list = value;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print('Home被卸载了');
+    // eventBus.cancel();
   }
 }

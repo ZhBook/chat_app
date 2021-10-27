@@ -58,18 +58,20 @@ class WebSocketUtility {
 
   /// WebSocket接收消息回调
   static webSocketOnMessage(data) {
-    MessageType messageType = MessageType.fromJson(json.decode(data));
+    var messageJson = json.decode(data);
+    MessageType messageType = MessageType.fromJson(messageJson);
     num type = messageType.type;
     switch (type) {
       case 0:
         log.info("服务器心跳测试：" + messageType.data.toString());
         break;
       case 1:
+        log.info("来了新消息");
         //处理接收的消息
         Message receiveMsg = Message.fromJson(messageType.data);
+        DBManage.updateMessage(receiveMsg);
         //注册监听
         EventBusUtils.getInstance().fire(WebSocketUtility(receiveMsg));
-        DBManage.updateChattingTable(receiveMsg);
         break;
       case 2:
         break;

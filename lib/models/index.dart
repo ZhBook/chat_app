@@ -6,4 +6,4 @@ export 'messageType.dart';
 export 'pageResult.dart';
 export 'profile.dart';
 export 'result.dart';
-export 'userdart';
+export 'user.dart';

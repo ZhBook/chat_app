@@ -4,7 +4,6 @@ import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
-import 'package:chat_app/common/utils/UserInfoUtils.dart';
 import 'package:chat_app/common/utils/Utils.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:chat_app/models/user.dart';
@@ -34,7 +33,7 @@ num friendId = 0;
 final List<Message> _messages = [];
 String _friendName = "Friend Name";
 final ApiImpl request = new ApiImpl();
-late User userInfo;
+User userInfo = new User();
 int limit = 10;
 int start = 1;
 
@@ -63,7 +62,13 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+    with
+        TickerProviderStateMixin,
+        WidgetsBindingObserver,
+        AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _isComposing = false;
@@ -76,22 +81,27 @@ class _ChatScreenState extends State<ChatScreen>
   double _cardBorderRadius = 10;
   Color _extendButtonColor = Colors.black;
 
+  late StreamSubscription eventBus;
+
   ScrollController _customController =
       ScrollController(initialScrollOffset: 100);
 
   @protected
   void initState() {
-    ///todo 只监听与该好友的消息
     /// 全局添加接收消息监听
-    EventBusUtils.getInstance().on<WebSocketUtility>().listen((event) {
+    eventBus =
+        EventBusUtils.getInstance().on<WebSocketUtility>().listen((event) {
       print('监听到的数据:' + event.receiveMsg.toString());
-      setState(() {
-        _messages.add(event.receiveMsg);
-        scrollMsgBottom();
-      });
+      if (event.receiveMsg.friendId == friendId) {
+        if (mounted) {
+          setState(() {
+            _messages.add(event.receiveMsg);
+            scrollMsgBottom();
+          });
+        }
+      }
     });
 
-    super.initState();
     //通过获取键盘的显示，来控制加号的显示
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
@@ -108,8 +118,8 @@ class _ChatScreenState extends State<ChatScreen>
     _messages.addAll(arguments[0]);
     //初始化朋友信息
     friendId = arguments[1];
-
-    UserInfoUtils.getUserInfo().then((value) => userInfo = value);
+    userInfo = arguments[2];
+    super.initState();
   }
 
   @override
@@ -476,5 +486,11 @@ class _ChatScreenState extends State<ChatScreen>
       _messages.insertAll(0, messages);
       // _messages.addAll(messages);
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // eventBus.cancel();
   }
 }
