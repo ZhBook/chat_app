@@ -32,7 +32,7 @@ class ReceivedMessageScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(40),
             child: Image.network(
               message.headImgUrl,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               width: 40,
               height: 40,
             ),
@@ -51,7 +51,12 @@ class ReceivedMessageScreen extends StatelessWidget {
             ),
             child: Text(
               message.context,
-              style: TextStyle(color: Colors.black, fontSize: 14),
+              overflow: TextOverflow.visible,
+              maxLines: 10,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+              ),
             ),
           ),
         ),

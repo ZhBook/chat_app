@@ -34,12 +34,13 @@ final List<Message> _messages = [];
 String _friendName = "Friend Name";
 final ApiImpl request = new ApiImpl();
 User userInfo = new User();
-int limit = 10;
-int start = 1;
+
+int offset = 5;
 
 ///接收传递的参数
 ///0：聊天记录
 ///1：朋友信息
+///2：用户信息
 final List arguments = [];
 
 class ChatPage extends StatelessWidget {
@@ -62,13 +63,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen>
-    with
-        TickerProviderStateMixin,
-        WidgetsBindingObserver,
-        AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
   bool _isComposing = false;
@@ -79,7 +74,6 @@ class _ChatScreenState extends State<ChatScreen>
   double _cardWidth = 60;
   Color _cardColor = Colors.white60;
   double _cardBorderRadius = 10;
-  Color _extendButtonColor = Colors.black;
 
   late StreamSubscription eventBus;
 
@@ -88,16 +82,20 @@ class _ChatScreenState extends State<ChatScreen>
 
   @protected
   void initState() {
+    print('聊天界面初始化');
+
     /// 全局添加接收消息监听
     eventBus =
         EventBusUtils.getInstance().on<WebSocketUtility>().listen((event) {
       print('监听到的数据:' + event.receiveMsg.toString());
       if (event.receiveMsg.friendId == friendId) {
         if (mounted) {
+          //更新全部消息为已读
+          DBManage.updateUnReadMessage(friendId);
           setState(() {
             _messages.add(event.receiveMsg);
-            scrollMsgBottom();
           });
+          scrollMsgBottom();
         }
       }
     });
@@ -105,17 +103,15 @@ class _ChatScreenState extends State<ChatScreen>
     //通过获取键盘的显示，来控制加号的显示
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
-        print(visible);
         if (visible) {
           _buttonShow = false;
-          _extendButtonColor = Colors.black;
         }
       },
     );
     scrollMsgBottom();
     arguments.addAll(Get.arguments);
     //初始化聊天信息
-    _messages.addAll(arguments[0]);
+    _messages.addAll(arguments[0].reversed.toList());
     //初始化朋友信息
     friendId = arguments[1];
     userInfo = arguments[2];
@@ -347,7 +343,7 @@ class _ChatScreenState extends State<ChatScreen>
                     child: Container(
                       padding: EdgeInsets.only(left: 5, right: 10),
                       child: Icon(
-                        Icons.record_voice_over,
+                        Icons.mic,
                         color: Colors.black,
                       ),
                     ),
@@ -362,9 +358,11 @@ class _ChatScreenState extends State<ChatScreen>
                     height: 35,
                     color: Colors.white,
                     child: TextField(
+                      cursorHeight: 35,
                       textAlign: TextAlign.start,
                       maxLines: 10,
                       controller: _textController,
+                      textInputAction: TextInputAction.send,
                       onChanged: (text) {
                         setState(() {
                           _isComposing = text.isNotEmpty;
@@ -398,7 +396,7 @@ class _ChatScreenState extends State<ChatScreen>
                     onTap: extendFunction,
                     child: Icon(
                       Icons.add_circle_outline,
-                      color: this._extendButtonColor,
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -423,6 +421,7 @@ class _ChatScreenState extends State<ChatScreen>
     newMessage.createTime = DateTime.now().toString();
     newMessage.userId = userInfo.id;
     newMessage.headImgUrl = userInfo.headImgUrl;
+    newMessage.haveRead = 1;
     //发送消息
     request.sendMessage(friendId.toString(), newMessage).catchError((onError) {
       newMessage.state = 1;
@@ -441,13 +440,9 @@ class _ChatScreenState extends State<ChatScreen>
 
   //展开加号按钮
   void extendFunction() {
+    _focusNode.unfocus();
     setState(() {
-      _focusNode.unfocus();
-      /*  Timer(Duration(milliseconds: 20), () {
-
-      });*/
       _buttonShow = true;
-      _extendButtonColor = Colors.blue;
     });
   }
 
@@ -478,19 +473,20 @@ class _ChatScreenState extends State<ChatScreen>
   }
 
   Future _refresh() async {
-    print("上拉加载");
-    var messages =
-        await DBManage.getMessages(friendId.toString(), start, limit);
-    start++;
+    print("下拉加载");
+    var messages = await DBManage.getMessages(friendId.toString(), offset, 5);
+    offset += 5;
     setState(() {
-      _messages.insertAll(0, messages);
-      // _messages.addAll(messages);
+      // _messages.insertAll(_messages.length, messages);
+      _messages.addAll(messages);
     });
   }
 
   @override
   void dispose() {
     super.dispose();
+    print('聊天界面卸载了');
+    _messages.clear();
     // eventBus.cancel();
   }
 }

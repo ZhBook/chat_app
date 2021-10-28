@@ -240,17 +240,21 @@ class MailScreen extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-              child: Container(
-                  child: Image.network(
-                friend.friendHeadUrl,
-                height: 40,
-                width: 40,
-              )),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  friend.friendHeadUrl,
+                  fit: BoxFit.cover,
+                  height: 40,
+                  width: 40,
+                ),
+              ),
               flex: 1,
             ),
             Expanded(
-              flex: 5,
+              flex: 9,
               child: Container(
+                padding: EdgeInsets.only(left: 10),
                 alignment: Alignment.centerLeft,
                 child: Text(friend.friendName),
               ),

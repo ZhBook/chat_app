@@ -30,7 +30,11 @@ class SentMessageScreen extends StatelessWidget {
             ),
             child: Text(
               message.context,
-              style: TextStyle(color: Colors.white, fontSize: 14),
+              overflow: TextOverflow.visible,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
             ),
           ),
         ),
@@ -40,7 +44,7 @@ class SentMessageScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(40),
             child: Image.network(
               message.headImgUrl,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               width: 40,
               height: 40,
             ),

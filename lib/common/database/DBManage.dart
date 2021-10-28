@@ -165,9 +165,10 @@ class DBManage {
   ///分页获取与好友的聊天信息
   static Future<List<Message>> getMessages(
       String friendId, int start, int limit) async {
+    print('查询聊天信息' + friendId);
     createFriendsMessageTable(friendId);
     List<Map<String, dynamic>> result = await db.query("chat_$friendId",
-        distinct: true, orderBy: 'createTime asc', limit: limit, offset: start);
+        orderBy: 'createTime desc', limit: 20, offset: 0);
     List<Message> message = result.map((e) => Message.fromJson(e)).toList();
     return message;
   }
@@ -177,6 +178,17 @@ class DBManage {
     var friendId = message.friendId.toString();
     // createFriendsMessageTable(friendId);
     db.insert("chat_$friendId", message.toJson());
+  }
+
+  static Future<int> selectUnReadMessage(num friendId) async {
+    List<Map<String, Object?>> list = await db.query("chat_$friendId",
+        where: "haveRead", whereArgs: [1], columns: ["haveRead"]);
+    return list.length;
+  }
+
+  static Future updateUnReadMessage(num friendId) async {
+    await db.update("chat_$friendId", {"haveRead": 0},
+        where: "haveRead", whereArgs: [1]);
   }
 
   Future query(Database db) async {

@@ -21,6 +21,9 @@ class HomeScreen extends StatefulWidget {
 //消息列表
 List<Message> list = [];
 
+//是否显示未读消息
+double _opacity = 0;
+
 class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin {
   @override
@@ -37,15 +40,16 @@ class _HomeScreenState extends State<HomeScreen>
     /// 当有接收新消息时，更新列表
     eventBus =
         EventBusUtils.getInstance().on<WebSocketUtility>().listen((event) {
-      // if (mounted) {
       print("接收到了新的消息，进行渲染了");
-      // initMsgList();
-      // }
       Message newMessage = event.receiveMsg;
-      setState(() {
-        list.removeWhere((element) => element.friendId == newMessage.friendId);
-        list.add(newMessage);
-      });
+      if (mounted) {
+        setState(() {
+          _opacity = 1;
+          list.removeWhere(
+              (element) => element.friendId == newMessage.friendId);
+          list.add(newMessage);
+        });
+      }
     });
   }
 
@@ -89,12 +93,22 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _cellForRow(BuildContext context, int index) {
     Message message = list[index];
+    int unreadNum = 0;
+    DBManage.selectUnReadMessage(message.friendId)
+        .then((value) => unreadNum = value);
     return GestureDetector(
       onTap: () async {
+        //更新全部消息为已读
+        await DBManage.updateUnReadMessage(message.friendId);
+
         ///调用本地数据查询聊天信息
         var msg =
             await DBManage.getMessages(message.friendId.toString(), 0, 20);
         var userInfo = await UserInfoUtils.getUserInfo();
+        setState(() {
+          unreadNum = 0;
+          _opacity = 0;
+        });
 
         /// 跳转到聊天界面
         Get.to(ChatPage(), arguments: [msg, message.friendId, userInfo]);
@@ -113,14 +127,44 @@ class _HomeScreenState extends State<HomeScreen>
         child: Row(
           children: [
             Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(40),
-                child: Image.network(
-                  message.headImgUrl,
-                  fit: BoxFit.fill,
-                  width: 40,
-                  height: 40,
-                ),
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(40),
+                    child: Image.network(
+                      message.headImgUrl,
+                      fit: BoxFit.cover,
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    child: Opacity(
+                      opacity: _opacity,
+                      // maintainState: true,
+                      child: Container(
+                        padding: EdgeInsets.all(1),
+                        decoration: new BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 12,
+                          minHeight: 12,
+                        ),
+                        child: new Text(
+                          '$unreadNum', //通知数量
+                          style: new TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
               flex: 1,
             ),

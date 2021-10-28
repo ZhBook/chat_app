@@ -47,7 +47,16 @@ class _MyAppState extends State<MyApp> {
             maxWidthForSmallMode: 150);
         return widget;
       },*/
-      home: Scaffold(body: Index()),
+      home: Scaffold(
+        //软键盘打开时，点击留白区域关闭
+        body: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: Index()),
+        resizeToAvoidBottomInset: false,
+      ),
     );
   }
 }
