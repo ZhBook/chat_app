@@ -159,45 +159,45 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          // backgroundColor: _backgroundColor,
-          title: _title,
-          actions: <Widget>[
-            //控制右上角按钮的显示
-            Visibility(
-              child: IconButton(
-                  onPressed: () async {
-                    await _rightEvent();
-                  },
-                  icon: _rightIcon),
-              maintainSize: true,
-              maintainAnimation: true,
-              maintainState: true,
-              visible: _rightCtrl,
-            ),
-          ], //右上角分享图标
-          /* bottom: TabBar(
-            //生成顶部Tab菜单
-            controller: _tabController,
-            tabs: tabs
-                .map((e) => Tab(
-                      text: e,
-                    ))
-                .toList(),
-          ), */
-          leading: Builder(builder: (context) {
-            return IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: Icon(
-                Icons.dashboard,
-                color: Colors.white,
-              ),
-            );
-          }),
-        ),
+        // appBar: AppBar(
+        //   centerTitle: true,
+        //   // backgroundColor: _backgroundColor,
+        //   title: _title,
+        //   actions: <Widget>[
+        //     //控制右上角按钮的显示
+        //     Visibility(
+        //       child: IconButton(
+        //           onPressed: () async {
+        //             await _rightEvent();
+        //           },
+        //           icon: _rightIcon),
+        //       maintainSize: true,
+        //       maintainAnimation: true,
+        //       maintainState: true,
+        //       visible: _rightCtrl,
+        //     ),
+        //   ], //右上角分享图标
+        //   /* bottom: TabBar(
+        //     //生成顶部Tab菜单
+        //     controller: _tabController,
+        //     tabs: tabs
+        //         .map((e) => Tab(
+        //               text: e,
+        //             ))
+        //         .toList(),
+        //   ), */
+        //   leading: Builder(builder: (context) {
+        //     return IconButton(
+        //       onPressed: () {
+        //         Scaffold.of(context).openDrawer();
+        //       },
+        //       icon: Icon(
+        //         Icons.dashboard,
+        //         color: Colors.white,
+        //       ),
+        //     );
+        //   }),
+        // ),
         drawer: new MyDrawer(),
         bottomNavigationBar: BottomNavigationBar(
           // showSelectedLabels: true, //选中才显示文字

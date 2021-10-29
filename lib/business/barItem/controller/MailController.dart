@@ -1,4 +1,5 @@
 import 'package:chat_app/business/barItem/route/ChattingController.dart';
+import 'package:chat_app/business/barItem/route/SearchController.dart';
 import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/utils/UserInfoUtils.dart';
@@ -13,6 +14,19 @@ class MailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Get.put(Controller());
     return Scaffold(
+      appBar: AppBar(
+        title: Text("通讯录"),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Get.to(SearchPage());
+            },
+            icon: Icon(Icons.person_add_alt),
+          )
+        ],
+      ),
       body: Container(
           child: CustomScrollView(
         slivers: <Widget>[

@@ -59,6 +59,36 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      appBar: AppBar(
+        //关闭返回
+        automaticallyImplyLeading: false,
+        title: Text("聊天"),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                AlertDialog(
+                  title: Text("Title"),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: const <Widget>[
+                        Text('该功能正在开发中...'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('确定'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+              icon: Icon(Icons.add_circle_outlined)),
+        ],
+      ),
       body: Container(
         child: CustomScrollView(
           slivers: <Widget>[
