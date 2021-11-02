@@ -1,4 +1,6 @@
+import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/common/InitClass.dart';
+import 'package:chat_app/models/friend.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -85,9 +87,13 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
 
   @override
   void initState() {
+    List<Friend> friendList = Controller.to.friendList;
+
     list
       ..add(HomeScreen())
-      ..add(MailScreen())
+      ..add(MailScreen(
+        friendList: friendList,
+      ))
       ..add(ToolsScreen())
       ..add(PersonScreen());
 

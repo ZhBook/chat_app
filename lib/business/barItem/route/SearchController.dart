@@ -36,6 +36,12 @@ class SearchPage extends StatelessWidget {
               ),
             ),
           ),
+          Container(
+            alignment: Alignment.center,
+            child: Text(
+              "我的微信号：zhd0704",
+            ),
+          )
         ],
       ),
     );

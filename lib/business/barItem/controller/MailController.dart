@@ -8,8 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MailScreen extends StatelessWidget {
-  const MailScreen({Key? key}) : super(key: key);
+  MailScreen({Key? key, required this.friendList}) : super(key: key);
 
+  final List<Friend> friendList;
   @override
   Widget build(BuildContext context) {
     Get.put(Controller());
@@ -228,7 +229,7 @@ class MailScreen extends StatelessWidget {
   }
 
   Widget _cellForRow(BuildContext context, int index) {
-    Friend friend = Controller.to.friendList[index];
+    Friend friend = friendList[index];
     return GestureDetector(
       onTap: () async {
         print("点击了$friend");

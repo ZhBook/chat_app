@@ -50,9 +50,12 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         //软键盘打开时，点击留白区域关闭
         body: GestureDetector(
-            behavior: HitTestBehavior.translucent,
             onTap: () {
-              FocusScope.of(context).unfocus();
+              FocusScopeNode focusScopeNode = FocusScope.of(context);
+              if (!focusScopeNode.hasPrimaryFocus &&
+                  focusScopeNode.focusedChild != null) {
+                FocusManager.instance.primaryFocus!.unfocus();
+              }
             },
             child: Index()),
         resizeToAvoidBottomInset: false,

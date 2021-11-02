@@ -14,4 +14,6 @@ abstract class Api {
   Future<List<Friend>> getFriends();
 
   Future<void> sendMessage(String friendId, Message message);
+
+  Future<List<FriendInfo>> searchFriends(String column, int start, int limit);
 }

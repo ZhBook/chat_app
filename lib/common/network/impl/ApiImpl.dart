@@ -129,4 +129,20 @@ class ApiImpl implements Api {
       log.info("发送成功");
     }
   }
+
+  @override
+  Future<List<FriendInfo>> searchFriends(
+      String column, int start, int limit) async {
+    var response = await dio.post(Urls.searchFriend,
+        queryParameters: {"column": column},
+        data: {"pageIndex": start, "pageSize": limit});
+    PageResult result = PageResult.fromJson(response.data);
+    List<FriendInfo> list = [];
+    if (result.code == 200) {
+      list = result.data.map((element) {
+        return FriendInfo.fromJson(element);
+      }).toList();
+    }
+    return list;
+  }
 }
