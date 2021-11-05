@@ -39,7 +39,7 @@ class DBManage {
     String createRelationSQL = '''
     CREATE TABLE "user_relation" (
       "id" TEXT(255) NOT NULL, "userId" TEXT(255) NOT NULL, "friendId" TEXT(255) NOT NULL,
-      "friendName" TEXT(255), "friendHeadUrl" TEXT(1000), PRIMARY KEY ("id","userId","friendId")
+      "friendNickname" TEXT(255), "friendHeadUrl" TEXT(1000), PRIMARY KEY ("id","userId","friendId")
     );
       ''';
 
@@ -83,6 +83,12 @@ class DBManage {
     } else {
       return db.update("chatting", message.toJson());
     }
+  }
+
+  static Future getFriend(num friendId) async {
+    var result = await db
+        .query("user_relation", where: "friendId", whereArgs: [friendId]);
+    return Friend.fromJson(result.single);
   }
 
   static Future updateMessage(Message message) async {

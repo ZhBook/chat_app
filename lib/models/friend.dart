@@ -9,7 +9,7 @@ class Friend {
   late num id;
   late num userId;
   late num friendId;
-  late String friendName;
+  late String friendNickname;
   late String friendHeadUrl;
   
   factory Friend.fromJson(Map<String,dynamic> json) => _$FriendFromJson(json);

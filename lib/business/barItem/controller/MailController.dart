@@ -271,7 +271,7 @@ class MailScreen extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.only(left: 10),
                 alignment: Alignment.centerLeft,
-                child: Text(friend.friendName),
+                child: Text(friend.friendNickname),
               ),
             ),
           ],

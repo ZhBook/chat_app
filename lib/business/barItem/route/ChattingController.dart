@@ -5,6 +5,7 @@ import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/common/utils/Utils.dart';
+import 'package:chat_app/models/friend.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:chat_app/models/user.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,10 +32,9 @@ final ThemeData kDefaultTheme = ThemeData(
 
 num friendId = 0;
 final List<Message> _messages = [];
-String _friendName = "Friend Name";
 final ApiImpl request = new ApiImpl();
 User userInfo = new User();
-
+late Friend friend;
 int offset = 5;
 
 ///接收传递的参数
@@ -50,7 +50,7 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_friendName),
+        title: Text(friend.friendNickname),
       ),
       body: ChatScreen(),
     );
@@ -115,6 +115,7 @@ class _ChatScreenState extends State<ChatScreen>
     //初始化朋友信息
     friendId = arguments[1];
     userInfo = arguments[2];
+    DBManage.getFriend(friendId).then((value) => friend = value);
     super.initState();
   }
 
@@ -417,6 +418,7 @@ class _ChatScreenState extends State<ChatScreen>
     /// 为保证本地数据库中消息ID与服务器ID相同，在本地创建
     newMessage.id = int.parse(Utils.getUUid());
     newMessage.friendId = friendId;
+    newMessage.friendNickname = friend.friendNickname;
     newMessage.context = text;
     newMessage.createTime = DateTime.now().toString();
     newMessage.userId = userInfo.id;
