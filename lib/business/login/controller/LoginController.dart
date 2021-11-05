@@ -11,11 +11,15 @@ import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../barItem/controller/BarItemController.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -164,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.blue,
                                 decoration: TextDecoration.underline))
                       ]),
-                ))
+                )),
               ],
             ),
           ),
@@ -202,7 +206,12 @@ class _LoginPageState extends State<LoginPage> {
                     )),
               ],
             ),
-          )
+          ),
+          ElevatedButton(
+              onPressed: () async {
+                await _showNotification();
+              },
+              child: Text('Show plain notification with payload')),
         ],
       ),
     );
@@ -274,5 +283,19 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
+  }
+
+  Future<void> _showNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'plain title', 'plain body', platformChannelSpecifics,
+        payload: 'item x');
   }
 }

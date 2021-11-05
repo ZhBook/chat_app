@@ -4,8 +4,9 @@ import 'dart:convert';
 import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/Urls.dart';
-import 'package:chat_app/models/message.dart';
+import 'package:chat_app/models/message.dart' as online;
 import 'package:chat_app/models/messageType.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:simple_logger/simple_logger.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -26,6 +27,9 @@ enum MessageTypeEnum {
   VIDEO, //(4,"视频");
 }
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
 class WebSocketUtility {
   static final log = SimpleLogger();
 
@@ -38,7 +42,7 @@ class WebSocketUtility {
   static late Timer _reconnectTimer; // 重连定时器
   static String message = "";
 
-  Message receiveMsg;
+  online.Message receiveMsg;
 
   WebSocketUtility(this.receiveMsg);
 
@@ -57,7 +61,7 @@ class WebSocketUtility {
   }
 
   /// WebSocket接收消息回调
-  static webSocketOnMessage(data) {
+  static webSocketOnMessage(data) async {
     var messageJson = json.decode(data);
     MessageType messageType = MessageType.fromJson(messageJson);
     num type = messageType.type;
@@ -68,7 +72,8 @@ class WebSocketUtility {
       case 1:
         log.info("来了新消息");
         //处理接收的消息
-        Message receiveMsg = Message.fromJson(messageType.data);
+        online.Message receiveMsg = online.Message.fromJson(messageType.data);
+        await _showNotification(receiveMsg);
         DBManage.updateMessage(receiveMsg);
         //注册监听
         EventBusUtils.getInstance().fire(WebSocketUtility(receiveMsg));
@@ -159,5 +164,20 @@ class WebSocketUtility {
       }
       return;
     }
+  }
+
+  /// 提示信息
+  static Future<void> _showNotification(online.Message message) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, message.friendNickname, message.context, platformChannelSpecifics,
+        payload: 'item x');
   }
 }

@@ -1,6 +1,7 @@
 {
   "id": 1,
   "friendId": 1,
+  "friendNickname": "",
   "userId":1,
   "context": "",
   "url": "",

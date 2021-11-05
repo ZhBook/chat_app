@@ -47,6 +47,7 @@ class DBManage {
     CREATE TABLE "chatting" (
           "id" INTEGER(100) NOT NULL,
         "friendId" INTEGER(100) NOT NULL,
+        "friendNickname" TEXT(100) NOT NULL,
         "userId" INTEGER(100) NOT NULL,
         "context" TEXT(1000),
         "url" TEXT(1000),
@@ -123,6 +124,7 @@ class DBManage {
      CREATE TABLE "chat_$friendId" (
         "id" INTEGER(100) NOT NULL,
         "friendId" INTEGER(100) NOT NULL,
+        "friendNickname" TEXT(100) NOT NULL,
         "userId" INTEGER(100) NOT NULL,
         "context" TEXT(1000),
         "url" TEXT(1000),

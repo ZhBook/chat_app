@@ -1,10 +1,34 @@
 import 'package:catcher/catcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'business/barItem/controller/BarItemController.dart';
 
-void main() {
+String? selectedNotificationPayload;
+
+final BehaviorSubject<String?> selectNotificationSubject =
+    BehaviorSubject<String?>();
+
+final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
+    BehaviorSubject<ReceivedNotification>();
+
+class ReceivedNotification {
+  ReceivedNotification({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.payload,
+  });
+
+  final int id;
+  final String? title;
+  final String? body;
+  final String? payload;
+}
+
+Future<void> main() async {
   CatcherOptions debugOptions = CatcherOptions(
       SilentReportMode(), [ConsoleHandler()],
       localizationOptions: [LocalizationOptions.buildDefaultChineseOptions()]);
@@ -21,6 +45,55 @@ void main() {
       // enableLogger: true,
       releaseConfig: releaseOptions);
   // runApp(MyApp());
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+// initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('app_icon');
+  final IOSInitializationSettings initializationSettingsIOS =
+      IOSInitializationSettings(onDidReceiveLocalNotification: (
+    int id,
+    String? title,
+    String? body,
+    String? payload,
+  ) async {
+    didReceiveLocalNotificationSubject.add(
+      ReceivedNotification(
+        id: id,
+        title: title,
+        body: body,
+        payload: payload,
+      ),
+    );
+  });
+  final MacOSInitializationSettings initializationSettingsMacOS =
+      MacOSInitializationSettings();
+  final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+      macOS: initializationSettingsMacOS);
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (String? payload) async {
+    if (payload != null) {
+      debugPrint('notification payload: $payload');
+    }
+    selectedNotificationPayload = payload;
+    selectNotificationSubject.add(payload);
+  });
+
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails('your channel id', 'your channel name',
+          channelDescription: 'your channel description',
+          importance: Importance.max,
+          priority: Priority.high,
+          ticker: 'ticker');
+  const NotificationDetails platformChannelSpecifics =
+      NotificationDetails(android: androidPlatformChannelSpecifics);
+  // 执行提示
+  // await flutterLocalNotificationsPlugin.show(
+  //     0, 'plain title', 'plain body', platformChannelSpecifics,
+  //     payload: 'item x');
 }
 
 class MyApp extends StatefulWidget {
@@ -61,5 +134,11 @@ class _MyAppState extends State<MyApp> {
         resizeToAvoidBottomInset: false,
       ),
     );
+  }
+}
+
+void selectNotification(String payload) async {
+  if (payload != null) {
+    debugPrint('notification payload: $payload');
   }
 }
