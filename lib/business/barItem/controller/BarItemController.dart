@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/common/InitClass.dart';
+import 'package:chat_app/common/event/EventBusUtil.dart';
+import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../exception/UnknownRoute.dart';
 import '../../login/controller/LoginController.dart';
@@ -75,6 +80,8 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
 
   bool _loading = false;
 
+  var _futureBuilderFuture;
+
   //标题栏主题颜色
   // Color _backgroundColor = Color.fromRGBO(223, 224, 225, 1.0);
 
@@ -87,16 +94,13 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
 
   @override
   void initState() {
-    List<Friend> friendList = Controller.to.friendList;
-
     list
       ..add(HomeScreen())
-      ..add(MailScreen(
-        friendList: friendList,
-      ))
+      ..add(MailScreen())
       ..add(ToolsScreen())
       ..add(PersonScreen());
 
+    _futureBuilderFuture = initData();
     super.initState();
     // _tabController = TabController(length: tabs.length, vsync: this);
 
@@ -240,9 +244,9 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
             //       itemCount: list.length,
             //       itemBuilder: (context, index) => list[_selectedIndex]),
             // )
-            IndexedStack(
-          index: _selectedIndex,
-          children: list,
+            FutureBuilder(
+          builder: _buildFuture,
+          future: _futureBuilderFuture,
         )
         // ProgressDialog(
         //     loading: _loading, msg: '加载中', child: list[_selectedIndex]),
@@ -284,5 +288,49 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
         _selectedIndex = index;
       }
     });
+  }
+
+  ///snapshot就是_calculation在时间轴上执行过程的状态快照
+  Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot) {
+    switch (snapshot.connectionState) {
+      case ConnectionState.none:
+        print('还没有开始网络请求');
+        return Text('还没有开始网络请求');
+      case ConnectionState.active:
+        print('active');
+        return Text('ConnectionState.active');
+      case ConnectionState.waiting:
+        print('waiting');
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      case ConnectionState.done:
+        print('done');
+        if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+        return _createListView(context, snapshot);
+      default:
+        return Text("");
+    }
+  }
+
+  Widget _createListView(context, snapshot) {
+    return IndexedStack(
+      index: _selectedIndex,
+      children: list,
+    );
+  }
+
+  /// 初始化数据
+  initData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userinfo = prefs.getString("loginUserInfo");
+    var userId = json.decode(userinfo!)["id"];
+    //初始化聊天监听
+    WebSocketUtility.openSocket();
+    WebSocketUtility.sendMessage({"userId": userId});
+    //初始全局监听
+    EventBusUtils.initEvenBus();
+    Get.put(Controller());
+    List<Friend> list = Controller.to.getFriendList();
   }
 }

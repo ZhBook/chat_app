@@ -7,10 +7,26 @@ import 'package:chat_app/models/friend.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class MailScreen extends StatelessWidget {
-  MailScreen({Key? key, required this.friendList}) : super(key: key);
+class MailScreen extends StatefulWidget {
+  const MailScreen({Key? key}) : super(key: key);
 
-  final List<Friend> friendList;
+  @override
+  _MailScreenState createState() => _MailScreenState();
+}
+
+class _MailScreenState extends State<MailScreen> {
+  late List<Friend> friendList;
+
+  @override
+  void initState() {
+    super.initState();
+    DBManage.selectFriends().then((value) {
+      setState(() {
+        friendList = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Get.put(Controller());
@@ -218,9 +234,7 @@ class MailScreen extends StatelessWidget {
           ),
           SliverFixedExtentList(
             delegate: SliverChildBuilderDelegate(_cellForRow,
-                childCount: null == Controller.to.friendList
-                    ? 0
-                    : Controller.to.friendList.length),
+                childCount: _childCount()),
             itemExtent: 48.0,
           )
         ],
@@ -237,9 +251,7 @@ class MailScreen extends StatelessWidget {
         ///调用本地数据查询聊天信息
         var msg = await DBManage.getMessages(friend.friendId.toString(), 0, 20);
         var userInfo = await UserInfoUtils.getUserInfo();
-        Get.to(ChatPage(), arguments: [msg, friend.friendId, userInfo]);
-        /*await Navigator.of(context)
-            .pushNamed("chat_page", arguments: friend.friendName);*/
+        Get.to(ChatPage(), arguments: [msg, friend, userInfo]);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -278,5 +290,13 @@ class MailScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  int _childCount() {
+    if (null == Controller.to.friendList) {
+      return 0;
+    }
+    friendList = Controller.to.friendList;
+    return Controller.to.friendList.length;
   }
 }

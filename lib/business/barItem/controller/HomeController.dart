@@ -24,6 +24,9 @@ List<Message> list = [];
 //是否显示未读消息
 double _opacity = 0;
 
+///todo 未读数量控制
+int unreadNum = 1;
+
 class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin {
   @override
@@ -36,6 +39,12 @@ class _HomeScreenState extends State<HomeScreen>
 
     /// 初始化数据
     initMsgList();
+
+    EventBusUtils.getInstance().on<DBManage>().listen((event) {
+      if (mounted) {
+        initMsgList();
+      }
+    });
 
     /// 当有接收新消息时，更新列表
     eventBus =
@@ -123,7 +132,12 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _cellForRow(BuildContext context, int index) {
     Message message = list[index];
-    int unreadNum = 0;
+    var friend;
+
+    /// 获取好友信息
+    DBManage.getFriend(message.friendId).then((value) => friend = value);
+
+    ///设置全部消息已读
     DBManage.selectUnReadMessage(message.friendId)
         .then((value) => unreadNum = value);
     return GestureDetector(
@@ -141,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen>
         });
 
         /// 跳转到聊天界面
-        Get.to(ChatPage(), arguments: [msg, message.friendId, userInfo]);
+        Get.to(ChatPage(), arguments: [msg, friend, userInfo]);
       },
       child: Container(
         decoration: BoxDecoration(

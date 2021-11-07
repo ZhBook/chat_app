@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:simple_logger/simple_logger.dart';
@@ -11,11 +12,12 @@ class DBManage {
   static String databasesPath = "";
   static String database = "DB/chatApp.db";
   static final log = SimpleLogger();
+  DBManage(Message message);
 
   static void initDB() {
     getDatabasesPath().then((value) => databasesPath = value);
     log.info("数据库地址：" + databasesPath);
-    openDatabase(database, onCreate: _onCreate, version: 6)
+    openDatabase(database, onCreate: _onCreate, version: 7)
         .then((value) => db = value);
   }
 
@@ -30,16 +32,16 @@ class DBManage {
     }
     String createUserInfoSQL = '''
     CREATE TABLE "user_info" (
-      "id" TEXT(255) NOT NULL, "username" TEXT(255), "nickname" TEXT(255),
-      "headImgUrl" TEXT(1000), "EMail" TEXT(255), "mobile" TEXT(255),
-      "sex" TEXT(255), "address" TEXT(255), PRIMARY KEY ("id") 
+      "id" INTEGER(50) NOT NULL, "username" INTEGER(50), "nickname" TEXT(50),
+      "headImgUrl" TEXT(1000), "EMail" TEXT(50), "mobile" TEXT(50),
+      "sex" TEXT(4), "address" TEXT(255), PRIMARY KEY ("id") 
     );
       ''';
 
     String createRelationSQL = '''
     CREATE TABLE "user_relation" (
-      "id" TEXT(255) NOT NULL, "userId" TEXT(255) NOT NULL, "friendId" TEXT(255) NOT NULL,
-      "friendNickname" TEXT(255), "friendHeadUrl" TEXT(1000), PRIMARY KEY ("id","userId","friendId")
+      "id" INTEGER(50) NOT NULL, "userId" INTEGER(50) NOT NULL, "friendId" INTEGER(50) NOT NULL,
+      "friendNickname" TEXT(50), "friendHeadUrl" TEXT(1000), PRIMARY KEY ("id")
     );
       ''';
 
@@ -53,7 +55,7 @@ class DBManage {
         "url" TEXT(1000),
         "headImgUrl" TEXT(1000),
         "type" INTEGER(4),
-        "createTime" TEXT(255) NOT NULL,
+        "createTime" TEXT(50) NOT NULL,
         "haveRead" INTEGER(4),
         "state" INTEGER(4),
         PRIMARY KEY ("friendId")
@@ -75,7 +77,7 @@ class DBManage {
   //更新最新聊天记录
   static Future updateChattingTable(Message message) async {
     var result = await db
-        .query("chatting", where: "friendId", whereArgs: [message.friendId]);
+        .query("chatting", where: "friendId =?", whereArgs: [message.friendId]);
 
     /// 如果记录不存在，则新增一条记录
     if (result.isEmpty) {
@@ -86,25 +88,38 @@ class DBManage {
   }
 
   static Future getFriend(num friendId) async {
-    var result = await db
-        .query("user_relation", where: "friendId", whereArgs: [friendId]);
-    return Friend.fromJson(result.single);
+    List<Map<String, dynamic>> result = await db
+        .query("user_relation", where: "friendId =?", whereArgs: [friendId]);
+    if (result.isEmpty) {
+      return;
+    }
+    List<Friend> friends = result.map((e) => Friend.fromJson(e)).toList();
+    return friends.first;
+  }
+
+  static Future<List<Friend>> selectFriends() async {
+    List<Map<String, dynamic>> result =
+        await db.query("user_relation", orderBy: "friendNickname asc");
+    List<Friend> friends = result.map((e) => Friend.fromJson(e)).toList();
+    return friends;
   }
 
   static Future updateMessage(Message message) async {
     Batch batch = db.batch();
     var result = await db
-        .query("chatting", where: "friendId", whereArgs: [message.friendId]);
+        .query("chatting", where: "friendId =?", whereArgs: [message.friendId]);
 
     /// 如果记录不存在，则新增一条记录
     if (result.isEmpty) {
       batch.insert("chatting", message.toJson());
-    } else {
-      batch.update("chatting", message.toJson());
-    }
-    var friendId = message.friendId.toString();
+    } else {}
+    batch.update("chatting", message.toJson());
+
+    var friendId = message.friendId;
     batch.insert("chat_$friendId", message.toJson());
     batch.commit();
+
+    EventBusUtils.getInstance().fire(DBManage(message));
   }
 
   /// 降序查出所有聊天好友
@@ -119,10 +134,8 @@ class DBManage {
   static Future createFriendsMessageTable(String friendId) async {
     log.info("开始创建好友聊天表，好友username:" + friendId);
     try {
-      List<Map<String, dynamic>> result = await db.query("chat_$friendId");
-      if (result.isNotEmpty) {
-        return true;
-      }
+      await db.query("chat_$friendId");
+      return true;
     } catch (e) {
       log.warning(e);
     }
@@ -139,7 +152,7 @@ class DBManage {
         "createTime" TEXT(255) NOT NULL,
         "haveRead" INTEGER(4),
         "state" INTEGER(4),
-        PRIMARY KEY ("id", "friendId", "userId")
+        PRIMARY KEY ("id")
       );
       ''';
     db.execute(createSQL);
@@ -153,7 +166,7 @@ class DBManage {
       createFriendsMessageTable(element.friendId.toString());
       try {
         var check = await db
-            .query("user_relation", where: "id", whereArgs: [element.id]);
+            .query("user_relation", where: "id =?", whereArgs: [element.id]);
 
         ///todo 需要处理好友信息修改后的问题
         if (check.isNotEmpty) {
@@ -189,14 +202,14 @@ class DBManage {
   }
 
   static Future<int> selectUnReadMessage(num friendId) async {
-    List<Map<String, Object?>> list = await db.query("chat_$friendId",
-        where: "haveRead", whereArgs: [1], columns: ["haveRead"]);
+    List<Map<String, Object?>> list =
+        await db.query("chat_$friendId", where: "haveRead =?", whereArgs: [1]);
     return list.length;
   }
 
   static Future updateUnReadMessage(num friendId) async {
     await db.update("chat_$friendId", {"haveRead": 0},
-        where: "haveRead", whereArgs: [1]);
+        where: "haveRead =?", whereArgs: [1]);
   }
 
   Future query(Database db) async {

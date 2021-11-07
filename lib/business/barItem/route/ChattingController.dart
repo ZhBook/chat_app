@@ -30,11 +30,10 @@ final ThemeData kDefaultTheme = ThemeData(
       .copyWith(secondary: Colors.blue[400]),
 );
 
-num friendId = 0;
 final List<Message> _messages = [];
 final ApiImpl request = new ApiImpl();
 User userInfo = new User();
-late Friend friend;
+Friend friendInfo = new Friend();
 int offset = 5;
 
 ///接收传递的参数
@@ -49,9 +48,6 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(friend.friendNickname),
-      ),
       body: ChatScreen(),
     );
   }
@@ -88,10 +84,10 @@ class _ChatScreenState extends State<ChatScreen>
     eventBus =
         EventBusUtils.getInstance().on<WebSocketUtility>().listen((event) {
       print('监听到的数据:' + event.receiveMsg.toString());
-      if (event.receiveMsg.friendId == friendId) {
+      if (event.receiveMsg.friendId == friendInfo.friendId) {
         if (mounted) {
           //更新全部消息为已读
-          DBManage.updateUnReadMessage(friendId);
+          DBManage.updateUnReadMessage(friendInfo.friendId);
           setState(() {
             _messages.add(event.receiveMsg);
           });
@@ -113,9 +109,8 @@ class _ChatScreenState extends State<ChatScreen>
     //初始化聊天信息
     _messages.addAll(arguments[0].reversed.toList());
     //初始化朋友信息
-    friendId = arguments[1];
+    friendInfo = arguments[1];
     userInfo = arguments[2];
-    DBManage.getFriend(friendId).then((value) => friend = value);
     super.initState();
   }
 
@@ -123,9 +118,9 @@ class _ChatScreenState extends State<ChatScreen>
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(_friend.friendName),
-      // ),
+      appBar: AppBar(
+        title: Text(friendInfo.friendNickname),
+      ),
       body: Container(
         decoration: Theme.of(context).platform == TargetPlatform.iOS //new
             ? BoxDecoration(
@@ -366,6 +361,7 @@ class _ChatScreenState extends State<ChatScreen>
                       textInputAction: TextInputAction.send,
                       onChanged: (text) {
                         setState(() {
+                          /// todo 当输入内容时就会发送数据，需要优化
                           _isComposing = text.isNotEmpty;
                         });
                       },
@@ -416,21 +412,26 @@ class _ChatScreenState extends State<ChatScreen>
     Message newMessage = new Message();
 
     /// 为保证本地数据库中消息ID与服务器ID相同，在本地创建
-    newMessage.id = int.parse(Utils.getUUid());
-    newMessage.friendId = friendId;
-    newMessage.friendNickname = friend.friendNickname;
+    newMessage.id = Utils.getUUid();
+    newMessage.friendId = friendInfo.friendId;
+    newMessage.friendNickname = friendInfo.friendNickname;
     newMessage.context = text;
     newMessage.createTime = DateTime.now().toString();
     newMessage.userId = userInfo.id;
     newMessage.headImgUrl = userInfo.headImgUrl;
     newMessage.haveRead = 1;
+    newMessage.type = 1;
+    newMessage.url = '-1';
+    newMessage.state = 0;
     //发送消息
-    request.sendMessage(friendId.toString(), newMessage).catchError((onError) {
+    request
+        .sendMessage(friendInfo.friendId.toString(), newMessage)
+        .catchError((onError) {
+      ///todo 发送失败本地处理
       newMessage.state = 1;
       print('当前错误：' + onError.toString());
     });
-
-    DBManage.insertMessage(newMessage);
+    DBManage.updateMessage(newMessage);
 
     setState(() {
       _isComposing = false;
@@ -476,7 +477,8 @@ class _ChatScreenState extends State<ChatScreen>
 
   Future _refresh() async {
     print("下拉加载");
-    var messages = await DBManage.getMessages(friendId.toString(), offset, 5);
+    var messages =
+        await DBManage.getMessages(friendInfo.friendId.toString(), offset, 5);
     offset += 5;
     setState(() {
       // _messages.insertAll(_messages.length, messages);
