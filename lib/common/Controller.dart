@@ -1,6 +1,7 @@
 import 'package:chat_app/models/friend.dart';
 import 'package:get/get.dart';
 
+import 'database/DBManage.dart';
 import 'network/impl/ApiImpl.dart';
 
 class Controller extends GetxController {
@@ -20,5 +21,12 @@ class Controller extends GetxController {
       print('friends:' + friendList.toString());
     });
     return friendList;
+  }
+
+  /// 获取好友信息
+  Friend getFriendInfo(num friendId) {
+    var friend;
+    DBManage.getFriend(friendId).then((value) => friend = value);
+    return friend;
   }
 }

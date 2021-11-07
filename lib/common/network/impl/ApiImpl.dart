@@ -24,15 +24,17 @@ class ApiImpl implements Api {
   Future<Login> login(String username, String pwd) async {
     Login login = new Login();
     try {
-      var response = await dio.post(
-        Urls.login,
-        queryParameters: {
-          'grant_type': 'password',
-          'username': username,
-          'password': pwd,
-        },
-        options: Options(responseType: ResponseType.json),
-      );
+      var response = await dio.post(Urls.login,
+          queryParameters: {
+            'grant_type': 'password',
+            'username': username,
+            'password': pwd,
+          },
+          options: Options(responseType: ResponseType.json),
+          onSendProgress: (int sent, int total) {
+        print('$sent $total');
+        print("开始请求");
+      });
       //登录成功后更新公共头（authorization），此后的所有请求都会带上用户身份信息
       // Map<String, dynamic> responseData = jsonDecode(response.);
       login = Login.fromJson(response.data);

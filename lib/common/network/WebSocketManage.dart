@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/Urls.dart';
+import 'package:chat_app/common/notification/Notification.dart';
 import 'package:chat_app/models/message.dart' as online;
 import 'package:chat_app/models/messageType.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:simple_logger/simple_logger.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -26,9 +26,6 @@ enum MessageTypeEnum {
   PICTURE, //(3,"图片"),
   VIDEO, //(4,"视频");
 }
-
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
 
 class WebSocketUtility {
   static final log = SimpleLogger();
@@ -73,7 +70,9 @@ class WebSocketUtility {
         log.info("来了新消息");
         //处理接收的消息
         online.Message receiveMsg = online.Message.fromJson(messageType.data);
-        await _showNotification(receiveMsg);
+
+        /// 通知
+        await Notification.showNotification(receiveMsg);
         DBManage.updateMessage(receiveMsg);
         //注册监听
         EventBusUtils.getInstance().fire(WebSocketUtility(receiveMsg));
@@ -150,6 +149,7 @@ class WebSocketUtility {
 
   /// 重连机制
   static void reconnect() {
+    destroyHeartBeat();
     if (_reconnectTimes < _reconnectCount) {
       _reconnectTimes++;
       _reconnectTimer =
@@ -164,20 +164,5 @@ class WebSocketUtility {
       }
       return;
     }
-  }
-
-  /// 提示信息
-  static Future<void> _showNotification(online.Message message) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails('your channel id', 'your channel name',
-            channelDescription: 'your channel description',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker');
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, message.friendNickname, message.context, platformChannelSpecifics,
-        payload: 'item x');
   }
 }

@@ -1,25 +1,19 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:chat_app/business/login/route/RegisterController.dart';
-import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/common/config/Global.dart';
-import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/Request.dart';
-import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../barItem/controller/BarItemController.dart';
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -207,11 +201,6 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ),
-          ElevatedButton(
-              onPressed: () async {
-                await _showNotification();
-              },
-              child: Text('Show plain notification with payload')),
         ],
       ),
     );
@@ -240,14 +229,8 @@ class _LoginPageState extends State<LoginPage> {
         //存储用户信息
         prefs.setString(
             "loginUserInfo", json.encode(value.data["userInfoResponse"]));
-        var userId = value.data["userInfoResponse"]["id"];
-        //初始化聊天监听
-        WebSocketUtility.openSocket();
-        WebSocketUtility.sendMessage({"userId": userId});
-        //初始全局监听
-        EventBusUtils.initEvenBus();
-        Get.put(Controller());
-        Controller.to.getFriendList();
+
+        /// todo 每次登陆后更新用户数据
         Fluttertoast.showToast(msg: "登陆成功");
         Get.to(ScaffoldRoute());
         return;
@@ -283,19 +266,5 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
     );
-  }
-
-  Future<void> _showNotification() async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails('your channel id', 'your channel name',
-            channelDescription: 'your channel description',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker');
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'plain title', 'plain body', platformChannelSpecifics,
-        payload: 'item x');
   }
 }
