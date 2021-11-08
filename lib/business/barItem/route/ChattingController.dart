@@ -30,7 +30,7 @@ final ThemeData kDefaultTheme = ThemeData(
       .copyWith(secondary: Colors.blue[400]),
 );
 
-final List<Message> _messages = [];
+late List<Message> _messages = [];
 final ApiImpl request = new ApiImpl();
 User userInfo = new User();
 Friend friendInfo = new Friend();
@@ -119,7 +119,7 @@ class _ChatScreenState extends State<ChatScreen>
     );
     arguments = Get.arguments;
     //初始化聊天信息
-    _messages.addAll(arguments[0]);
+    _messages = arguments[0];
     //初始化朋友信息
     friendInfo = arguments[1];
     userInfo = arguments[2];
@@ -514,7 +514,7 @@ class _ChatScreenState extends State<ChatScreen>
   void dispose() {
     super.dispose();
     print('聊天界面卸载了');
-    _messages.clear();
+    // _messages.clear();
     // eventBus.cancel();
   }
 }
