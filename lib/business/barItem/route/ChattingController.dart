@@ -39,7 +39,7 @@ Friend friendInfo = new Friend();
 ///0：聊天记录
 ///1：朋友信息
 ///2：用户信息
-final List arguments = [];
+late List arguments = [];
 
 class ChatPage extends StatelessWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -117,7 +117,7 @@ class _ChatScreenState extends State<ChatScreen>
         }
       },
     );
-    arguments.addAll(Get.arguments);
+    arguments = Get.arguments;
     //初始化聊天信息
     _messages.addAll(arguments[0]);
     //初始化朋友信息
@@ -457,7 +457,7 @@ class _ChatScreenState extends State<ChatScreen>
 
     setState(() {
       _isComposing = false;
-      _messages.add(newMessage);
+      _messages.insert(0, newMessage);
     });
     _focusNode.requestFocus();
     // message.animationController.forward();
