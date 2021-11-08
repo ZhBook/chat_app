@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   String username = "15352058954";
   String password = "123";
   bool _isChecked = true;
-  bool _isLoading = true;
+  bool _loading = true;
   IconData _checkIcon = Icons.check_box;
 
   Widget _showEmailInput() {
@@ -201,6 +201,10 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ),
+          Offstage(
+            offstage: _loading,
+            child: Center(child: CircularProgressIndicator()),
+          )
         ],
       ),
     );
@@ -212,6 +216,9 @@ class _LoginPageState extends State<LoginPage> {
 
   /// 点击登陆按钮进行逻辑处理
   Future<void> _onLogin() async {
+    setState(() {
+      _loading = false;
+    });
     final form = _formKey.currentState;
     form!.save();
     if (username == '') {
@@ -223,6 +230,9 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     request.login(username, password).then((value) async {
+      setState(() {
+        _loading = true;
+      });
       if (value.code == 200) {
         //登陆成功后的初始化
         SharedPreferences prefs = await SharedPreferences.getInstance();

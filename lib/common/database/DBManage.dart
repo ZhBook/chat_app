@@ -104,7 +104,38 @@ class DBManage {
     return friends;
   }
 
-  static Future updateMessage(Message message) async {
+  /// 存储接收到的消息
+  static Future updateReceiveMessage(Message message) async {
+    Batch batch = db.batch();
+    var userId = message.userId;
+
+    batch.insert("chat_$userId", message.toJson());
+
+    var result = await db.query("chatting",
+        where: "friendId =? or userId = ?",
+        whereArgs: [message.userId, message.userId]);
+
+    /// todo 区分用户和朋友发的消息
+    var json = message.toJson();
+    Message messageOther = Message.fromJson(json);
+
+    num userID = messageOther.userId;
+    messageOther.userId = messageOther.friendId;
+    messageOther.friendId = userID;
+
+    /// 如果记录不存在，则新增一条记录
+    if (result.isEmpty) {
+      batch.insert("chatting", messageOther.toJson());
+    } else {
+      batch.update("chatting", messageOther.toJson());
+    }
+    batch.commit();
+
+    EventBusUtils.getInstance().fire(DBManage(message));
+  }
+
+  /// 存储发送的消息
+  static Future updateSendMessage(Message message) async {
     Batch batch = db.batch();
     var result = await db
         .query("chatting", where: "friendId =?", whereArgs: [message.friendId]);
@@ -190,6 +221,19 @@ class DBManage {
     createFriendsMessageTable(friendId);
     List<Map<String, dynamic>> result = await db.query("chat_$friendId",
         orderBy: 'createTime desc', limit: 20, offset: 0);
+    List<Message> message = result.map((e) => Message.fromJson(e)).toList();
+    return message;
+  }
+
+  ///分页获取与好友的聊天信息
+  static Future<List<Message>> getNextMessages(
+      String friendId, num messageId) async {
+    print('查询聊天信息' + friendId);
+    createFriendsMessageTable(friendId);
+    String sql = '''
+    SELECT * FROM "chat_$friendId" WHERE id < $messageId  ORDER BY createTime DESC LIMIT 5
+    ''';
+    List<Map<String, dynamic>> result = await db.rawQuery(sql);
     List<Message> message = result.map((e) => Message.fromJson(e)).toList();
     return message;
   }

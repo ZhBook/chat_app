@@ -73,7 +73,7 @@ class WebSocketUtility {
 
         /// 通知
         await Notification.showNotification(receiveMsg);
-        DBManage.updateMessage(receiveMsg);
+        DBManage.updateReceiveMessage(receiveMsg);
         //注册监听
         EventBusUtils.getInstance().fire(WebSocketUtility(receiveMsg));
         break;

@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen>
                   children: [
                     Container(
                       alignment: Alignment.centerLeft,
-                      child: Text("联系人",
+                      child: Text(message.friendNickname,
                           style: TextStyle(
                             fontSize: 18,
                             color: Utils.getRandomColor(),

@@ -34,7 +34,6 @@ final List<Message> _messages = [];
 final ApiImpl request = new ApiImpl();
 User userInfo = new User();
 Friend friendInfo = new Friend();
-int offset = 5;
 
 ///接收传递的参数
 ///0：聊天记录
@@ -71,6 +70,8 @@ class _ChatScreenState extends State<ChatScreen>
   Color _cardColor = Colors.white60;
   double _cardBorderRadius = 10;
 
+  bool _loading = false;
+
   late StreamSubscription eventBus;
 
   ScrollController _customController =
@@ -80,11 +81,23 @@ class _ChatScreenState extends State<ChatScreen>
   void initState() {
     print('聊天界面初始化');
 
+    ///滚动条位置监听
+    _customController.addListener(() {
+      ///当位置到0的时候开始追加新的聊天消息
+      if (_customController.offset ==
+          _customController.position.maxScrollExtent) {
+        addMessage();
+      }
+      setState(() {
+        _loading = false;
+      });
+    });
+
     /// 全局添加接收消息监听
     eventBus =
         EventBusUtils.getInstance().on<WebSocketUtility>().listen((event) {
       print('监听到的数据:' + event.receiveMsg.toString());
-      if (event.receiveMsg.friendId == friendInfo.friendId) {
+      if (event.receiveMsg.userId == friendInfo.friendId) {
         if (mounted) {
           //更新全部消息为已读
           DBManage.updateUnReadMessage(friendInfo.friendId);
@@ -104,13 +117,15 @@ class _ChatScreenState extends State<ChatScreen>
         }
       },
     );
-    scrollMsgBottom();
     arguments.addAll(Get.arguments);
     //初始化聊天信息
-    _messages.addAll(arguments[0].reversed.toList());
+    _messages.addAll(arguments[0]);
     //初始化朋友信息
     friendInfo = arguments[1];
     userInfo = arguments[2];
+
+    ///初始化聊天信息
+    scrollMsgBottom();
     super.initState();
   }
 
@@ -141,20 +156,28 @@ class _ChatScreenState extends State<ChatScreen>
                 },
 
                 ///聊天列表
-                child: RefreshIndicator(
-                  onRefresh: _refresh,
-                  child: CustomScrollView(
-                    reverse: false,
-                    controller: _customController,
-                    slivers: <Widget>[
-                      SliverFixedExtentList(
-                        delegate: SliverChildBuilderDelegate(_cellForRow,
-                            childCount: _messages.length),
-                        itemExtent: 80,
-                      )
-                    ],
-                  ),
+                child:
+                    // RefreshIndicator(
+                    //   onRefresh: _refresh,
+                    //   child:
+                    CustomScrollView(
+                  reverse: true,
+                  controller: _customController,
+                  slivers: <Widget>[
+                    SliverFixedExtentList(
+                      delegate: SliverChildBuilderDelegate(_cellForRow,
+                          childCount: _messages.length),
+                      itemExtent: 80,
+                    ),
+                    SliverToBoxAdapter(
+                      child: Offstage(
+                        offstage: _loading,
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                    )
+                  ],
                 ),
+                // ),
               ),
             ),
             const Divider(height: 0),
@@ -406,13 +429,12 @@ class _ChatScreenState extends State<ChatScreen>
   }
 
   void _handleSubmitted(String text) async {
-    //每次发送跳到最下面
-    scrollMsgBottom();
     _textController.clear();
     Message newMessage = new Message();
 
+    /// todo 需要解决id为毫秒时间戳，存在重复问题，但用到了id自增特性，需要解决
     /// 为保证本地数据库中消息ID与服务器ID相同，在本地创建
-    newMessage.id = Utils.getUUid();
+    newMessage.id = Utils.getIncreaseNum();
     newMessage.friendId = friendInfo.friendId;
     newMessage.friendNickname = friendInfo.friendNickname;
     newMessage.context = text;
@@ -421,7 +443,7 @@ class _ChatScreenState extends State<ChatScreen>
     newMessage.headImgUrl = userInfo.headImgUrl;
     newMessage.haveRead = 1;
     newMessage.type = 1;
-    newMessage.url = '-1';
+    newMessage.url = '';
     newMessage.state = 0;
     //发送消息
     request
@@ -431,7 +453,7 @@ class _ChatScreenState extends State<ChatScreen>
       newMessage.state = 1;
       print('当前错误：' + onError.toString());
     });
-    DBManage.updateMessage(newMessage);
+    DBManage.updateSendMessage(newMessage);
 
     setState(() {
       _isComposing = false;
@@ -439,6 +461,8 @@ class _ChatScreenState extends State<ChatScreen>
     });
     _focusNode.requestFocus();
     // message.animationController.forward();
+    //每次发送跳到最下面
+    scrollMsgBottom();
   }
 
   //展开加号按钮
@@ -472,16 +496,16 @@ class _ChatScreenState extends State<ChatScreen>
     Timer(
         Duration(milliseconds: 100),
         () => _customController
-            .jumpTo(_customController.position.maxScrollExtent));
+            .jumpTo(_customController.position.minScrollExtent));
   }
 
-  Future _refresh() async {
-    print("下拉加载");
-    var messages =
-        await DBManage.getMessages(friendInfo.friendId.toString(), offset, 5);
-    offset += 5;
+  Future addMessage() async {
+    num messageId = _messages[_messages.length - 1].id;
+    print("消息id:$messageId");
+    var messages = await DBManage.getNextMessages(
+        friendInfo.friendId.toString(), messageId);
     setState(() {
-      // _messages.insertAll(_messages.length, messages);
+      _loading = true;
       _messages.addAll(messages);
     });
   }

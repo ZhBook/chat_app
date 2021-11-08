@@ -51,4 +51,14 @@ class Utils {
     }
     return id;
   }
+
+  //返回递增的数字
+  static int getIncreaseNum() {
+    String randomStr = Random().nextInt(10).toString();
+    for (var i = 0; i < 3; i++) {
+      var str = Random().nextInt(10);
+      randomStr = "$randomStr" + "$str";
+    }
+    return DateTime.now().microsecondsSinceEpoch;
+  }
 }

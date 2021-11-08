@@ -1,6 +1,6 @@
 class Urls {
-  // static final String webSocketUrl = "ws://192.168.3.135:58080/webSocket";
-  static final String webSocketUrl = "ws://192.168.1.104:58080/webSocket";
+  static final String webSocketUrl = "ws://192.168.3.135:58080/webSocket";
+  // static final String webSocketUrl = "ws://192.168.1.104:58080/webSocket";
 
   static final String localIP = "";
 
