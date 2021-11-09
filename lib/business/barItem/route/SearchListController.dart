@@ -2,6 +2,7 @@ import 'package:chat_app/common/network/Api.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/models/friendInfo.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class SearchListPage extends StatefulWidget {
@@ -14,6 +15,8 @@ class SearchListPage extends StatefulWidget {
 class _SearchListPage extends State<SearchListPage> {
   List<FriendInfo> friends = [];
   TextEditingController _textController = TextEditingController();
+  TextEditingController _askController = TextEditingController();
+  final ApiImpl request = new ApiImpl();
 
   @override
   void initState() {
@@ -162,6 +165,7 @@ class _SearchListPage extends State<SearchListPage> {
           content: TextFormField(
             maxLines: 2,
             autofocus: true,
+            controller: _askController,
             textAlign: TextAlign.center,
             decoration: new InputDecoration(
               labelText: "Enter msg",
@@ -182,11 +186,23 @@ class _SearchListPage extends State<SearchListPage> {
           actions: <Widget>[
             new ElevatedButton(
               child: new Text("发送"),
-              onPressed: () {},
+              onPressed: () {
+                sendAsk(friendId, _askController.text);
+              },
             ),
           ],
         );
       },
     );
+  }
+
+  ///发送请求
+  sendAsk(friendId, message) async {
+    request.addFriend(friendId, message).then((value) {
+      if (value) {
+        return Fluttertoast.showToast(msg: "发送成功");
+      }
+      return Fluttertoast.showToast(msg: "发送失败");
+    });
   }
 }

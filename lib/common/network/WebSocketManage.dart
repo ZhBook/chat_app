@@ -34,7 +34,7 @@ class WebSocketUtility {
   static late SocketStatus _socketStatus; // socket状态
   static late Timer _heartBeat; // 心跳定时器
   static int _heartTimes = 3000; // 心跳间隔(毫秒)
-  static num _reconnectCount = 60; // 重连次数，默认60次
+  static num _reconnectCount = 10; // 重连次数，默认10次
   static num _reconnectTimes = 0; // 重连计数器
   static late Timer _reconnectTimer; // 重连定时器
   static String message = "";
@@ -68,14 +68,17 @@ class WebSocketUtility {
         break;
       case 1:
         log.info("来了新消息");
-        //处理接收的消息
+
+        ///处理接收的消息
         online.Message receiveMsg = online.Message.fromJson(messageType.data);
 
-        /// 通知
-        await Notification.showNotification(receiveMsg);
         DBManage.updateReceiveMessage(receiveMsg);
-        //注册监听
+
+        ///注册监听
         EventBusUtils.getInstance().fire(WebSocketUtility(receiveMsg));
+
+        /// 通知
+        Notification.showNotification(receiveMsg);
         break;
       case 2:
         break;
@@ -149,7 +152,8 @@ class WebSocketUtility {
 
   /// 重连机制
   static void reconnect() {
-    destroyHeartBeat();
+    ///重连之前删除之前的链接
+    _reconnectTimer.cancel();
     if (_reconnectTimes < _reconnectCount) {
       _reconnectTimes++;
       _reconnectTimer =

@@ -102,7 +102,7 @@ class _ChatScreenState extends State<ChatScreen>
           //更新全部消息为已读
           DBManage.updateUnReadMessage(friendInfo.friendId);
           setState(() {
-            _messages.add(event.receiveMsg);
+            _messages.insert(0, event.receiveMsg);
           });
           scrollMsgBottom();
         }
@@ -164,6 +164,11 @@ class _ChatScreenState extends State<ChatScreen>
                   reverse: true,
                   controller: _customController,
                   slivers: <Widget>[
+                    // todo 可能会优化  ListView.builder 按需构建列表元素
+                    // ListView.builder(
+                    //   itemBuilder: (context, index) => ListItem(),
+                    //   itemCount: itemCount,
+                    // ),
                     SliverFixedExtentList(
                       delegate: SliverChildBuilderDelegate(_cellForRow,
                           childCount: _messages.length),
