@@ -5,6 +5,7 @@ import 'package:chat_app/common/InitClass.dart';
 import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/models/friend.dart';
+import 'package:chat_app/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,7 +70,7 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
   Text _title = Text("微信");
 
   int _selectedIndex = 0;
-
+  User userInfo = User();
   late TabController _tabController;
 
   //用于控制右上角图标
@@ -94,13 +95,14 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
 
   @override
   void initState() {
+    _futureBuilderFuture = initData();
+
     list
       ..add(HomeScreen())
       ..add(MailScreen())
       ..add(ToolsScreen())
       ..add(PersonScreen());
 
-    _futureBuilderFuture = initData();
     super.initState();
     // _tabController = TabController(length: tabs.length, vsync: this);
 
@@ -324,10 +326,11 @@ class _ScaffoldRouteState extends State<ScaffoldRoute>
   initData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userinfo = prefs.getString("loginUserInfo");
-    var userId = json.decode(userinfo!)["id"];
+    var userJson = json.decode(userinfo!);
+    userInfo = User.fromJson(userJson);
     //初始化聊天监听
     WebSocketUtility.openSocket();
-    WebSocketUtility.sendMessage({"userId": userId});
+    WebSocketUtility.sendMessage({"userId": userInfo.id});
     //初始全局监听
     EventBusUtils.initEvenBus();
     Get.put(Controller());

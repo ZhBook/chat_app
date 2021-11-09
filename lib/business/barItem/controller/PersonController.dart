@@ -1,16 +1,20 @@
+import 'dart:convert';
+
+import 'package:chat_app/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+//内边距
+EdgeInsetsGeometry _padding = EdgeInsets.only(left: 10.0, right: 10.0);
+
+//背景颜色
+Color _modelColor = Colors.white;
 
 class PersonScreen extends StatelessWidget {
   const PersonScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //内边距
-    EdgeInsetsGeometry _padding = EdgeInsets.only(left: 10.0, right: 10.0);
-
-    //背景颜色
-    Color _modelColor = Colors.white;
-
     return Scaffold(
         body: Center(
       heightFactor: 1.0,
@@ -18,68 +22,7 @@ class PersonScreen extends StatelessWidget {
         color: Color.fromRGBO(223, 224, 225, 1.0),
         child: new ListView(
           children: [
-            Container(
-              padding: _padding,
-              color: Colors.white,
-              height: 120,
-              margin: EdgeInsets.only(top: 0),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      height: 60,
-                      width: 60,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.asset("assets/images/1.jpeg"),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 4,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            child: Text(
-                              "小鹿儿心头撞",
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              "微信号：zhd0704",
-                              style: TextStyle(color: Colors.black38),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                      flex: 1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(left: 10),
-                            child: Icon(Icons.qr_code),
-                          ),
-                          Container(
-                            child: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 15,
-                            ),
-                          )
-                        ],
-                      ))
-                ],
-              ),
-            ),
+            PersonInfo(),
             Container(
               padding: _padding,
               color: Colors.white,
@@ -299,5 +242,98 @@ class PersonScreen extends StatelessWidget {
         ),
       ),
     ));
+  }
+}
+
+class PersonInfo extends StatefulWidget {
+  const PersonInfo({Key? key}) : super(key: key);
+
+  @override
+  _PersonInfoState createState() => _PersonInfoState();
+}
+
+class _PersonInfoState extends State<PersonInfo> {
+  User userInfo = new User();
+
+  @override
+  void initState() {
+    //初始化数据
+    initData();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: _padding,
+      color: Colors.white,
+      height: 120,
+      margin: EdgeInsets.only(top: 0),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              height: 60,
+              width: 60,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(userInfo.headImgUrl),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 4,
+            child: Container(
+              padding: EdgeInsets.only(left: 15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    child: Text(
+                      userInfo.nickname,
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      "微信号：" + userInfo.username,
+                      style: TextStyle(color: Colors.black38),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+              flex: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: 10),
+                    child: Icon(Icons.qr_code),
+                  ),
+                  Container(
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 15,
+                    ),
+                  )
+                ],
+              ))
+        ],
+      ),
+    );
+  }
+
+  initData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userinfo = prefs.getString("loginUserInfo");
+    var userJson = json.decode(userinfo!);
+    setState(() {
+      userInfo = User.fromJson(userJson);
+    });
   }
 }
