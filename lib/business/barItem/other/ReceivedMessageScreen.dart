@@ -1,10 +1,16 @@
 import 'dart:math' as math; // import this
 
+import 'package:chat_app/business/barItem/route/PersonInfoController.dart';
+import 'package:chat_app/common/Controller.dart';
+import 'package:chat_app/models/index.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'CustomShape.dart';
+
+User userInfo = new User();
 
 class ReceivedMessageScreen extends StatelessWidget {
   final Message message;
@@ -14,6 +20,7 @@ class ReceivedMessageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Friend friend = Controller.to.getFriendInfo(message.id);
     final messageTextGroup = Flexible(
         child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -26,15 +33,22 @@ class ReceivedMessageScreen extends StatelessWidget {
             painter: CustomShape(Colors.grey.shade300),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 10),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(40),
-            child: Image.network(
-              message.headImgUrl,
-              fit: BoxFit.cover,
-              width: 40,
-              height: 40,
+        GestureDetector(
+          onTap: () {
+            Get.to(PersonInfoPage(
+              userInfo: friend,
+            ));
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(40),
+              child: Image.network(
+                message.headImgUrl,
+                fit: BoxFit.cover,
+                width: 40,
+                height: 40,
+              ),
             ),
           ),
         ),

@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:chat_app/business/barItem/route/PersonInfoController.dart';
 import 'package:chat_app/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //内边距
@@ -307,22 +310,27 @@ class _PersonInfoState extends State<PersonInfo> {
             ),
           ),
           Expanded(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(left: 10),
-                    child: Icon(Icons.qr_code),
-                  ),
-                  Container(
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      size: 15,
-                    ),
-                  )
-                ],
-              ))
+            flex: 2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 10),
+                  child: Icon(Icons.qr_code),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Get.to(
+                      PersonInfoPage(
+                        userInfo: userInfo,
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.arrow_forward_ios, size: 15),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
