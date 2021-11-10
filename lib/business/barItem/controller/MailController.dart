@@ -16,7 +16,7 @@ class MailScreen extends StatefulWidget {
 
 class _MailScreenState extends State<MailScreen> {
   late List<Friend> friendList;
-
+  double _iconSize = 25;
   @override
   void initState() {
     super.initState();
@@ -79,30 +79,27 @@ class _MailScreenState extends State<MailScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            child: Icon(
-                              Icons.supervisor_account,
-                              size: 40,
-                              color: Colors.orangeAccent,
-                            ),
+                          child: Icon(
+                            Icons.supervisor_account,
+                            size: _iconSize,
+                            color: Colors.orangeAccent,
                           ),
                           flex: 1,
                         ),
                         Expanded(
                           flex: 5,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "新的朋友",
-                            ),
+                          child: Text(
+                            "新的朋友",
                           ),
                         ),
                       ],
                     ),
                   ),
                   Divider(
+                    thickness: 1,
                     height: 0.5,
                     indent: 64.0,
+                    endIndent: 20,
                     color: Colors.grey[300],
                   ),
                   Container(
@@ -111,28 +108,25 @@ class _MailScreenState extends State<MailScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            child: Icon(
-                              Icons.perm_identity,
-                              size: 40,
-                              color: Colors.orangeAccent,
-                            ),
+                          child: Icon(
+                            Icons.perm_identity,
+                            size: _iconSize,
+                            color: Colors.orangeAccent,
                           ),
                           flex: 1,
                         ),
                         Expanded(
                           flex: 5,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text("仅聊天的朋友"),
-                          ),
+                          child: Text("仅聊天的朋友"),
                         ),
                       ],
                     ),
                   ),
                   Divider(
+                    thickness: 1,
                     height: 0.5,
                     indent: 64.0,
+                    endIndent: 20,
                     color: Colors.grey[300],
                   ),
                   Container(
@@ -141,28 +135,25 @@ class _MailScreenState extends State<MailScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            child: Icon(
-                              Icons.people,
-                              size: 40,
-                              color: Colors.green,
-                            ),
+                          child: Icon(
+                            Icons.people,
+                            size: _iconSize,
+                            color: Colors.green,
                           ),
                           flex: 1,
                         ),
                         Expanded(
                           flex: 5,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text("群聊"),
-                          ),
+                          child: Text("群聊"),
                         ),
                       ],
                     ),
                   ),
                   Divider(
+                    thickness: 1,
                     height: 0.5,
                     indent: 64.0,
+                    endIndent: 20,
                     color: Colors.grey[300],
                   ),
                   Container(
@@ -171,28 +162,25 @@ class _MailScreenState extends State<MailScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            child: Icon(
-                              Icons.bookmark_add,
-                              size: 40,
-                              color: Colors.blue,
-                            ),
+                          child: Icon(
+                            Icons.bookmark_add,
+                            size: _iconSize,
+                            color: Colors.blue,
                           ),
                           flex: 1,
                         ),
                         Expanded(
                           flex: 5,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text("标签"),
-                          ),
+                          child: Text("标签"),
                         ),
                       ],
                     ),
                   ),
                   Divider(
+                    thickness: 1,
                     height: 0.5,
                     indent: 64.0,
+                    endIndent: 20,
                     color: Colors.grey[300],
                   ),
                   Container(
@@ -209,21 +197,16 @@ class _MailScreenState extends State<MailScreen> {
                     child: Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            child: Icon(
-                              Icons.perm_identity,
-                              size: 40,
-                              color: Colors.blue,
-                            ),
+                          child: Icon(
+                            Icons.perm_identity,
+                            size: _iconSize,
+                            color: Colors.blue,
                           ),
                           flex: 1,
                         ),
                         Expanded(
                           flex: 5,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text("公众号"),
-                          ),
+                          child: Text("公众号"),
                         ),
                       ],
                     ),
@@ -262,7 +245,7 @@ class _MailScreenState extends State<MailScreen> {
             ),
           ),
         ),
-        padding: EdgeInsets.only(left: 10.0, right: 10.0),
+        padding: EdgeInsets.only(left: 20.0, right: 10.0),
         height: 45,
         child: Row(
           children: [

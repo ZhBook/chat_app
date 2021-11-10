@@ -60,12 +60,13 @@ class WebSocketUtility {
   /// WebSocket接收消息回调
   static webSocketOnMessage(data) async {
     var messageJson = json.decode(data);
+    num type = messageJson["type"];
+    if (type == 0) {
+      log.info("服务器心跳测试：" + messageJson["data"].toString());
+      return;
+    }
     MessageType messageType = MessageType.fromJson(messageJson);
-    num type = messageType.type;
     switch (type) {
-      case 0:
-        log.info("服务器心跳测试：" + messageType.data.toString());
-        break;
       case 1:
         log.info("来了新消息");
 

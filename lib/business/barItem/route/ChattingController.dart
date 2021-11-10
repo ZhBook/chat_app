@@ -70,7 +70,7 @@ class _ChatScreenState extends State<ChatScreen>
   Color _cardColor = Colors.white60;
   double _cardBorderRadius = 10;
 
-  bool _loading = false;
+  bool _loading = true;
 
   late StreamSubscription eventBus;
 
@@ -83,6 +83,10 @@ class _ChatScreenState extends State<ChatScreen>
 
     ///滚动条位置监听
     _customController.addListener(() {
+      if (_messages.isEmpty) {
+        return;
+      }
+
       ///当位置到0的时候开始追加新的聊天消息
       if (_customController.offset ==
           _customController.position.maxScrollExtent) {

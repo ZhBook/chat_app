@@ -197,8 +197,8 @@ class _SearchListPage extends State<SearchListPage> {
   }
 
   ///发送请求
-  sendAsk(friendId, message) async {
-    request.addFriend(friendId, message).then((value) {
+  sendAsk(num friendId, message) async {
+    request.addFriend(friendId.toString(), message).then((value) {
       if (value) {
         return Fluttertoast.showToast(msg: "发送成功");
       }
