@@ -40,7 +40,8 @@ dependencies:
   dio: ^4.0.0
   image_picker: ^0.8.4+2
   catcher: ^0.6.8
-  fluttertoast: ^8.0.8
+#  fluttertoast: ^8.0.8
+  flutter_toastr: ^1.0.3
   sqflite: ^2.0.0+4
   path_provider: ^2.0.5
   provider: ^6.0.1

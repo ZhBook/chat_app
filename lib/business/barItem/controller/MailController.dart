@@ -1,4 +1,5 @@
 import 'package:chat_app/business/barItem/route/ChattingController.dart';
+import 'package:chat_app/business/barItem/route/NewFriendController.dart';
 import 'package:chat_app/business/barItem/route/SearchController.dart';
 import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/common/database/DBManage.dart';
@@ -15,7 +16,7 @@ class MailScreen extends StatefulWidget {
 }
 
 class _MailScreenState extends State<MailScreen> {
-  late List<Friend> friendList;
+  List<Friend> friendList = [];
   double _iconSize = 25;
   @override
   void initState() {
@@ -76,23 +77,28 @@ class _MailScreenState extends State<MailScreen> {
                   Container(
                     padding: EdgeInsets.only(left: 10.0, right: 10.0),
                     height: 45,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Icon(
-                            Icons.supervisor_account,
-                            size: _iconSize,
-                            color: Colors.orangeAccent,
+                    child: GestureDetector(
+                      onTap: () {
+                        Get.to(NewFriend());
+                      },
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Icon(
+                              Icons.supervisor_account,
+                              size: _iconSize,
+                              color: Colors.orangeAccent,
+                            ),
+                            flex: 1,
                           ),
-                          flex: 1,
-                        ),
-                        Expanded(
-                          flex: 5,
-                          child: Text(
-                            "新的朋友",
+                          Expanded(
+                            flex: 5,
+                            child: Text(
+                              "新的朋友",
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   Divider(
@@ -217,7 +223,7 @@ class _MailScreenState extends State<MailScreen> {
           ),
           SliverFixedExtentList(
             delegate: SliverChildBuilderDelegate(_cellForRow,
-                childCount: _childCount()),
+                childCount: friendList.length),
             itemExtent: 48.0,
           )
         ],

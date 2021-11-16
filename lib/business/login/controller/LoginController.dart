@@ -9,7 +9,7 @@ import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_toastr/flutter_toastr.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -241,7 +241,9 @@ class _LoginPageState extends State<LoginPage> {
             "loginUserInfo", json.encode(value.data["userInfoResponse"]));
 
         /// todo 每次登陆后更新用户数据
-        Fluttertoast.showToast(msg: "登陆成功");
+        FlutterToastr.show("登陆成功", context,
+            duration: FlutterToastr.lengthShort,
+            position: FlutterToastr.bottom);
         Get.to(ScaffoldRoute());
         return;
       } else {
