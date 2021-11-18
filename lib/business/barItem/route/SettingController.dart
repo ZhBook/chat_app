@@ -254,8 +254,7 @@ class _SettingPageState extends State<SettingPage> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                    "login_page", (Route route) => false);
+                Get.off(LoginPage());
               },
               child: Center(
                 child: Container(
@@ -282,7 +281,7 @@ class _SettingPageState extends State<SettingPage> {
                   HttpHeaders.authorizationHeader: Request.basic,
                 });
                 print("header: " + Request.dio.options.headers.toString());
-                Get.offAll(LoginPage());
+                Get.off(LoginPage());
               },
               child: Center(
                 child: Container(

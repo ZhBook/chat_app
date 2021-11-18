@@ -17,7 +17,8 @@ class Request {
   Options _options = new Options();
 
   static var dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.3.135:8008/',
+    baseUrl: 'http://hub.tensua.com:8008/',
+    // baseUrl: 'http://192.168.3.135:8008/',
     // baseUrl: 'http://192.168.1.104:8008/',
     connectTimeout: 5000,
     receiveTimeout: 100000,

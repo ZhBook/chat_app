@@ -216,12 +216,14 @@ class _HomeScreenState extends State<HomeScreen>
               child: Container(
                 padding: EdgeInsets.only(left: 10.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(message.friendNickname,
                           style: TextStyle(
-                            fontSize: 18,
+                            height: 1.0,
+                            fontSize: 16,
                             color: Utils.getRandomColor(),
                           )),
                     ),
@@ -230,7 +232,11 @@ class _HomeScreenState extends State<HomeScreen>
                         child: Text(
                           message.context,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Utils.getRandomColor()),
+                          style: TextStyle(
+                            height: 1.0,
+                            color: Utils.getRandomColor(),
+                            fontSize: 12,
+                          ),
                         )),
                   ],
                 ),

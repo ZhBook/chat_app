@@ -244,7 +244,7 @@ class _LoginPageState extends State<LoginPage> {
         FlutterToastr.show("登陆成功", context,
             duration: FlutterToastr.lengthShort,
             position: FlutterToastr.bottom);
-        Get.to(ScaffoldRoute());
+        Get.off(ScaffoldRoute());
         return;
       } else {
         _showMessageDialog("用户名或密码错误");
