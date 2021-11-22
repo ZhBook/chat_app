@@ -152,7 +152,7 @@ class ApiImpl implements Api {
   Future<bool> addFriend(String friendId, String message) async {
     var response = await dio
         .post(Urls.addFriend, data: {"friendId": friendId, "message": message});
-    PageResult result = PageResult.fromJson(response.data);
+    Result result = Result.fromJson(response.data);
     if (result.code == 200) {
       return true;
     }

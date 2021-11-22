@@ -2,7 +2,7 @@ import 'package:chat_app/common/network/Api.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/models/friendInfo.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_toastr/flutter_toastr.dart';
 import 'package:get/get.dart';
 
 class SearchListPage extends StatefulWidget {
@@ -156,6 +156,7 @@ class _SearchListPage extends State<SearchListPage> {
   }
 
   void addFriend(num friendId) {
+    _askController.text = "";
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -184,10 +185,11 @@ class _SearchListPage extends State<SearchListPage> {
             },
           ),
           actions: <Widget>[
-            new ElevatedButton(
+            ElevatedButton(
               child: new Text("发送"),
               onPressed: () {
                 sendAsk(friendId, _askController.text);
+                Navigator.of(context).pop(true);
               },
             ),
           ],
@@ -200,9 +202,15 @@ class _SearchListPage extends State<SearchListPage> {
   sendAsk(num friendId, message) async {
     request.addFriend(friendId.toString(), message).then((value) {
       if (value) {
-        return Fluttertoast.showToast(msg: "发送成功");
+        FlutterToastr.show("发送成功", context,
+            duration: FlutterToastr.lengthShort,
+            position: FlutterToastr.bottom);
+      } else {
+        FlutterToastr.show("发送失败", context,
+            duration: FlutterToastr.lengthShort,
+            position: FlutterToastr.bottom);
       }
-      return Fluttertoast.showToast(msg: "发送失败");
     });
+    return true;
   }
 }
