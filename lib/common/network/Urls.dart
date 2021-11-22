@@ -18,4 +18,8 @@ class Urls {
   static final String searchFriend = "api-business/api/v1/friends/search";
 
   static final String addFriend = "api-chatting/api/v1/friend/add";
+
+  static final String getRequest = "api-business/api/v1/friends/request";
+
+  static final String handleRequest = "api-business/api/v1/friends/handle";
 }

@@ -1,3 +1,4 @@
+export 'friendRequest.dart' ; 
 export 'messageType.dart' ; 
 export 'result.dart' ; 
 export 'pageResult.dart' ; 

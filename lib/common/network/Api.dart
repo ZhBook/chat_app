@@ -18,4 +18,8 @@ abstract class Api {
   Future<List<FriendInfo>> searchFriends(String column, int start, int limit);
 
   Future<bool> addFriend(String friendId, String message);
+
+  Future<List<FriendRequest>> getRequest();
+
+  Future<bool> handleRequest(num requestId, num isAgree);
 }

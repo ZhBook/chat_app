@@ -158,4 +158,31 @@ class ApiImpl implements Api {
     }
     return false;
   }
+
+  /**
+   * 获取好友请求列表
+   */
+  @override
+  Future<List<FriendRequest>> getRequest() async {
+    var response = await dio.get(Urls.getRequest);
+    PageResult result = PageResult.fromJson(response.data);
+    List<FriendRequest> list = [];
+    if (result.code == 200) {
+      list = result.data.map((element) {
+        return FriendRequest.fromJson(element);
+      }).toList();
+    }
+    return list;
+  }
+
+  @override
+  Future<bool> handleRequest(num requestId, num isAgree) async {
+    var response = await dio.post(Urls.handleRequest,
+        data: {"requestId": requestId, "isAgree": isAgree});
+    Result result = Result.fromJson(response.data);
+    if (result.code == 200) {
+      return true;
+    }
+    return false;
+  }
 }

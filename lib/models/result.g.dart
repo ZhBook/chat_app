@@ -7,7 +7,7 @@ part of 'result.dart';
 // **************************************************************************
 
 Result _$ResultFromJson(Map<String, dynamic> json) => Result()
-  ..data = json['data'] as Map<String, dynamic>
+  ..data = json['data'] as dynamic
   ..code = json['code'] as num
   ..msg = json['msg'] as String;
 

@@ -6,10 +6,10 @@ part 'result.g.dart';
 class Result {
   Result();
 
-  late Map<String,dynamic> data;
+  late dynamic data;
   late num code;
   late String msg;
-  
-  factory Result.fromJson(Map<String,dynamic> json) => _$ResultFromJson(json);
+
+  factory Result.fromJson(Map<String, dynamic> json) => _$ResultFromJson(json);
   Map<String, dynamic> toJson() => _$ResultToJson(this);
 }
