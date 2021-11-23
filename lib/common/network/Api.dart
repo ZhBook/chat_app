@@ -22,4 +22,6 @@ abstract class Api {
   Future<List<FriendRequest>> getRequest();
 
   Future<bool> handleRequest(num requestId, num isAgree);
+
+  Future<FileInfo> uploadImg(String path);
 }

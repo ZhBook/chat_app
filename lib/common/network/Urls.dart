@@ -22,4 +22,6 @@ class Urls {
   static final String getRequest = "api-business/api/v1/friends/request";
 
   static final String handleRequest = "api-business/api/v1/friends/handle";
+
+  static final String upload = "api-business/api/v1/upload";
 }

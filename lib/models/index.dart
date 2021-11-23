@@ -8,4 +8,5 @@ export 'login.dart' ;
 export 'friend.dart' ; 
 export 'user.dart' ; 
 export 'profile.dart' ; 
+export 'fileInfo.dart' ; 
 export 'message.dart' ; 

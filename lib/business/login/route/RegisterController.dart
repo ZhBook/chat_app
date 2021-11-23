@@ -28,24 +28,6 @@ class _RegisterState extends State<Register> {
   User user = new User();
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
-  void _formSubmitted() {
-    var _form = _formKey.currentState;
-    if (_form!.validate()) {
-      _form.save();
-      user.id = 0;
-      request.register(user).then((value) {
-        if (value.code == 200) {
-          Get.back();
-          return Utils.showMessageDialog(value.msg, context);
-        }
-        return Utils.showMessageDialog(value.msg, context);
-      }).catchError((onError) {
-        print(onError.response.data);
-        Utils.showMessageDialog(onError.response.data["msg"], context);
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -97,8 +79,9 @@ class _RegisterState extends State<Register> {
                       onTap: () async {
                         var image = await _picker.pickImage(
                             source: ImageSource.gallery);
+                        uploadImg(image!.path);
                         setState(() {
-                          _headPath = File(image!.path);
+                          _headPath = File(image.path);
                         });
                       },
                     ),
@@ -263,5 +246,29 @@ class _RegisterState extends State<Register> {
         ],
       ),
     );
+  }
+
+  void _formSubmitted() {
+    var _form = _formKey.currentState;
+    if (_form!.validate()) {
+      _form.save();
+      user.id = 0;
+      request.register(user).then((value) {
+        if (value.code == 200) {
+          Get.back();
+          return Utils.showMessageDialog(value.msg, context);
+        }
+        return Utils.showMessageDialog(value.msg, context);
+      }).catchError((onError) {
+        print(onError.response.data);
+        Utils.showMessageDialog(onError.response.data["msg"], context);
+      });
+    }
+  }
+
+  uploadImg(String path) {
+    request.uploadImg(path).then((value) {
+      user.headImgUrl = value.url;
+    });
   }
 }

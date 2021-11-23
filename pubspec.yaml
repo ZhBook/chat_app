@@ -38,7 +38,7 @@ dependencies:
   permission_handler: ^8.1.6
   shared_preferences: ^2.0.8
   dio: ^4.0.0
-  image_picker: ^0.8.4+2
+  image_picker: ^0.8.4+4
   catcher: ^0.6.8
 #  fluttertoast: ^8.0.8
   flutter_toastr: ^1.0.3

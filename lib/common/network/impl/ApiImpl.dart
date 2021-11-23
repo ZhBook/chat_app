@@ -70,7 +70,8 @@ class ApiImpl implements Api {
       data: {
         "nickname": user.nickname,
         "password": user.password,
-        "phone": user.mobile,
+        "mobile": user.mobile,
+        "headImgUrl": user.headImgUrl
       },
       options: Options(responseType: ResponseType.json),
     );
@@ -184,5 +185,15 @@ class ApiImpl implements Api {
       return true;
     }
     return false;
+  }
+
+  @override
+  Future<FileInfo> uploadImg(String path) async {
+    var formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(path),
+    });
+    var response = await dio.post(Urls.upload, data: formData);
+    Result result = Result.fromJson(response.data);
+    return FileInfo.fromJson(result.data);
   }
 }

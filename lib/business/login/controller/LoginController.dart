@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:chat_app/business/login/route/RegisterController.dart';
 import 'package:chat_app/common/config/Global.dart';
-import 'package:chat_app/common/network/Request.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -252,9 +250,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     }).catchError((onError) {
       Global.netCache.cache.clear();
-      Request.dio.options.headers.addAll({
-        HttpHeaders.authorizationHeader: Request.basic,
-      });
       _showMessageDialog("服务器异常");
     });
   }
