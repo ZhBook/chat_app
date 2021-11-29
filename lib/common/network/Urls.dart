@@ -9,7 +9,7 @@ class Urls {
 
   static final String register = "api-business/api/v1/users/register";
 
-  static final String login = "oauth/token";
+  static final String login = "/api-business/api/v1/oauth/token";
 
   static final String loginInfo = "";
 
