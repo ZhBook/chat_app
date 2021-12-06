@@ -132,11 +132,11 @@ class _NewFriendListState extends State<NewFriendList> {
                   ],
                 ),
               ),
-              flex: 7,
+              flex: 6,
             ),
             Expanded(
               child: isNotAgree(request),
-              flex: 1,
+              flex: 2,
             )
           ],
         ),

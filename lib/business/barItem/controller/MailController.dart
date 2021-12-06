@@ -3,6 +3,7 @@ import 'package:chat_app/business/barItem/route/NewFriendController.dart';
 import 'package:chat_app/business/barItem/route/SearchController.dart';
 import 'package:chat_app/common/Controller.dart';
 import 'package:chat_app/common/database/DBManage.dart';
+import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/common/utils/UserInfoUtils.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,8 @@ class _MailScreenState extends State<MailScreen> {
   @override
   void initState() {
     super.initState();
-    DBManage.selectFriends().then((value) {
+    final ApiImpl request = new ApiImpl();
+    request.getFriends().then((value) {
       setState(() {
         friendList = value;
       });

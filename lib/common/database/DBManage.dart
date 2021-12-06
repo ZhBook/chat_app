@@ -165,12 +165,10 @@ class DBManage {
   static Future createFriendsMessageTable(String friendId) async {
     log.info("开始创建好友聊天表，好友username:" + friendId);
     try {
-      await db.query("chat_$friendId");
+      db.query("chat_$friendId");
       return true;
     } catch (e) {
-      log.warning(e);
-    }
-    String createSQL = '''
+      String createSQL = '''
      CREATE TABLE "chat_$friendId" (
         "id" INTEGER(100) NOT NULL,
         "friendId" INTEGER(100) NOT NULL,
@@ -186,8 +184,9 @@ class DBManage {
         PRIMARY KEY ("id")
       );
       ''';
-    db.execute(createSQL);
-    log.info("chat_$friendId聊天表创建成功");
+      db.execute(createSQL);
+      log.info("chat_$friendId聊天表创建成功");
+    }
   }
 
   ///添加好友列表
