@@ -20,7 +20,8 @@ class ReceivedMessageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Friend friend = Controller.to.getFriendInfo(message.id);
+    Friend friend =
+        Controller.to.getFriendInfo(message.friendId, message.userId);
     final messageTextGroup = Flexible(
         child: Row(
       mainAxisAlignment: MainAxisAlignment.start,

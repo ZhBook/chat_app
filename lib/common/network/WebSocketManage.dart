@@ -81,7 +81,13 @@ class WebSocketUtility {
         /// 通知
         Notification.showNotification(receiveMsg);
         break;
-      case 2:
+      case 5:
+
+        /// 处理好友请求
+        online.Message receiveMsg = online.Message.fromJson(messageType.data);
+
+        /// 通知
+        Notification.showNotification(receiveMsg);
         break;
       default:
         log.info("消息类型不存在");

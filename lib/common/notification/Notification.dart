@@ -1,4 +1,5 @@
 import 'package:chat_app/business/barItem/route/ChattingController.dart';
+import 'package:chat_app/business/barItem/route/NewFriendController.dart';
 import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/utils/UserInfoUtils.dart';
 import 'package:chat_app/models/message.dart' as online;
@@ -69,9 +70,13 @@ class Notification {
 
       ///跳转聊天界面
       var msg = await DBManage.getMessages(message.userId.toString(), 0, 20);
-      var friend = await DBManage.getFriend(message.userId);
+      var friend = await DBManage.getFriend(message.userId, message.friendId);
       var userInfo = await UserInfoUtils.getUserInfo();
-      Get.to(ChatPage(), arguments: [msg, friend, userInfo]);
+      if (message.type == 5) {
+        Get.to(NewFriend());
+      } else {
+        Get.to(ChatPage(), arguments: [msg, friend, userInfo]);
+      }
     });
 
     await flutterLocalNotificationsPlugin.show(

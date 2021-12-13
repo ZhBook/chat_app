@@ -24,9 +24,9 @@ class Controller extends GetxController {
   }
 
   /// 获取好友信息
-  Friend getFriendInfo(num friendId) {
+  Friend getFriendInfo(num friendId, num userId) {
     var friend;
-    DBManage.getFriend(friendId).then((value) => friend = value);
+    DBManage.getFriend(friendId, userId).then((value) => friend = value);
     return friend;
   }
 }

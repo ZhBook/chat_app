@@ -135,7 +135,8 @@ class _HomeScreenState extends State<HomeScreen>
     var friend;
 
     /// 获取好友信息
-    DBManage.getFriend(message.friendId).then((value) => friend = value);
+    DBManage.getFriend(message.friendId, message.userId)
+        .then((value) => friend = value);
 
     ///设置全部消息已读
     DBManage.selectUnReadMessage(message.friendId)

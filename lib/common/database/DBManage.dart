@@ -12,6 +12,7 @@ class DBManage {
   static String databasesPath = "";
   static String database = "DB/chatApp.db";
   static final log = SimpleLogger();
+
   DBManage(Message message);
 
   static void initDB() {
@@ -76,8 +77,9 @@ class DBManage {
 
   //更新最新聊天记录
   static Future updateChattingTable(Message message) async {
-    var result = await db
-        .query("chatting", where: "friendId =?", whereArgs: [message.friendId]);
+    var result = await db.query("chatting",
+        where: "friendId =? and userId = ?",
+        whereArgs: [message.friendId, message.userId]);
 
     /// 如果记录不存在，则新增一条记录
     if (result.isEmpty) {
@@ -87,9 +89,9 @@ class DBManage {
     }
   }
 
-  static Future getFriend(num friendId) async {
-    List<Map<String, dynamic>> result = await db
-        .query("user_relation", where: "friendId =?", whereArgs: [friendId]);
+  static Future getFriend(num friendId, num userId) async {
+    List<Map<String, dynamic>> result = await db.query("user_relation",
+        where: "friendId =? and userId = ?", whereArgs: [friendId, userId]);
     if (result.isEmpty) {
       return;
     }
