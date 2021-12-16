@@ -12,25 +12,31 @@ class SentMessageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final messageTextGroup = Flexible(
+    return Flexible(
         child: Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Flexible(
-          child: Container(
-            padding: EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.cyan[900],
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(18),
-                bottomLeft: Radius.circular(18),
-                bottomRight: Radius.circular(18),
-              ),
+        Container(
+          // margin: EdgeInsets.all(5),
+          margin: EdgeInsets.fromLTRB(50.0, 10.0, 10.0, 10.0),
+          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+          decoration: BoxDecoration(
+            color: Colors.cyan[900],
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(18),
+              bottomLeft: Radius.circular(18),
+              bottomRight: Radius.circular(18),
+            ),
+          ),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 200.0,
             ),
             child: Text(
               message.context,
-              overflow: TextOverflow.visible,
+              // overflow: TextOverflow.visible,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 14,
@@ -53,16 +59,5 @@ class SentMessageScreen extends StatelessWidget {
         CustomPaint(painter: CustomShape(Colors.cyan.shade900)),
       ],
     ));
-
-    return Padding(
-      padding: EdgeInsets.only(right: 18.0, left: 50, top: 15, bottom: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          SizedBox(height: 30),
-          messageTextGroup,
-        ],
-      ),
-    );
   }
 }

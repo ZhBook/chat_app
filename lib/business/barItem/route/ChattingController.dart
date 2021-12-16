@@ -64,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen>
   bool _isComposing = false;
   bool _buttonShow = false;
 
-  double _cardSize = 50;
+  double _cardSize = 30;
   double _cardHeight = 60;
   double _cardWidth = 60;
   Color _cardColor = Colors.white60;
@@ -193,7 +193,7 @@ class _ChatScreenState extends State<ChatScreen>
             Container(
               // height: 70.0,
               width: double.maxFinite,
-              color: Color.fromRGBO(223, 224, 225, 1.0),
+              color: Color.fromRGBO(223, 224, 225, 0.3),
               // decoration: BoxDecoration(color: Theme.of(context).cardColor),
               child: _buildTextComposer(),
             ),
@@ -205,7 +205,8 @@ class _ChatScreenState extends State<ChatScreen>
                 width: double.maxFinite,
                 decoration: BoxDecoration(
                     border: Border.all(color: Colors.black12),
-                    color: Color.fromRGBO(223, 224, 225, 1.0)),
+                    color: Color.fromRGBO(223, 224, 225, 0.3)),
+                // color: Colors.white,
                 child: Container(
                   margin: EdgeInsets.only(left: 10, top: 20, right: 10),
                   child: new Swiper(
@@ -227,7 +228,10 @@ class _ChatScreenState extends State<ChatScreen>
                                   // color: _cardColor,
                                   child: Container(
                                       child: IconButton(
-                                    icon: Icon(Icons.photo_library),
+                                    icon: Icon(
+                                      Icons.photo_library,
+                                      size: _cardSize,
+                                    ),
                                     onPressed: () {},
                                   )),
                                 ),
@@ -287,7 +291,7 @@ class _ChatScreenState extends State<ChatScreen>
                                     color: _cardColor,
                                   ),
                                   child: Icon(
-                                    Icons.payments,
+                                    Icons.card_giftcard,
                                     size: _cardSize,
                                   ),
                                 ),
@@ -300,7 +304,7 @@ class _ChatScreenState extends State<ChatScreen>
                                     color: _cardColor,
                                   ),
                                   child: Icon(
-                                    Icons.image,
+                                    Icons.adb,
                                     size: _cardSize,
                                   ),
                                 ),
@@ -313,7 +317,7 @@ class _ChatScreenState extends State<ChatScreen>
                                     color: _cardColor,
                                   ),
                                   child: Icon(
-                                    Icons.image,
+                                    Icons.keyboard_voice_rounded,
                                     size: _cardSize,
                                   ),
                                 ),
@@ -326,7 +330,7 @@ class _ChatScreenState extends State<ChatScreen>
                                     color: _cardColor,
                                   ),
                                   child: Icon(
-                                    Icons.image,
+                                    Icons.collections,
                                     size: _cardSize,
                                   ),
                                 )
@@ -355,85 +359,75 @@ class _ChatScreenState extends State<ChatScreen>
 
 //默认功能：表情、输入框、发送、扩展
   Widget _buildTextComposer() {
-    return IconTheme(
-      data: IconThemeData(color: Theme.of(context).colorScheme.secondary),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                //语音按钮
-                Flexible(
-                  flex: 1,
-                  child: GestureDetector(
-                    child: Container(
-                      padding: EdgeInsets.only(left: 5, right: 10),
-                      child: Icon(
-                        Icons.mic,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-                //聊天输入框
-                Flexible(
-                  flex: 7,
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.only(left: 3),
-                    height: 35,
-                    color: Colors.white,
-                    child: TextField(
-                      cursorHeight: 35,
-                      textAlign: TextAlign.start,
-                      maxLines: 10,
-                      controller: _textController,
-                      textInputAction: TextInputAction.send,
-                      onChanged: (text) {
-                        setState(() {
-                          /// todo 当输入内容时就会发送数据，需要优化
-                          _isComposing = text.isNotEmpty;
-                        });
-                      },
-                      onSubmitted: _isComposing ? _handleSubmitted : null,
-                      decoration: const InputDecoration.collapsed(hintText: ''),
-                      focusNode: _focusNode,
-                    ),
-                  ),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: Container(
-                    // margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                    // Theme.of(context).platform == TargetPlatform.iOS
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.send,
-                        color: Colors.black,
-                      ),
-                      onPressed: _isComposing
-                          ? () => _handleSubmitted(_textController.text)
-                          : null,
-                    ),
-                  ),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: GestureDetector(
-                    onTap: extendFunction,
-                    child: Icon(
-                      Icons.add_circle_outline,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        //语音按钮
+        Flexible(
+          flex: 1,
+          child: GestureDetector(
+            child: Container(
+              padding: EdgeInsets.only(left: 5, right: 10),
+              child: Icon(
+                Icons.mic,
+                color: Colors.black,
+              ),
             ),
-          ],
+          ),
         ),
-      ),
+        //聊天输入框
+        Flexible(
+          flex: 7,
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.only(left: 3),
+            height: 30,
+            color: Colors.white,
+            child: TextField(
+              cursorHeight: 35,
+              textAlign: TextAlign.start,
+              maxLines: null,
+              controller: _textController,
+              textInputAction: TextInputAction.send,
+              onChanged: (text) {
+                setState(() {
+                  /// todo 当输入内容时就会发送数据，需要优化
+                  _isComposing = text.isNotEmpty;
+                });
+              },
+              onSubmitted: _isComposing ? _handleSubmitted : null,
+              decoration: const InputDecoration.collapsed(hintText: ''),
+              focusNode: _focusNode,
+            ),
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          child: Container(
+            // margin: const EdgeInsets.symmetric(horizontal: 4.0),
+            // Theme.of(context).platform == TargetPlatform.iOS
+            child: IconButton(
+              icon: const Icon(
+                Icons.send,
+                color: Colors.black,
+              ),
+              onPressed: _isComposing
+                  ? () => _handleSubmitted(_textController.text)
+                  : null,
+            ),
+          ),
+        ),
+        Flexible(
+          flex: 1,
+          child: GestureDetector(
+            onTap: extendFunction,
+            child: Icon(
+              Icons.add_circle_outline_outlined,
+              color: Colors.black,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -478,7 +472,7 @@ class _ChatScreenState extends State<ChatScreen>
   void extendFunction() {
     _focusNode.unfocus();
     setState(() {
-      _buttonShow = true;
+      _buttonShow = !_buttonShow;
     });
   }
 
@@ -494,10 +488,7 @@ class _ChatScreenState extends State<ChatScreen>
         message: message,
       );
     }
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      child: msg,
-    );
+    return msg;
   }
 
   //聊天列表跳的最下面

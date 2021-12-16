@@ -22,7 +22,7 @@ class ReceivedMessageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Friend friend =
         Controller.to.getFriendInfo(message.friendId, message.userId);
-    final messageTextGroup = Flexible(
+    return Flexible(
         child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,16 +77,5 @@ class ReceivedMessageScreen extends StatelessWidget {
         ),
       ],
     ));
-
-    return Padding(
-      padding: EdgeInsets.only(right: 50.0, left: 18, top: 10, bottom: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          SizedBox(height: 30),
-          messageTextGroup,
-        ],
-      ),
-    );
   }
 }
