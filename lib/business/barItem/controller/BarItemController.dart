@@ -49,6 +49,7 @@ class Index extends StatelessWidget {
         "scan_page": (context) => ScanPage(),
         "setting_page": (context) => Setting(),
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }

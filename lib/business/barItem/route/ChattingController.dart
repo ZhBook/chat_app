@@ -190,7 +190,8 @@ class _ChatScreenState extends State<ChatScreen>
             ),
             const Divider(height: 0),
             Container(
-              // height: 70.0,
+              padding: EdgeInsets.only(bottom: 5),
+              height: 50.0,
               width: double.maxFinite,
               color: Color.fromRGBO(223, 224, 225, 0.3),
               // decoration: BoxDecoration(color: Theme.of(context).cardColor),
@@ -380,7 +381,7 @@ class _ChatScreenState extends State<ChatScreen>
           child: Container(
             alignment: Alignment.center,
             padding: EdgeInsets.only(left: 3),
-            height: 30,
+            height: 35,
             color: Colors.white,
             child: TextField(
               cursorHeight: 35,
@@ -423,6 +424,9 @@ class _ChatScreenState extends State<ChatScreen>
   }
 
   void _handleSubmitted(String text) async {
+    if (text.isEmpty) {
+      return;
+    }
     _textController.clear();
     Message newMessage = new Message();
 
