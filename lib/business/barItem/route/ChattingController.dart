@@ -61,7 +61,6 @@ class _ChatScreenState extends State<ChatScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   final _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  bool _isComposing = false;
   bool _buttonShow = false;
 
   double _cardSize = 30;
@@ -389,13 +388,7 @@ class _ChatScreenState extends State<ChatScreen>
               maxLines: null,
               controller: _textController,
               textInputAction: TextInputAction.send,
-              onChanged: (text) {
-                setState(() {
-                  /// todo 当输入内容时就会发送数据，需要优化
-                  _isComposing = text.isNotEmpty;
-                });
-              },
-              onSubmitted: _isComposing ? _handleSubmitted : null,
+              onSubmitted: _handleSubmitted,
               decoration: const InputDecoration.collapsed(hintText: ''),
               focusNode: _focusNode,
             ),
@@ -411,9 +404,7 @@ class _ChatScreenState extends State<ChatScreen>
                 Icons.send,
                 color: Colors.black,
               ),
-              onPressed: _isComposing
-                  ? () => _handleSubmitted(_textController.text)
-                  : null,
+              onPressed: () => _handleSubmitted(_textController.text),
             ),
           ),
         ),
@@ -459,7 +450,6 @@ class _ChatScreenState extends State<ChatScreen>
     DBManage.updateSendMessage(newMessage);
 
     setState(() {
-      _isComposing = false;
       _messages.insert(0, newMessage);
     });
     _focusNode.requestFocus();
@@ -483,12 +473,19 @@ class _ChatScreenState extends State<ChatScreen>
       msg = SentMessageScreen(
         message: message,
       );
+      return Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: msg,
+      );
     } else {
       msg = ReceivedMessageScreen(
         message: message,
       );
+      return Padding(
+        padding: EdgeInsets.only(left: 10),
+        child: msg,
+      );
     }
-    return msg;
   }
 
   //聊天列表跳的最下面

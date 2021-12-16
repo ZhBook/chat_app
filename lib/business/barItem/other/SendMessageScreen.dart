@@ -12,8 +12,7 @@ class SentMessageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-        child: Row(
+    return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,20 +43,17 @@ class SentMessageScreen extends StatelessWidget {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(40),
-            child: Image.network(
-              message.headImgUrl,
-              fit: BoxFit.cover,
-              width: 40,
-              height: 40,
-            ),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(40),
+          child: Image.network(
+            message.headImgUrl,
+            fit: BoxFit.cover,
+            width: 40,
+            height: 40,
           ),
         ),
         CustomPaint(painter: CustomShape(Colors.cyan.shade900)),
       ],
-    ));
+    );
   }
 }

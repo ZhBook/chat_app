@@ -40,16 +40,13 @@ class ReceivedMessageScreen extends StatelessWidget {
               userInfo: friend,
             ));
           },
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(40),
-              child: Image.network(
-                message.headImgUrl,
-                fit: BoxFit.cover,
-                width: 40,
-                height: 40,
-              ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(40),
+            child: Image.network(
+              message.headImgUrl,
+              fit: BoxFit.cover,
+              width: 40,
+              height: 40,
             ),
           ),
         ),
