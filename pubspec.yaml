@@ -50,7 +50,8 @@ dependencies:
   event_bus: ^2.0.0
   flutter_local_notifications: ^9.0.1
   rxdart: ^0.27.2
-
+  cached_network_image: ^3.2.0
+  agora_rtc_engine: ^4.0.7
 
 dev_dependencies:
   flutter_test:

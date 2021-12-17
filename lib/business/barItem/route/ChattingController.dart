@@ -4,6 +4,7 @@ import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/event/EventBusUtil.dart';
 import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
+import 'package:chat_app/common/plugin/OnlineVideo.dart';
 import 'package:chat_app/common/utils/Utils.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:chat_app/models/message.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:keyboard_visibility/keyboard_visibility.dart';
@@ -256,9 +258,12 @@ class _ChatScreenState extends State<ChatScreen>
                                         _cardBorderRadius),
                                     color: _cardColor,
                                   ),
-                                  child: Icon(
-                                    Icons.settings_phone,
-                                    size: _cardSize,
+                                  child: IconButton(
+                                    icon: Icon(Icons.settings_phone,
+                                        size: _cardSize),
+                                    onPressed: () {
+                                      Get.to(OnlineVideo());
+                                    },
                                   ),
                                 ),
                                 Container(
