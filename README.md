@@ -43,3 +43,6 @@ flutter packages pub run json_model
 
 ### M1更新软件ZLPhotoBrowser
 arch -x86_64 pod update ZLPhotoBrowser
+
+## agora_rtc_engine 问题记录
+https://github.com/AgoraIO/Agora-Flutter-SDK/issues/497

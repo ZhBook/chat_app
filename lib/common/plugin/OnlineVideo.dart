@@ -8,9 +8,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 /// 定义 App ID 和 Token
 const APP_ID = '9e939e9e0eec456ca07d84a2c8b6e0d1';
-const Token = '188dbb0eaa754a0bb7c2926bb4d87526';
+const Token =
+    '0069e939e9e0eec456ca07d84a2c8b6e0d1IAA4fnde9PsqL2pHS9WmhM9aCHdkVxsJGNq3psoSiITOz9JjSIgAAAAAEADfTJIXNkPBYQEAAQA2Q8Fh';
 const channelId =
-    'https://console.agora.io/invite?sign=90d5d6909824277ae5301823ed1184c1%253A372c9bd0054eb1a71f55942ff714d28f7f95673bef073fa1111fd44903b5a4b1';
+    'https://console.agora.io/invite?sign=a8d680d0b55538c4ebbb34867827c62a%253A1eb40079dabcdf319f58eda97ab83299aab4e5fdf1a5a786345f0750252c1166&step=1';
 
 // 应用类
 class OnlineVideo extends StatefulWidget {
@@ -40,7 +41,7 @@ class _MyAppState extends State<OnlineVideo> {
     // 定义事件处理逻辑
     engine.setEventHandler(RtcEngineEventHandler(
         joinChannelSuccess: (String channel, int uid, int elapsed) {
-      print('joinChannelSuccess ${channel} ${uid}');
+      print('加入channel成功 ${channel} ${uid}');
       setState(() {
         _joined = true;
       });
@@ -50,7 +51,7 @@ class _MyAppState extends State<OnlineVideo> {
         _remoteUid = uid;
       });
     }, userOffline: (int uid, UserOfflineReason reason) {
-      print('userOffline ${uid}');
+      print('用户在线 ${uid}');
       setState(() {
         _remoteUid = 0;
       });
@@ -66,9 +67,9 @@ class _MyAppState extends State<OnlineVideo> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Flutter example app'),
-        ),
+        // appBar: AppBar(
+        //   title: const Text('Flutter example app'),
+        // ),
         body: Stack(
           children: [
             Center(
@@ -101,14 +102,14 @@ class _MyAppState extends State<OnlineVideo> {
 
   // 生成本地预览
   Widget _renderLocalPreview() {
-    if (_joined) {
-      return RtcLocalView.SurfaceView();
-    } else {
-      return Text(
-        'Please join channel first',
-        textAlign: TextAlign.center,
-      );
-    }
+    // if (_joined) {
+    return RtcLocalView.SurfaceView();
+    // } else {
+    //   return Text(
+    //     '本地加入',
+    //     textAlign: TextAlign.center,
+    //   );
+    // }
   }
 
   // 生成远端预览
@@ -120,7 +121,7 @@ class _MyAppState extends State<OnlineVideo> {
       );
     } else {
       return Text(
-        'Please wait remote user join',
+        '请等待远端加入',
         textAlign: TextAlign.center,
       );
     }
