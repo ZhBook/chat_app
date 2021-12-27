@@ -20,6 +20,6 @@ class DateUtil {
       return dateTime.hour.toString() + ":" + dateTime.minute.toString();
     }
     int week = dateTime.toLocal().weekday;
-    return "星期" + CN_WEEKDAY[week];
+    return "星期" + CN_WEEKDAY[week - 1];
   }
 }
