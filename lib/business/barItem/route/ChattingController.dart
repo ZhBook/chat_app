@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:chat_app/common/database/DBManage.dart';
 import 'package:chat_app/common/event/EventBusUtil.dart';
@@ -9,6 +10,7 @@ import 'package:chat_app/common/utils/Utils.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:chat_app/models/user.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +72,8 @@ class _ChatScreenState extends State<ChatScreen>
   double _cardWidth = 60;
   Color _cardColor = Colors.white60;
   double _cardBorderRadius = 10;
+
+  bool emojiShowing = false;
 
   bool _loading = true;
 
@@ -197,7 +201,43 @@ class _ChatScreenState extends State<ChatScreen>
               width: double.maxFinite,
               color: Color.fromRGBO(223, 224, 225, 0.3),
               // decoration: BoxDecoration(color: Theme.of(context).cardColor),
-              child: _buildTextComposer(),
+              child: Column(
+                children: [
+                  _buildTextComposer(),
+                  Offstage(
+                    offstage: !emojiShowing,
+                    child: SizedBox(
+                      height: 250,
+                      child: EmojiPicker(
+                          onEmojiSelected: (Category category, Emoji emoji) {
+                            _onEmojiSelected(emoji);
+                          },
+                          onBackspacePressed: _onBackspacePressed,
+                          config: Config(
+                              columns: 7,
+                              // Issue: https://github.com/flutter/flutter/issues/28894
+                              emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                              verticalSpacing: 0,
+                              horizontalSpacing: 0,
+                              initCategory: Category.RECENT,
+                              bgColor: const Color(0xFFF2F2F2),
+                              indicatorColor: Colors.blue,
+                              iconColor: Colors.grey,
+                              iconColorSelected: Colors.blue,
+                              progressIndicatorColor: Colors.blue,
+                              backspaceColor: Colors.blue,
+                              showRecentsTab: true,
+                              recentsLimit: 28,
+                              noRecentsText: 'No Recents',
+                              noRecentsStyle: const TextStyle(
+                                  fontSize: 20, color: Colors.black26),
+                              tabIndicatorAnimDuration: kTabScrollDuration,
+                              categoryIcons: const CategoryIcons(),
+                              buttonMode: ButtonMode.MATERIAL)),
+                    ),
+                  ),
+                ],
+              ),
             ),
             //扩展功能
             Visibility(
@@ -400,7 +440,7 @@ class _ChatScreenState extends State<ChatScreen>
             ),
           ),
         ),
-        Flexible(
+        /*Flexible(
           flex: 1,
           child: Container(
             // margin: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -411,6 +451,20 @@ class _ChatScreenState extends State<ChatScreen>
                 color: Colors.black,
               ),
               onPressed: () => _handleSubmitted(_textController.text),
+            ),
+          ),
+        ),*/
+        Material(
+          color: Colors.transparent,
+          child: IconButton(
+            onPressed: () {
+              setState(() {
+                emojiShowing = !emojiShowing;
+              });
+            },
+            icon: const Icon(
+              Icons.emoji_emotions,
+              color: Colors.white,
             ),
           ),
         ),
@@ -522,5 +576,19 @@ class _ChatScreenState extends State<ChatScreen>
     print('聊天界面卸载了');
     // _messages.clear();
     // eventBus.cancel();
+  }
+
+  _onEmojiSelected(Emoji emoji) {
+    _textController
+      ..text += emoji.emoji
+      ..selection = TextSelection.fromPosition(
+          TextPosition(offset: _textController.text.length));
+  }
+
+  _onBackspacePressed() {
+    _textController
+      ..text = _textController.text.characters.skipLast(1).toString()
+      ..selection = TextSelection.fromPosition(
+          TextPosition(offset: _textController.text.length));
   }
 }
