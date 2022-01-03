@@ -245,9 +245,12 @@ class _ChatScreenState extends State<ChatScreen>
                                         _cardBorderRadius),
                                     color: _cardColor,
                                   ),
-                                  child: Icon(
-                                    Icons.photo_camera,
-                                    size: _cardSize,
+                                  child: IconButton(
+                                    icon: Icon(
+                                      Icons.photo_camera,
+                                      size: _cardSize,
+                                    ),
+                                    onPressed: () {},
                                   ),
                                 ),
                                 Container(
@@ -259,8 +262,8 @@ class _ChatScreenState extends State<ChatScreen>
                                     color: _cardColor,
                                   ),
                                   child: IconButton(
-                                    icon: Icon(Icons.settings_phone,
-                                        size: _cardSize),
+                                    icon:
+                                        Icon(Icons.voice_chat, size: _cardSize),
                                     onPressed: () {
                                       Get.to(OnlineVideo());
                                     },

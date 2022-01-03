@@ -4,6 +4,8 @@ import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 /// 定义 App ID 和 Token
@@ -25,6 +27,8 @@ class _MyAppState extends State<OnlineVideo> {
   int _remoteUid = 0;
   bool _switch = false;
 
+  late RtcEngine engine;
+
   @override
   void initState() {
     super.initState();
@@ -37,7 +41,7 @@ class _MyAppState extends State<OnlineVideo> {
 
     // 创建 RTC 客户端实例
     RtcEngineContext context = RtcEngineContext(APP_ID);
-    var engine = await RtcEngine.createWithContext(context);
+    engine = await RtcEngine.createWithContext(context);
     // 定义事件处理逻辑
     engine.setEventHandler(RtcEngineEventHandler(
         joinChannelSuccess: (String channel, int uid, int elapsed) {
@@ -67,32 +71,60 @@ class _MyAppState extends State<OnlineVideo> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        // appBar: AppBar(
-        //   title: const Text('Flutter example app'),
-        // ),
         body: Stack(
           children: [
             Center(
               child: _switch ? _renderRemoteVideo() : _renderLocalPreview(),
             ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Container(
-                width: 100,
-                height: 100,
-                color: Colors.blue,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _switch = !_switch;
-                    });
-                  },
-                  child: Center(
-                    child:
-                        _switch ? _renderLocalPreview() : _renderRemoteVideo(),
+            Padding(
+              padding: const EdgeInsets.only(top: 30, right: 20),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  color: Colors.blue,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _switch = !_switch;
+                      });
+                    },
+                    child: Center(
+                      child: _switch
+                          ? _renderLocalPreview()
+                          : _renderRemoteVideo(),
+                    ),
                   ),
                 ),
               ),
+            ),
+          ],
+        ),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              child: Icon(Icons.check_box_outline_blank),
+              onPressed: () {},
+              heroTag: "one",
+            ),
+            FloatingActionButton(
+              child: Icon(Icons.call_end),
+              onPressed: () {
+                engine.leaveChannel();
+                // engine.destroy();
+                Get.back();
+              },
+              backgroundColor: Colors.red,
+              heroTag: "two",
+            ),
+            // todo 带完善
+            FloatingActionButton(
+              child: Icon(Icons.volume_up),
+              onPressed: () {},
+              heroTag: "three",
             ),
           ],
         ),
@@ -125,5 +157,11 @@ class _MyAppState extends State<OnlineVideo> {
         textAlign: TextAlign.center,
       );
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    engine.destroy();
   }
 }
