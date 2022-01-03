@@ -217,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen>
               child: Container(
                 padding: EdgeInsets.only(left: 10.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Container(
                       alignment: Alignment.centerLeft,
