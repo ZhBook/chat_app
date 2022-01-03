@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:chat_app/config/category_emoji.dart';
-import 'package:chat_app/config/config.dart';
-import 'package:chat_app/config/default_emoji_picker_view.dart';
-import 'package:chat_app/config/emoji.dart';
-import 'package:chat_app/config/emoji_view_state.dart';
-import 'package:chat_app/config/recent_emoji.dart';
+import 'package:chat_app/config/emoji/category_emoji.dart';
+import 'package:chat_app/config/emoji/config.dart';
+import 'package:chat_app/config/emoji/default_emoji_picker_view.dart';
+import 'package:chat_app/config/emoji/emoji.dart';
+import 'package:chat_app/config/emoji/emoji_view_state.dart';
+import 'package:chat_app/config/emoji/recent_emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';

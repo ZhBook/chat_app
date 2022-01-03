@@ -1,8 +1,8 @@
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:emoji_picker_flutter/src/category_emoji.dart';
-import 'package:emoji_picker_flutter/src/config.dart';
-import 'package:emoji_picker_flutter/src/emoji_picker_builder.dart';
-import 'package:emoji_picker_flutter/src/emoji_view_state.dart';
+import 'package:chat_app/config/emoji/category_emoji.dart';
+import 'package:chat_app/config/emoji/config.dart';
+import 'package:chat_app/config/emoji/emoji_picker_builder.dart';
+import 'package:chat_app/config/emoji/emoji_picker_flutter.dart';
+import 'package:chat_app/config/emoji/emoji_view_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

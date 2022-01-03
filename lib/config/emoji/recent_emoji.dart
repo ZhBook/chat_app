@@ -1,4 +1,4 @@
-import 'package:emoji_picker_flutter/src/emoji.dart';
+import 'package:chat_app/config/emoji/emoji.dart';
 
 /// Class that holds an recent emoji
 /// Recent Emoji has an instance of the emoji

@@ -7,12 +7,12 @@ import 'package:chat_app/common/network/WebSocketManage.dart';
 import 'package:chat_app/common/network/impl/ApiImpl.dart';
 import 'package:chat_app/common/plugin/OnlineVideo.dart';
 import 'package:chat_app/common/utils/Utils.dart';
+import 'package:chat_app/config/emoji/emoji_picker.dart';
+import 'package:chat_app/config/emoji/emoji_picker_flutter.dart';
 import 'package:chat_app/models/friend.dart';
 import 'package:chat_app/models/message.dart';
 import 'package:chat_app/models/user.dart';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
@@ -121,9 +121,12 @@ class _ChatScreenState extends State<ChatScreen>
     //通过获取键盘的显示，来控制加号的显示
     KeyboardVisibilityNotification().addNewListener(
       onChange: (bool visible) {
-        if (visible) {
-          _buttonShow = false;
-        }
+        setState(() {
+          if (visible) {
+            _buttonShow = false;
+            emojiShowing = false;
+          }
+        });
       },
     );
     arguments = Get.arguments;
@@ -161,6 +164,7 @@ class _ChatScreenState extends State<ChatScreen>
                   setState(() {
                     this._buttonShow = false;
                     this._focusNode.unfocus();
+                    this.emojiShowing = false;
                   });
                 },
 
@@ -197,7 +201,7 @@ class _ChatScreenState extends State<ChatScreen>
             const Divider(height: 0),
             Container(
               padding: EdgeInsets.only(bottom: 5),
-              height: 50.0,
+              // height: 55.0,
               width: double.maxFinite,
               color: Color.fromRGBO(223, 224, 225, 0.3),
               // decoration: BoxDecoration(color: Theme.of(context).cardColor),
@@ -240,8 +244,7 @@ class _ChatScreenState extends State<ChatScreen>
               ),
             ),
             //扩展功能
-            Visibility(
-              maintainAnimation: true,
+            Offstage(
               child: Container(
                 height: size.height / 4,
                 width: double.maxFinite,
@@ -393,8 +396,7 @@ class _ChatScreenState extends State<ChatScreen>
                   ),
                 ),
               ),
-              maintainState: true,
-              visible: _buttonShow,
+              offstage: !_buttonShow,
             ),
           ],
         ),
@@ -404,78 +406,92 @@ class _ChatScreenState extends State<ChatScreen>
 
 //默认功能：表情、输入框、发送、扩展
   Widget _buildTextComposer() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
-        //语音按钮
-        Flexible(
-          flex: 1,
-          child: GestureDetector(
-            child: Container(
-              padding: EdgeInsets.only(left: 5, right: 10),
-              child: Icon(
-                Icons.mic,
-                color: Colors.black,
+        // Expanded(child: Container()),
+        Container(
+          height: 55.0,
+          child: Row(
+            children: [
+              //语音按钮
+              IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.mic,
+                    color: Colors.black,
+                    size: 30,
+                  )),
+              //聊天输入框
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: TextFormField(
+                      style: const TextStyle(
+                          fontSize: 20.0, color: Colors.black87),
+                      controller: _textController,
+                      textInputAction: TextInputAction.send,
+                      onFieldSubmitted: _handleSubmitted,
+                      focusNode: _focusNode,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.only(
+                            left: 16.0, bottom: 8.0, top: 8.0, right: 16.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      )),
+                ),
               ),
-            ),
-          ),
-        ),
-        //聊天输入框
-        Flexible(
-          flex: 7,
-          child: Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.only(left: 3),
-            height: 35,
-            color: Colors.white,
-            child: TextField(
-              cursorHeight: 35,
-              textAlign: TextAlign.start,
-              maxLines: null,
-              controller: _textController,
-              textInputAction: TextInputAction.send,
-              onSubmitted: _handleSubmitted,
-              decoration: const InputDecoration.collapsed(hintText: ''),
-              focusNode: _focusNode,
-            ),
-          ),
-        ),
-        /*Flexible(
-          flex: 1,
-          child: Container(
-            // margin: const EdgeInsets.symmetric(horizontal: 4.0),
-            // Theme.of(context).platform == TargetPlatform.iOS
-            child: IconButton(
-              icon: const Icon(
-                Icons.send,
-                color: Colors.black,
+              /*Flexible(
+                flex: 1,
+                child: Container(
+                  // margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                  // Theme.of(context).platform == TargetPlatform.iOS
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.send,
+                      color: Colors.black,
+                    ),
+                    onPressed: () => _handleSubmitted(_textController.text),
+                  ),
+                ),
+              ),*/
+              Material(
+                color: Colors.transparent,
+                child: IconButton(
+                  onPressed: () {
+                    _focusNode.unfocus();
+                    setState(() {
+                      emojiShowing = !emojiShowing;
+                      _buttonShow = false;
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.mood,
+                    color: Colors.black,
+                    size: 30,
+                  ),
+                ),
               ),
-              onPressed: () => _handleSubmitted(_textController.text),
-            ),
-          ),
-        ),*/
-        Material(
-          color: Colors.transparent,
-          child: IconButton(
-            onPressed: () {
-              setState(() {
-                emojiShowing = !emojiShowing;
-              });
-            },
-            icon: const Icon(
-              Icons.emoji_emotions,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        Flexible(
-          flex: 1,
-          child: GestureDetector(
-            onTap: extendFunction,
-            child: Icon(
-              Icons.add_circle_outline_outlined,
-              color: Colors.black,
-            ),
+              Material(
+                color: Colors.transparent,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.add_circle_outline_outlined,
+                    color: Colors.black,
+                    size: 30,
+                  ),
+                  onPressed: () {
+                    _focusNode.unfocus();
+                    setState(() {
+                      _buttonShow = !_buttonShow;
+                      emojiShowing = false;
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -519,14 +535,6 @@ class _ChatScreenState extends State<ChatScreen>
     // message.animationController.forward();
     //每次发送跳到最下面
     scrollMsgBottom();
-  }
-
-  //展开加号按钮
-  void extendFunction() {
-    _focusNode.unfocus();
-    setState(() {
-      _buttonShow = !_buttonShow;
-    });
   }
 
   Widget _cellForRow(BuildContext context, int index) {
