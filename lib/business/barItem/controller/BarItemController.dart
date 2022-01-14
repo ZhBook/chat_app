@@ -13,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../exception/UnknownRoute.dart';
 import '../../login/controller/LoginController.dart';
 import '../../login/route/DrawerController.dart';
-import '../../moments/controller/MomentController.dart';
 import '../route/ChattingController.dart';
 import '../route/ScanController.dart';
 import '../route/SettingController.dart';
@@ -44,7 +43,6 @@ class Index extends StatelessWidget {
       routes: {
         "login_page": (context) => LoginPage(),
         "chat_page": (context) => ChatPage(),
-        "friends_page": (context) => Friends(),
         "home": (context) => ScaffoldRoute(),
         "scan_page": (context) => ScanPage(),
         "setting_page": (context) => Setting(),

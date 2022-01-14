@@ -1,4 +1,6 @@
+import 'package:chat_app/business/moments/controller/MomentController.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ToolsScreen extends StatelessWidget {
   const ToolsScreen({Key? key}) : super(key: key);
@@ -21,7 +23,7 @@ class ToolsScreen extends StatelessWidget {
             GestureDetector(
               onTap: () async {
                 print("点击了朋友圈");
-                await Navigator.of(context).pushNamed("friends_page");
+                Get.to(Friends());
               },
               child: Container(
                 padding: _padding,

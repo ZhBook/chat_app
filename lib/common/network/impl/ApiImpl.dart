@@ -196,4 +196,31 @@ class ApiImpl implements Api {
     Result result = Result.fromJson(response.data);
     return FileInfo.fromJson(result.data);
   }
+
+  @override
+  Future<bool> commentMoments(String momentsId, String context) {
+    // TODO: implement commentMoments
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<PageResult> getMoments(num pageIndex, int pageSize) async {
+    var response = await dio.post(Urls.moments_all,
+        data: {"pageIndex": pageIndex, "pageSize": pageSize});
+    PageResult result = PageResult.fromJson(response.data);
+
+    return result;
+  }
+
+  @override
+  Future<bool> likesMoments(String momentsId) {
+    // TODO: implement likesMoments
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> publishMoments(String context, String images, String video) {
+    // TODO: implement publishMoments
+    throw UnimplementedError();
+  }
 }

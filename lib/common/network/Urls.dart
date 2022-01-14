@@ -24,4 +24,12 @@ class Urls {
   static final String handleRequest = "api-business/api/v1/friends/handle";
 
   static final String upload = "api-business/api/v1/upload";
+
+  static final String moments_all = "api-business/api/v1/moments/all";
+
+  static final String moments_likes = "api-business/api/v1/moments/likes";
+
+  static final String moments_publish = "api-business/api/v1/moments/publish";
+
+  static final String moments_comment = "api-business/api/v1/moments/comment";
 }

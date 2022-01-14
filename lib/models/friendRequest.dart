@@ -14,8 +14,7 @@ class FriendRequest {
   late String message;
   late num infoState;
   late num isAgree;
-
-  factory FriendRequest.fromJson(Map<String, dynamic> json) =>
-      _$FriendRequestFromJson(json);
+  
+  factory FriendRequest.fromJson(Map<String,dynamic> json) => _$FriendRequestFromJson(json);
   Map<String, dynamic> toJson() => _$FriendRequestToJson(this);
 }

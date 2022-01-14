@@ -24,4 +24,12 @@ abstract class Api {
   Future<bool> handleRequest(num requestId, num isAgree);
 
   Future<FileInfo> uploadImg(String path);
+
+  Future<PageResult> getMoments(num pageIndex, int pageSize);
+
+  Future<bool> publishMoments(String context, String images, String video);
+
+  Future<bool> likesMoments(String momentsId);
+
+  Future<bool> commentMoments(String momentsId, String context);
 }
