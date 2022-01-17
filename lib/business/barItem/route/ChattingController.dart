@@ -146,7 +146,7 @@ class _ChatScreenState extends State<ChatScreen>
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text(friendInfo.friendNickname),
+        title: Text(friendInfo.nickname),
       ),
       body: Container(
         decoration: Theme.of(context).platform == TargetPlatform.iOS //new
@@ -512,7 +512,7 @@ class _ChatScreenState extends State<ChatScreen>
     /// 为保证本地数据库中消息ID与服务器ID相同，在本地创建
     newMessage.id = Utils.getIncreaseNum();
     newMessage.friendId = friendInfo.friendId;
-    newMessage.friendNickname = friendInfo.friendNickname;
+    newMessage.friendNickname = friendInfo.nickname;
     newMessage.context = text;
     newMessage.createTime = DateTime.now().toString();
     newMessage.userId = userInfo.id;

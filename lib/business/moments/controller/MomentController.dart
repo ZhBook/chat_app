@@ -17,12 +17,18 @@ class Friends extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
-        // title: Text("朋友圈"),
-        // centerTitle: true,
+        // backgroundColor: Colors.white60,
+        title: Text(
+          "朋友圈",
+          style: TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.photo_camera),
+            icon: Icon(
+              Icons.photo_camera,
+            ),
           )
         ],
       ),
@@ -59,9 +65,8 @@ class _FriendsStateState extends State<_Friends> {
           //   stretch: true,
           //   flexibleSpace: FlexibleSpaceBar(
           //     title: Text("朋友圈"),
-          //     background:
-          //         Image.asset("assets/images/background.jpg", fit: BoxFit.fill),
           //   ),
+          //   backgroundColor: Colors.transparent,
           // ),
           SliverToBoxAdapter(
             child: GestureDetector(
@@ -80,9 +85,7 @@ class _FriendsStateState extends State<_Friends> {
                         imageUrl:
                             "https://tensua-file.oss-cn-hangzhou.aliyuncs.com/files/4e4ac3c268b8465780b9cc91fb15bc36.jpg",
                         fit: BoxFit.fill,
-                        errorWidget: (context, url, error) => Image.asset(
-                          "assets/images/error.jpeg",
-                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                     ),
                     Positioned(
@@ -121,6 +124,16 @@ class _FriendsStateState extends State<_Friends> {
               childCount: list.length,
             ),
           ),
+          SliverToBoxAdapter(
+            child: Text(
+              "我也是有底线的",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black45,
+                height: 3,
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -128,10 +141,17 @@ class _FriendsStateState extends State<_Friends> {
 
   Widget _cellForRow(BuildContext context, int index) {
     Moments moments = list[index];
-    Friend friend = new Friend();
-    DBManage.getFriend(user.id, moments.userId).then((value) {
-      friend = value;
-    });
+    Friend userInfo = new Friend();
+    if (user.id == moments.userId) {
+      userInfo.headImgUrl = user.headImgUrl;
+      userInfo.nickname = user.nickname;
+    } else {
+      DBManage.getFriend(user.id, moments.userId).then((value) {
+        setState(() {
+          userInfo = value;
+        });
+      });
+    }
 
     return Container(
       padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
@@ -145,15 +165,13 @@ class _FriendsStateState extends State<_Friends> {
         children: [
           Expanded(
               flex: 1,
-              child: Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(60),
                 child: CachedNetworkImage(
-                  imageUrl:
-                      "https://tensua-file.oss-cn-hangzhou.aliyuncs.com/files/4e4ac3c268b8465780b9cc91fb15bc36.jpg",
-                  width: 30,
-                  height: 30,
-                  errorWidget: (context, url, error) => Image.asset(
-                    "assets/images/error.jpeg",
-                  ),
+                  imageUrl: userInfo.headImgUrl,
+                  width: 60,
+                  height: 60,
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               )),
           Expanded(
@@ -161,10 +179,8 @@ class _FriendsStateState extends State<_Friends> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(child: Text("朋友")),
-                Container(
-                  child: Text(moments.context),
-                )
+                Text(userInfo.nickname),
+                Text(moments.context),
               ],
             ),
           ),

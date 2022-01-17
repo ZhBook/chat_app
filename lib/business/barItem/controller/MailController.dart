@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/business/barItem/route/ChattingController.dart';
 import 'package:chat_app/business/barItem/route/NewFriendController.dart';
 import 'package:chat_app/business/barItem/route/SearchController.dart';
@@ -260,11 +261,12 @@ class _MailScreenState extends State<MailScreen> {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  friend.friendHeadUrl,
+                child: CachedNetworkImage(
+                  imageUrl: friend.headImgUrl,
                   fit: BoxFit.cover,
                   height: 40,
                   width: 40,
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
               ),
               flex: 1,
@@ -274,7 +276,7 @@ class _MailScreenState extends State<MailScreen> {
               child: Container(
                 padding: EdgeInsets.only(left: 10),
                 alignment: Alignment.centerLeft,
-                child: Text(friend.friendNickname),
+                child: Text(friend.nickname),
               ),
             ),
           ],

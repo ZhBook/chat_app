@@ -18,7 +18,7 @@ class DBManage {
   static void initDB() {
     getDatabasesPath().then((value) => databasesPath = value);
     log.info("数据库地址：" + databasesPath);
-    openDatabase(database, onCreate: _onCreate, version: 7)
+    openDatabase(database, onCreate: _onCreate, version: 8)
         .then((value) => db = value);
   }
 
@@ -42,7 +42,7 @@ class DBManage {
     String createRelationSQL = '''
     CREATE TABLE "user_relation" (
       "id" INTEGER(50) NOT NULL, "userId" INTEGER(50) NOT NULL, "friendId" INTEGER(50) NOT NULL,
-      "friendNickname" TEXT(50), "friendHeadUrl" TEXT(1000), PRIMARY KEY ("id")
+      "nickname" TEXT(50), "headImgUrl" TEXT(1000), PRIMARY KEY ("id")
     );
       ''';
 
@@ -165,16 +165,16 @@ class DBManage {
 
   //通过好友的username创建与其相关的聊天表
   static Future createFriendsMessageTable(String friendId) async {
-    log.info("开始创建好友聊天表，好友username:" + friendId);
-    try {
-      db.query("chat_$friendId");
+    db.query("chat_$friendId").then((value) {
       return true;
-    } catch (e) {
+    }).onError((error, stackTrace) {
+      log.warning("找不到表");
+      log.info("开始创建好友聊天表，好友username:" + friendId);
       String createSQL = '''
      CREATE TABLE "chat_$friendId" (
         "id" INTEGER(100) NOT NULL,
         "friendId" INTEGER(100) NOT NULL,
-        "friendNickname" TEXT(100) NOT NULL,
+        "nickname" TEXT(100) NOT NULL,
         "userId" INTEGER(100) NOT NULL,
         "context" TEXT(1000),
         "url" TEXT(1000),
@@ -188,7 +188,10 @@ class DBManage {
       ''';
       db.execute(createSQL);
       log.info("chat_$friendId聊天表创建成功");
-    }
+      return true;
+    });
+
+    return true;
   }
 
   ///添加好友列表
@@ -218,7 +221,7 @@ class DBManage {
   ///分页获取与好友的聊天信息
   static Future<List<Message>> getMessages(
       String friendId, int start, int limit) async {
-    print('查询聊天信息' + friendId);
+    log.info('查询聊天信息' + friendId);
     createFriendsMessageTable(friendId);
     List<Map<String, dynamic>> result = await db.query("chat_$friendId",
         orderBy: 'createTime desc', limit: 20, offset: 0);
