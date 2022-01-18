@@ -13,25 +13,6 @@ class Friends extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        // backgroundColor: Colors.white60,
-        title: Text(
-          "朋友圈",
-          style: TextStyle(color: Colors.black),
-        ),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.photo_camera,
-            ),
-          )
-        ],
-      ),
       body: _Friends(),
     );
   }
@@ -43,6 +24,8 @@ Api api = new ApiImpl();
 ScrollController _scrollController = new ScrollController();
 num pageIndex = 1;
 User user = new User();
+bool _visible = false;
+double opacityLevel = 0;
 
 class _Friends extends StatefulWidget {
   const _Friends({Key? key}) : super(key: key);
@@ -57,60 +40,193 @@ class _FriendsStateState extends State<_Friends> {
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          // SliverAppBar(
-          //   pinned: true,
-          //   stretch: true,
-          //   flexibleSpace: FlexibleSpaceBar(
-          //     title: Text("朋友圈"),
-          //   ),
-          //   backgroundColor: Colors.transparent,
-          // ),
-          SliverToBoxAdapter(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        // backgroundColor: Colors.white60,
+        title: Text(
+          "朋友圈",
+          style: TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _visible = !_visible;
+                if (opacityLevel == 1.0) {
+                  opacityLevel = 0;
+                } else {
+                  opacityLevel = 1.0;
+                }
+              });
+            },
+            icon: Icon(
+              Icons.photo_camera,
+            ),
+          )
+        ],
+      ),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              // SliverAppBar(
+              //   pinned: true,
+              //   stretch: true,
+              //   flexibleSpace: FlexibleSpaceBar(
+              //     title: Text("朋友圈"),
+              //   ),
+              //   backgroundColor: Colors.transparent,
+              // ),
+              SliverToBoxAdapter(
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    height: 300,
+                    width: double.maxFinite,
+                    // color: Colors.greenAccent,
+                    child: Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Container(
+                          width: double.maxFinite,
+                          height: 260,
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                "https://tensua-file.oss-cn-hangzhou.aliyuncs.com/files/4e4ac3c268b8465780b9cc91fb15bc36.jpg",
+                            fit: BoxFit.fill,
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 30,
+                          right: 10,
+                          child: Container(
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: Text(
+                                    user.nickname,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
+                                ),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: CachedNetworkImage(
+                                    imageUrl: user.headImgUrl,
+                                    height: 60,
+                                    width: 60,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  _cellForRow,
+                  childCount: list.length,
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Text(
+                  "我也是有底线的",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black45,
+                    height: 3,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // Visibility(
+          //   visible: _visible,
+          //   child:
+          AnimatedOpacity(
+            duration: Duration(milliseconds: 500),
+            opacity: opacityLevel,
+            curve: Curves.linear,
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                setState(() {
+                  _visible = false;
+                });
+              },
               child: Container(
-                height: 300,
-                width: double.maxFinite,
-                // color: Colors.greenAccent,
-                child: Stack(
-                  alignment: Alignment.topCenter,
+                color: Color.fromRGBO(157, 153, 153, 0.5),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
-                      width: double.maxFinite,
-                      height: 260,
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            "https://tensua-file.oss-cn-hangzhou.aliyuncs.com/files/4e4ac3c268b8465780b9cc91fb15bc36.jpg",
-                        fit: BoxFit.fill,
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(10),
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        width: double.maxFinite,
+                        height: 45,
+                        child: Text("发布"),
                       ),
                     ),
-                    Positioned(
-                      bottom: 30,
-                      right: 10,
+                    GestureDetector(
+                      onTap: () {},
                       child: Container(
-                        child: Row(
-                          children: [
-                            Container(
-                                padding: EdgeInsets.only(right: 10),
-                                child: Text(
-                                  user.nickname,
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                )),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: CachedNetworkImage(
-                                imageUrl: user.headImgUrl,
-                                height: 60,
-                                width: 60,
-                              ),
-                            ),
-                          ],
+                        alignment: Alignment.center,
+                        width: double.maxFinite,
+                        height: 45,
+                        child: Text("拍摄"),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            top: BorderSide(width: 0.1),
+                            bottom: BorderSide(width: 0.1),
+                          ),
                         ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: double.maxFinite,
+                        height: 45,
+                        child: Text("从手机相册选取"),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            bottom: BorderSide(width: 0.1),
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _visible = false;
+                        });
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: double.maxFinite,
+                        height: 40,
+                        color: Colors.white,
+                        child: Text("取消"),
                       ),
                     ),
                   ],
@@ -118,22 +234,7 @@ class _FriendsStateState extends State<_Friends> {
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              _cellForRow,
-              childCount: list.length,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Text(
-              "我也是有底线的",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.black45,
-                height: 3,
-              ),
-            ),
-          )
+          // ),
         ],
       ),
     );
@@ -215,6 +316,7 @@ class _FriendsStateState extends State<_Friends> {
       setState(() {
         list = resultList;
         user = userInfo;
+        _visible = false;
       });
     }
   }
