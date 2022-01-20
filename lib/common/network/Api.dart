@@ -32,4 +32,6 @@ abstract class Api {
   Future<bool> likesMoments(String momentsId);
 
   Future<bool> commentMoments(String momentsId, String context);
+
+  Future<bool> receiveConfirm(String msgId);
 }

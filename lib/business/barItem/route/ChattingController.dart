@@ -108,6 +108,9 @@ class _ChatScreenState extends State<ChatScreen>
       print('监听到的数据:' + event.receiveMsg.toString());
       if (event.receiveMsg.userId == friendInfo.friendId) {
         if (mounted) {
+          //接收消息后 服务端设置为已读
+          request.receiveConfirm(event.receiveMsg.id.toString());
+
           //更新全部消息为已读
           DBManage.updateUnReadMessage(friendInfo.friendId);
           setState(() {
@@ -517,7 +520,7 @@ class _ChatScreenState extends State<ChatScreen>
     newMessage.createTime = DateTime.now().toString();
     newMessage.userId = userInfo.id;
     newMessage.headImgUrl = userInfo.headImgUrl;
-    newMessage.haveRead = 1;
+    newMessage.haveRead = 0;
     newMessage.type = 1;
     newMessage.url = '';
     newMessage.state = 0;

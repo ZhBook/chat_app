@@ -32,4 +32,7 @@ class Urls {
   static final String moments_publish = "api-business/api/v1/moments/publish";
 
   static final String moments_comment = "api-business/api/v1/moments/comment";
+
+  static final String receive_confirm =
+      "api-chatting/api/v1/message/receive/confirm/";
 }

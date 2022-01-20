@@ -223,4 +223,17 @@ class ApiImpl implements Api {
     // TODO: implement publishMoments
     throw UnimplementedError();
   }
+
+  /**
+   *接收消息反馈
+   */
+  @override
+  Future<bool> receiveConfirm(String msgId) async {
+    var response = await dio.post(Urls.receive_confirm + msgId);
+    Result result = Result.fromJson(response.data);
+    if (result.code == 200 && result.data == true) {
+      return true;
+    }
+    return false;
+  }
 }
